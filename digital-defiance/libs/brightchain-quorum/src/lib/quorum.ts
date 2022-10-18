@@ -108,13 +108,13 @@ export default class BrightChainQuorum {
     agent: QuorumMember,
     document: T,
     amongstMembers: QuorumMember[],
-    shareRatiosByMemberId?: Array<{ memberId: string; ratio: number }>
+    shareCountByMemberId?: Array<{ memberId: string; shareCount: number }>
   ): QuorumDataRecord {
     const newDoc = StaticHelpersSealing.quorumSeal<T>(
       agent,
       document,
       amongstMembers.map((m) => m.id),
-      shareRatiosByMemberId
+      shareCountByMemberId
     );
     if (amongstMembers.length !== (newDoc.keyShares as Array<string>).length)
       throw new Error('Key share count does not match member list size');

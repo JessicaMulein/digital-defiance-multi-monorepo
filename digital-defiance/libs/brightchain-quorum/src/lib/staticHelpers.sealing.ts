@@ -44,7 +44,7 @@ export default abstract class StaticHelpersSealing {
     agent: QuorumMember,
     data: T,
     amongstMemberIds: string[],
-    shareRatiosByMemberId?: Array<{ memberId: string; ratio: number }>,
+    shareCountByMemberId?: Array<{ memberId: string; shareCount: number }>,
     threshold?: number
   ): IQoroumSealResults {
     if (amongstMemberIds.length < 2) {
@@ -65,12 +65,15 @@ export default abstract class StaticHelpersSealing {
     const sharesByMemberId: Map<string, number> = new Map();
     for(let i = 0; i < amongstMemberIds.length; i++) {
       const memberId = amongstMemberIds[i];
-      const shareRatio = shareRatiosByMemberId?.find((s) => s.memberId === memberId)?.ratio ?? 1;
-      sharesByMemberId.set(memberId, shareRatio);
+      const sharesForMember = shareCountByMemberId?.find((s) => s.memberId === memberId)?.shareCount ?? 1;
+      if (sharesForMember < 1) {
+        throw new Error('Share ratio must be greater than or equal to 1');
+      }
+      sharesByMemberId.set(memberId, sharesForMember);
     }
     const totalShares = Array.from(sharesByMemberId.values()).reduce((a, b) => a + b, 0);
-    const shareRatiosByMemberIdArray = Array.from(sharesByMemberId.entries());
-    const shareRatios: Array<{ memberId: string; ratio: number }> = shareRatiosByMemberIdArray.map(([memberId, shareRatio]) => {
+    const shareCountsByMemberIdArray = Array.from(sharesByMemberId.entries());
+    const shareCounts: Array<{ memberId: string; ratio: number }> = shareCountsByMemberIdArray.map(([memberId, shareRatio]) => {
       return {
         memberId,
         ratio: shareRatio,
@@ -96,7 +99,7 @@ export default abstract class StaticHelpersSealing {
       amongstMemberIds,
       sharesRequired,
       encryptedData.encryptedData,
-      shareRatios
+      shareCounts
     );
     return {
       keyShares: keyShares,
