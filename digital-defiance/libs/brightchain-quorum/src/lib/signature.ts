@@ -12,6 +12,15 @@ export interface ISignature {
   recoveryParam?: number | null;
 }
 
+/**
+ * compatibility with/copied from https://github.com/indutny/elliptic/blob/master/lib/elliptic/ec/signature.js
+ * This is basically a direct clone of the original signature class and the _importDER() method has been moved into staticHelpers.elliptic.ts
+ * The reason being was that the original ec.Signature class under Typescript was not allowing us to access the constructor or import function
+ * whether directly or indirectly. I am not sure if there is a namespace collision between ec the class and ec the namespace. -JM
+ * @param r
+ * @param s
+ * @param recoveryParam
+ */
 export class Signature implements ISignature {
   public r: BN;
   public s: BN;
