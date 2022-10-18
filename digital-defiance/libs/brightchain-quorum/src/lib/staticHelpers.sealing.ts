@@ -136,36 +136,44 @@ export default abstract class StaticHelpersSealing {
   public static encryptSharesForMembers(
     shares: Shares,
     members: QuorumMember[],
-    shareCountByMemberId: Array<{ memberId: string; shareCount: number }>
-  ): EncryptedShares {
+    shareCountByMemberId?: Array<{ memberId: string; shareCount: number }>
+  ): Map<string, EncryptedShares> {
     const sortedMembers = members.sort((a, b) => a.id.localeCompare(b.id));
-    const sortedShareCountByMemberId = shareCountByMemberId.sort((a, b) =>
-      a.memberId.localeCompare(b.memberId)
-    );
-    const totalShares = sortedShareCountByMemberId.reduce(
-      (a, b) => a + b.shareCount,
-      0
-    );
-    const encryptedShares: EncryptedShares = new Array<string>(totalShares);
+    const sharesByMemberId = new Map<string, Shares>();
+    const encryptedSharesByMemberId = new Map<string, EncryptedShares>();
     let shareIndex = 0;
     for (let i = 0; i < sortedMembers.length; i++) {
       const member = sortedMembers[i];
-      const shareCount = sortedShareCountByMemberId[i].shareCount;
-      const sharesForMember = shares.slice(shareIndex, shareIndex + shareCount);
+      const shareCount =
+        shareCountByMemberId?.find((s) => s.memberId === member.id)
+          ?.shareCount ?? 1;
+      const sharesForMember = shares.slice(
+        shareIndex,
+        shareIndex + shareCount
+      );
+      sharesByMemberId.set(member.id, sharesForMember);
       shareIndex += shareCount;
-      for (let j = 0; j < shareCount; j++) {
+
+      if (!sharesForMember) {
+        throw new Error('No shares found for member');
+      }
+      const encryptedSharesForMember: EncryptedShares = new Array<string>(
+        sharesForMember.length
+      );
+      for (let j = 0; j < sharesForMember.length; j++) {
         const share = sharesForMember[j];
         const encryptedKeyShare = StaticHelpersSymmetric.seal<string>(
           share,
           member.dataPublicKey
         );
-        encryptedShares[i] =
+        encryptedSharesForMember[i] =
           StaticHelpersSymmetric.ISealResultsToBuffer(
             encryptedKeyShare
           ).toString('hex');
       }
     }
-    return encryptedShares;
+
+    return encryptedSharesByMemberId;
   }
 
   /**
@@ -174,9 +182,10 @@ export default abstract class StaticHelpersSealing {
   public static decryptSharesForMembers(
     encryptedShares: EncryptedShares,
     members: QuorumMember[],
-    shareCountByMemberId: Array<{ memberId: string; shareCount: number }>
+    shareCountByMemberId?: Array<{ memberId: string; shareCount: number }>
   ): Shares {
     const sortedMembers = members.sort((a, b) => a.id.localeCompare(b.id));
+    shareCountByMemberId = shareCountByMemberId ?? members.map((m) => { return { memberId: m.id, shareCount: 1 } });
     const sortedShareCountByMemberId = shareCountByMemberId.sort((a, b) =>
       a.memberId.localeCompare(b.memberId)
     );

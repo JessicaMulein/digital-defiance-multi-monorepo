@@ -119,13 +119,18 @@ export default class BrightChainQuorum {
     if (amongstMembers.length !== (newDoc.keyShares as Array<string>).length)
       throw new Error('Key share count does not match member list size');
 
-    const encryptedShares: Shares = StaticHelpersSealing.encryptSharesForMembers(
+    const encryptedShares: Map<string, EncryptedShares> = StaticHelpersSealing.encryptSharesForMembers(
       newDoc.keyShares,
-      amongstMembers
+      amongstMembers,
+      shareCountByMemberId
     );
+    const combinedShares: EncryptedShares = new Array<string>();
+    encryptedShares.forEach((shares) => {
+      shares.forEach((share) => combinedShares.push(share));
+    });
 
     this._documentsById.set(newDoc.record.id, newDoc.record);
-    this._documentKeySharesById.set(newDoc.record.id, encryptedShares);
+    this._documentKeySharesById.set(newDoc.record.id, combinedShares);
     this._documentsById.save();
     this._documentKeySharesById.save();
     return newDoc.record;

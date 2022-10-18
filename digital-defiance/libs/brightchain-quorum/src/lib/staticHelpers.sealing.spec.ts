@@ -1,3 +1,4 @@
+import { EncryptedShares } from './interfaces';
 import QuorumMember from './member';
 import QuorumMemberType from './quorumMemberType';
 import StaticHelpers from './staticHelpers.checksum';
@@ -50,8 +51,12 @@ describe('brightchainQuorum', () => {
       sealedDocument.keyShares,
       members
     );
+    const combinedShares: EncryptedShares = new Array<string>();
+    encryptedShares.forEach((shares) => {
+      shares.forEach((share) => combinedShares.push(share));
+    });
     const decryptedShares = StaticHelpersSealing.decryptSharesForMembers(
-      encryptedShares,
+      combinedShares,
       members
     );
     expect(decryptedShares).toEqual(sealedDocument.keyShares);
