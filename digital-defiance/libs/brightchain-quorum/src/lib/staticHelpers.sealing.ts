@@ -64,6 +64,10 @@ export default abstract class StaticHelpersSealing {
 
     const encryptedData = StaticHelpersSymmetric.symmetricEncrypt<T>(data);
 
+    // TODO: consider computing the number of shares a user needs if you want to consider them "required"
+    // eg if you normally would have say 3 shares and require 2 but require that one of the members is a specific one
+    // alice: 1 share, bob (required): 3 shares, carol: 1 share = total 5 shares
+
     // split the key using shamir's secret sharing
     StaticHelpersSealing.reinitSecrets(amongstMemberIds.length);
     const keyShares = secrets.share(
