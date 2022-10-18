@@ -2,7 +2,8 @@ import StaticHelpersElliptic from './staticHelpers.elliptic';
 import StaticHelpersKeyPair from './staticHelpers.keypair';
 
 describe('brightchainQuorum', () => {
-  it('should sign and verify a message', () => {
+  // TODO determine which of these methods to support, or both
+  it('should sign and verify a message using StaticHelpersKeyPair.verifyWithSigningKey', () => {
     const keyPair = StaticHelpersKeyPair.generateSigningKeyPair();
     const message = Buffer.from('hello world', 'utf8');
     const signature = StaticHelpersKeyPair.signWithSigningKey(
@@ -23,10 +24,9 @@ describe('brightchainQuorum', () => {
       )
     ).toBeFalsy();
   });
-  it('should sign and recover ec signature from hex der', () => {
+  it('should sign and recover ec signature from hex der to verify a signature using StaticHelpersElliptic.verifySignature', () => {
     const keyPair = StaticHelpersKeyPair.generateSigningKeyPair();
     const message = Buffer.from('hello world', 'utf8');
-    //    const signature = StaticHelpers.sign(message, keyPair.privateKey, StaticHelpers.Sha3DefaultHashBits);
     const signature = StaticHelpersKeyPair.signWithSigningKey(
       keyPair.keyPair,
       message

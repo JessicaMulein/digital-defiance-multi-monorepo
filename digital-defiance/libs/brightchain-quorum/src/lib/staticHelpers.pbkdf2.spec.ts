@@ -13,7 +13,7 @@ describe('brightchainQuorum', () => {
   });
   it('should do the correct number of pbkdf2 iterations in a second', () => {
     const timedRun = StaticHelpersPbkdf2.timedPbkdf2Test();
-    const threshold = 25; // if we are within 25 msec of 1 second, we are done
+    const threshold = 333; // if we are within 1/3 sec (333 msec) of 1 second, we are done
     expect(timedRun).toBeGreaterThan(1000 - threshold);
     expect(timedRun).toBeLessThan(1000 + threshold);
   });
