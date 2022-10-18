@@ -1,15 +1,11 @@
 // compatibility with/copied from https://github.com/indutny/elliptic/blob/master/lib/elliptic/ec/signature.js
 
 import { ec as EC } from 'elliptic';
-import {
-  Position,
-} from './interfaces';
+import { Position } from './interfaces';
 import { ISignature, Signature } from './signature';
 import * as minUtils from './minimalisticUtils';
 import BN = require('bn.js');
-import StaticHelpers from './staticHelpers.checksum';
 import StaticHelpersKeyPair from './staticHelpers.keypair';
-
 
 export default abstract class StaticHelpersElliptic {
   public static constructLength(arr: number[], len: number) {
@@ -154,5 +150,14 @@ export default abstract class StaticHelpersElliptic {
       s: sig.s,
       recoveryParam: sig.recoveryParam,
     });
+  }
+
+  public static ECfromOurEC(sig: Signature): EC.Signature {
+    const iSig: ISignature = {
+      r: sig.r,
+      s: sig.s,
+      recoveryParam: sig.recoveryParam,
+    };
+    return iSig as EC.Signature;
   }
 }
