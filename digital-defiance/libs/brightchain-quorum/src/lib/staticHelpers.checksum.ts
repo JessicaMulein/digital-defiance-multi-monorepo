@@ -44,6 +44,6 @@ export default abstract class StaticHelpersChecksum {
   }
 
   public static validateChecksum(data: Buffer, checksum: Buffer): boolean {
-    return StaticHelpersChecksum.calculateChecksum(data) === checksum;
+    return StaticHelpersChecksum.calculateChecksum(data).equals(checksum);
   }
 }
