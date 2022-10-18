@@ -14,7 +14,6 @@ export default class QuorumDataRecord {
   public readonly checksum: Buffer;
   public readonly signature: EC.Signature | null;
   public readonly memberIDs: string[];
-  public readonly requiredMemberIDs: string[];
   public readonly sharesRequired: number;
   public readonly dateCreated: Date;
   public readonly dateUpdated: Date;
@@ -22,9 +21,9 @@ export default class QuorumDataRecord {
   constructor(
     creator: QuorumMember,
     memberIDs: string[],
-    requiredMemberIDs: string[],
     sharesRequired: number,
     encryptedData: Buffer,
+    shareRatiosByMemberId?: Array<{ memberId: string; ratio: number }>,
     checksum?: Buffer,
     signature?: EC.Signature,
     id?: string,
@@ -46,13 +45,14 @@ export default class QuorumDataRecord {
     if (sharesRequired != -1 && sharesRequired < 2) {
       throw new Error('Shares required must be at least 2');
     }
-    this.requiredMemberIDs = requiredMemberIDs;
-    // the required member ids must be a subset of the member ids
-    if (
-      requiredMemberIDs.length != 0 &&
-      requiredMemberIDs.some((id) => !memberIDs.includes(id))
-    ) {
-      throw new Error('Required member IDs must be a subset of member IDs');
+    // the share radio member ids must be a subset of the member ids
+    if (shareRatiosByMemberId) {
+      for (let i = 0; i < shareRatiosByMemberId.length; i++) {
+        const shareRatio = shareRatiosByMemberId[i];
+        if (!memberIDs.includes(shareRatio.memberId)) {
+          throw new Error('Share ratio member ID not found in member IDs');
+        }
+      }
     }
 
     this.sharesRequired = sharesRequired;

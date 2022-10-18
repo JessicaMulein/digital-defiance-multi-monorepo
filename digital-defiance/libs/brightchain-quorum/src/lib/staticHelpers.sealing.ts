@@ -44,6 +44,7 @@ export default abstract class StaticHelpersSealing {
     agent: QuorumMember,
     data: T,
     amongstMemberIds: string[],
+    shareRatiosByMemberId?: Array<{ memberId: string; ratio: number }>,
     threshold?: number
   ): IQoroumSealResults {
     if (amongstMemberIds.length < 2) {
@@ -61,6 +62,20 @@ export default abstract class StaticHelpersSealing {
     if (sharesRequired < 2) {
       throw new Error('At least two shares/members are required');
     }
+    const sharesByMemberId: Map<string, number> = new Map();
+    for(let i = 0; i < amongstMemberIds.length; i++) {
+      const memberId = amongstMemberIds[i];
+      const shareRatio = shareRatiosByMemberId?.find((s) => s.memberId === memberId)?.ratio ?? 1;
+      sharesByMemberId.set(memberId, shareRatio);
+    }
+    const totalShares = Array.from(sharesByMemberId.values()).reduce((a, b) => a + b, 0);
+    const shareRatiosByMemberIdArray = Array.from(sharesByMemberId.entries());
+    const shareRatios: Array<{ memberId: string; ratio: number }> = shareRatiosByMemberIdArray.map(([memberId, shareRatio]) => {
+      return {
+        memberId,
+        ratio: shareRatio,
+      };
+    });
 
     const encryptedData = StaticHelpersSymmetric.symmetricEncrypt<T>(data);
 
@@ -72,16 +87,16 @@ export default abstract class StaticHelpersSealing {
     StaticHelpersSealing.reinitSecrets(amongstMemberIds.length);
     const keyShares = secrets.share(
       encryptedData.key.toString('hex'),
-      amongstMemberIds.length,
+      totalShares,
       sharesRequired
     );
 
     const dataRecord = new QuorumDataRecord(
       agent,
       amongstMemberIds,
-      [],
       sharesRequired,
-      encryptedData.encryptedData
+      encryptedData.encryptedData,
+      shareRatios
     );
     return {
       keyShares: keyShares,
