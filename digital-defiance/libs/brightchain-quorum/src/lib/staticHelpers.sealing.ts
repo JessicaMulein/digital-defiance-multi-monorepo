@@ -147,10 +147,7 @@ export default abstract class StaticHelpersSealing {
       const shareCount =
         shareCountByMemberId?.find((s) => s.memberId === member.id)
           ?.shareCount ?? 1;
-      const sharesForMember = shares.slice(
-        shareIndex,
-        shareIndex + shareCount
-      );
+      const sharesForMember = shares.slice(shareIndex, shareIndex + shareCount);
       sharesByMemberId.set(member.id, sharesForMember);
       shareIndex += shareCount;
 
@@ -176,6 +173,16 @@ export default abstract class StaticHelpersSealing {
     return encryptedSharesByMemberId;
   }
 
+  public static combineEncryptedShares(
+    encryptedShares: Map<string, EncryptedShares>
+  ): EncryptedShares {
+    const combinedShares: EncryptedShares = new Array<string>();
+    encryptedShares.forEach((shares) => {
+      shares.forEach((share) => combinedShares.push(share));
+    });
+    return combinedShares;
+  }
+
   /**
    * Decrypt each key share with each member's private key
    */
@@ -185,7 +192,11 @@ export default abstract class StaticHelpersSealing {
     shareCountByMemberId?: Array<{ memberId: string; shareCount: number }>
   ): Shares {
     const sortedMembers = members.sort((a, b) => a.id.localeCompare(b.id));
-    shareCountByMemberId = shareCountByMemberId ?? members.map((m) => { return { memberId: m.id, shareCount: 1 } });
+    shareCountByMemberId =
+      shareCountByMemberId ??
+      members.map((m) => {
+        return { memberId: m.id, shareCount: 1 };
+      });
     const sortedShareCountByMemberId = shareCountByMemberId.sort((a, b) =>
       a.memberId.localeCompare(b.memberId)
     );

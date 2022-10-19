@@ -23,10 +23,9 @@ describe('brightchainQuorum', () => {
       document,
       members.map((m) => m.id)
     );
-    const unlockedDocument = StaticHelpersSealing.quorumUnlock<{ hello: string }>(
-      sealedDocument.keyShares,
-      sealedDocument.record.encryptedData
-    );
+    const unlockedDocument = StaticHelpersSealing.quorumUnlock<{
+      hello: string;
+    }>(sealedDocument.keyShares, sealedDocument.record.encryptedData);
     expect(unlockedDocument).toEqual(document);
   });
   it('should encrypt and decrypt the shares for the member list successfully', () => {
@@ -51,12 +50,8 @@ describe('brightchainQuorum', () => {
       sealedDocument.keyShares,
       members
     );
-    const combinedShares: EncryptedShares = new Array<string>();
-    encryptedShares.forEach((shares) => {
-      shares.forEach((share) => combinedShares.push(share));
-    });
     const decryptedShares = StaticHelpersSealing.decryptSharesForMembers(
-      combinedShares,
+      StaticHelpersSealing.combineEncryptedShares(encryptedShares),
       members
     );
     expect(decryptedShares).toEqual(sealedDocument.keyShares);
