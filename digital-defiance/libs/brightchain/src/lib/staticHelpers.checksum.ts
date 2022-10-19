@@ -1,5 +1,3 @@
-// TODO: move to brightchain, reference from there
-import QuorumDataRecord from './quorumDataRecord';
 import {
   createHash,
 } from 'crypto';
@@ -34,7 +32,7 @@ export default abstract class StaticHelpersChecksum {
     return Buffer.from(
       createHash(
         StaticHelpersChecksum.CryptoChecksumVerificationAlgorithm(
-          QuorumDataRecord.checksumBits
+          StaticHelpersChecksum.Sha3DefaultHashBits
         )
       )
         .update(data)

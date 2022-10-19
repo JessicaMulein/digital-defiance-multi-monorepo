@@ -1,5 +1,12 @@
 {
   "name": "@digital-defiance/brightchain",
   "version": "0.0.1",
-  "type": "commonjs"
+  "type": "commonjs",
+  "dependencies": {
+    "@types/uuid": "^8.3.4",
+    "crypto-js": "^4.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.2"
+  }
 }
