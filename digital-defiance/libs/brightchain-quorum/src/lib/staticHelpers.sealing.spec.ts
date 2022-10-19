@@ -45,17 +45,14 @@ describe('brightchainQuorum', () => {
     const memberIds = ['member1', 'member2', 'member3', 'member4'];
     const member2Shares = Math.ceil(Math.random() * 10);
     const member3Shares = Math.ceil(Math.random() * 10);
-    const shareCountByMemberId = undefined;
-    const additionalInformation: Map<string, number> = new Map<
-      string,
-      number
-    >();
-    additionalInformation.set('member2', member2Shares);
-    additionalInformation.set('member3', member3Shares);
+    const additionalInformation: Array<IMemberShareCount> = [
+      { memberId: 'member2', shares: member2Shares },
+      { memberId: 'member3', shares: member3Shares },
+    ];
     const sharesByMemberId =
       StaticHelpersSealing.determineShareCountsByMemberId(
         memberIds,
-        shareCountByMemberId
+        additionalInformation
       );
     expect(sharesByMemberId.size).toEqual(4);
     expect(sharesByMemberId.get('member1')).toEqual(1);
