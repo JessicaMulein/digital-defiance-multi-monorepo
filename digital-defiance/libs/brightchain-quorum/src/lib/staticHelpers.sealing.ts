@@ -9,7 +9,6 @@ import {
   IMemberShareCount,
   ISortedMemberShareCountArrays,
 } from './interfaces';
-import StaticHelpers from './staticHelpers.checksum';
 import StaticHelpersKeyPair from './staticHelpers.keypair';
 import StaticHelpersSymmetric from './staticHelpers.symmetric';
 
@@ -57,11 +56,30 @@ export default abstract class StaticHelpersSealing {
   ): ISortedMemberShareCountArrays {
     const members: string[] = [];
     const shares: number[] = [];
+    let totalShares = 0;
     countMap.forEach((shareCount, memberId) => {
       members.push(memberId);
       shares.push(shareCount);
+      totalShares += shareCount;
     });
-    return { members, shares };
+    const memberCount = members.length;
+    return { members, shares, memberCount, totalShares };
+  }
+
+  public static shareCountsArrayToSortedArrays(
+    shareCountByMemberId: Array<IMemberShareCount>
+  ): ISortedMemberShareCountArrays {
+    const members: string[] = [];
+    const shares: number[] = [];
+    let totalShares = 0;
+    for (let i = 0; i < shareCountByMemberId.length; i++) {
+      const shareCount = shareCountByMemberId[i];
+      members.push(shareCount.memberId);
+      shares.push(shareCount.shares);
+      totalShares += shareCount.shares;
+    }
+    const memberCount = members.length;
+    return { members, shares, memberCount, totalShares };
   }
 
   public static shareCountsMapToCountEntries(
@@ -91,7 +109,7 @@ export default abstract class StaticHelpersSealing {
    * Using shamir's secret sharing, split the given data into the given number of shares
    * @param data
    * @param amongstMemberIds
-   * @param threshold
+   * @param sharesRequired
    * @returns
    */
   public static quorumSeal<T>(
@@ -99,12 +117,12 @@ export default abstract class StaticHelpersSealing {
     data: T,
     amongstMemberIds: string[],
     shareCountByMemberId?: Array<IMemberShareCount>,
-    threshold?: number
+    sharesRequired?: number
   ): IQoroumSealResults {
     if (amongstMemberIds.length < 2) {
       throw new Error('At least two members are required');
     }
-    const sharesRequired = threshold ?? amongstMemberIds.length;
+    sharesRequired = sharesRequired ?? amongstMemberIds.length;
     if (sharesRequired < 0) {
       throw new Error('Shares required must be greater than zero');
     }
@@ -122,20 +140,18 @@ export default abstract class StaticHelpersSealing {
         shareCountByMemberId
       );
 
+    const sortedShareCounts =
+      StaticHelpersSealing.shareCountsMapToSortedArrays(sharesByMemberIdMap);
     const encryptedData = StaticHelpersSymmetric.symmetricEncrypt<T>(data);
 
     // TODO: consider computing the number of shares a user needs if you want to consider them "required"
     // eg if you normally would have say 3 shares and require 2 but require that one of the members is a specific one
     // alice: 1 share, bob (required): 3 shares, carol: 1 share = total 5 shares
-    const totalShares = Array.from(sharesByMemberIdMap.values()).reduce(
-      (a, b) => a + b,
-      0
-    );
     // split the key using shamir's secret sharing
     StaticHelpersSealing.reinitSecrets(amongstMemberIds.length);
     const keyShares = secrets.share(
       encryptedData.key.toString('hex'),
-      totalShares,
+      sortedShareCounts.totalShares,
       sharesRequired
     );
 
@@ -178,22 +194,26 @@ export default abstract class StaticHelpersSealing {
   public static encryptSharesForMembers(
     shares: Shares,
     members: QuorumMember[],
-    shareCountByMemberId?: Array<{ memberId: string; shareCount: number }>
+    shareCountByMemberId?: Array<IMemberShareCount>
   ): Map<string, EncryptedShares> {
-    const sortedMembers = members.sort((a, b) => a.id.localeCompare(b.id));
-    const sharesByMemberId = new Map<string, Shares>();
     const shareCountsByMemberId: Map<string, number> =
       StaticHelpersSealing.determineShareCountsByMemberId(
         members.map((v) => v.id),
         shareCountByMemberId
       );
+    const sortedMembers = StaticHelpersSealing.shareCountsMapToSortedArrays(
+      shareCountsByMemberId
+    );
+    const sharesByMemberId = new Map<string, Shares>();
     const encryptedSharesByMemberId = new Map<string, EncryptedShares>();
     let shareIndex = 0;
-    for (let i = 0; i < sortedMembers.length; i++) {
-      const member = sortedMembers[i];
-      const shareCount =
-        shareCountsByMemberId.find((s) => s.memberId === member.id)
-          ?.shareCount ?? 1;
+    for (let i = 0; i < sortedMembers.members.length; i++) {
+      const memberId = sortedMembers.members[i];
+      const member = members.find((v) => v.id === memberId);
+      if (!member) {
+        throw new Error('Member not found');
+      }
+      const shareCount = sortedMembers.shares[i];
       const sharesForMember = shares.slice(shareIndex, shareIndex + shareCount);
       sharesByMemberId.set(member.id, sharesForMember);
       shareIndex += shareCount;
@@ -236,27 +256,28 @@ export default abstract class StaticHelpersSealing {
   public static decryptSharesForMembers(
     encryptedShares: EncryptedShares,
     members: QuorumMember[],
-    shareCountByMemberId?: Array<{ memberId: string; shareCount: number }>
+    shareCountByMemberId?: Array<IMemberShareCount>
   ): Shares {
-    const sortedMembers = members.sort((a, b) => a.id.localeCompare(b.id));
-    shareCountByMemberId =
-      shareCountByMemberId ??
-      members.map((m) => {
-        return { memberId: m.id, shareCount: 1 };
-      });
-    const sortedShareCountByMemberId = shareCountByMemberId.sort((a, b) =>
-      a.memberId.localeCompare(b.memberId)
-    );
-    const totalShares = sortedShareCountByMemberId.reduce(
-      (a, b) => a + b.shareCount,
-      0
+    const shareCountsByMemberId: Map<string, number> =
+      StaticHelpersSealing.determineShareCountsByMemberId(
+        members.map((v) => v.id),
+        shareCountByMemberId
+      );
+    const sortedMembers = StaticHelpersSealing.shareCountsMapToSortedArrays(
+      shareCountsByMemberId
     );
 
-    const decryptedShares: Array<string> = new Array<string>(totalShares);
+    const decryptedShares: Array<string> = new Array<string>(
+      sortedMembers.totalShares
+    );
     let shareIndex = 0;
-    for (let i = 0; i < sortedMembers.length; i++) {
-      const member = sortedMembers[i];
-      const shareCount = sortedShareCountByMemberId[i].shareCount;
+    for (let i = 0; i < sortedMembers.memberCount; i++) {
+      const memberId = sortedMembers.members[i];
+      const member = members.find((v) => v.id === memberId);
+      if (!member) {
+        throw new Error('Member not found');
+      }
+      const shareCount = sortedMembers.shares[i];
       for (let j = 0; j < shareCount; j++) {
         const encryptedKeyShareHex = encryptedShares[shareIndex++];
         const decryptedPrivateKey =

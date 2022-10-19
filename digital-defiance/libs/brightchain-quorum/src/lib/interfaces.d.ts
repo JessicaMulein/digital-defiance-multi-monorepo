@@ -59,7 +59,9 @@ export interface IMemberShareCount {
 
 export interface ISortedMemberShareCountArrays {
   members: string[];
-  shares: number[]
+  shares: number[],
+  memberCount: number;
+  totalShares: number;
 }
 
 export interface ISymmetricEncryptionResults {

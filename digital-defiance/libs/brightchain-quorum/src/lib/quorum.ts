@@ -1,6 +1,6 @@
 import { Shares } from 'secrets.js-34r7h';
 import * as uuid from 'uuid';
-import { EncryptedShares } from './interfaces';
+import { EncryptedShares, IMemberShareCount } from './interfaces';
 import QuorumMember from './member';
 import QuorumDataRecord from './quorumDataRecord';
 import SimpleStore from './stores/simpleStore';
@@ -108,7 +108,7 @@ export default class BrightChainQuorum {
     agent: QuorumMember,
     document: T,
     amongstMembers: QuorumMember[],
-    shareCountByMemberId?: Array<{ memberId: string; shareCount: number }>
+    shareCountByMemberId?: Array<IMemberShareCount>
   ): QuorumDataRecord {
     const newDoc = StaticHelpersSealing.quorumSeal<T>(
       agent,
@@ -119,11 +119,12 @@ export default class BrightChainQuorum {
     if (amongstMembers.length !== (newDoc.keyShares as Array<string>).length)
       throw new Error('Key share count does not match member list size');
 
-    const encryptedShares: Map<string, EncryptedShares> = StaticHelpersSealing.encryptSharesForMembers(
-      newDoc.keyShares,
-      amongstMembers,
-      shareCountByMemberId
-    );
+    const encryptedShares: Map<string, EncryptedShares> =
+      StaticHelpersSealing.encryptSharesForMembers(
+        newDoc.keyShares,
+        amongstMembers,
+        shareCountByMemberId
+      );
     const combinedShares: EncryptedShares = new Array<string>();
     encryptedShares.forEach((shares) => {
       shares.forEach((share) => combinedShares.push(share));
@@ -148,7 +149,10 @@ export default class BrightChainQuorum {
       throw new Error('Document not found');
     }
 
-    const restoredDoc = StaticHelpersSealing.quorumUnlock<T>(shares, doc.encryptedData);
+    const restoredDoc = StaticHelpersSealing.quorumUnlock<T>(
+      shares,
+      doc.encryptedData
+    );
     if (!restoredDoc) {
       throw new Error('Unable to restore document');
     }
