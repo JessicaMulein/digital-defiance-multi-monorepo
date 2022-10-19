@@ -53,7 +53,7 @@ describe('brightchainQuorum', () => {
     const sharesByMemberIdSortedArray =
       StaticHelpersSealing.shareCountsMapToSortedArrays(sharesByMemberId);
     const sharesByMemberIdMap = StaticHelpersSealing.shareCountsArrayToMap(
-      sharesByMemberIdSortedArray.members,
+      sharesByMemberIdSortedArray.memberIds,
       sharesByMemberIdSortedArray.shares
     );
     expect(sharesByMemberIdMap.size).toEqual(4);
@@ -74,11 +74,11 @@ describe('brightchainQuorum', () => {
     expect(entryFormatArray[3].shares).toEqual(1);
     const sharesByMemberIdSortedArray2 =
       StaticHelpersSealing.shareCountsArrayToSortedArrays(entryFormatArray);
-    expect(sharesByMemberIdSortedArray2.members.length).toEqual(4);
-    expect(sharesByMemberIdSortedArray2.members[0]).toEqual('member1');
-    expect(sharesByMemberIdSortedArray2.members[1]).toEqual('member2');
-    expect(sharesByMemberIdSortedArray2.members[2]).toEqual('member3');
-    expect(sharesByMemberIdSortedArray2.members[3]).toEqual('member4');
+    expect(sharesByMemberIdSortedArray2.memberIds.length).toEqual(4);
+    expect(sharesByMemberIdSortedArray2.memberIds[0]).toEqual('member1');
+    expect(sharesByMemberIdSortedArray2.memberIds[1]).toEqual('member2');
+    expect(sharesByMemberIdSortedArray2.memberIds[2]).toEqual('member3');
+    expect(sharesByMemberIdSortedArray2.memberIds[3]).toEqual('member4');
     expect(sharesByMemberIdSortedArray2.shares.length).toEqual(4);
     expect(sharesByMemberIdSortedArray2.shares[0]).toEqual(1);
     expect(sharesByMemberIdSortedArray2.shares[1]).toEqual(2);

@@ -95,54 +95,88 @@ export default abstract class StaticHelpersSealing {
     return sharesByMemberId;
   }
 
+  /**
+   * Given a map of member ids to share counts, convert the map to an array of member ids and a corresponding array of share counts
+   * @param countMap
+   * @returns
+   */
   public static shareCountsMapToSortedArrays(
     countMap: Map<string, number>
   ): ISortedMemberShareCountArrays {
-    const members: string[] = [];
+    const sortedMemberIds = Array.from(countMap.keys()).sort();
+    const memberCount = sortedMemberIds.length;
+    const memberIds: string[] = [];
     const shares: number[] = [];
     let totalShares = 0;
-    countMap.forEach((shareCount, memberId) => {
-      members.push(memberId);
+    for (let i = 0; i < sortedMemberIds.length; i++) {
+      const memberId = sortedMemberIds[i];
+      const shareCount = countMap.get(memberId);
+      if (shareCount === undefined) {
+        throw new Error('Share count is undefined');
+      }
+      memberIds.push(memberId);
       shares.push(shareCount);
       totalShares += shareCount;
-    });
-    const memberCount = members.length;
-    return { members, shares, memberCount, totalShares };
+    }
+    return { memberIds, shares, memberCount, totalShares };
   }
 
+  /**
+   * Given an array of member share count entries, return sorted array of member ids and a corresponding array of share counts
+   * @param shareCountByMemberId
+   * @returns
+   */
   public static shareCountsArrayToSortedArrays(
     shareCountByMemberId: Array<IMemberShareCount>
   ): ISortedMemberShareCountArrays {
-    const members: string[] = [];
+    const sortedMemberIds = shareCountByMemberId.map((s) => s.memberId).sort();
+    const memberCount = sortedMemberIds.length;
+    const memberIds: string[] = [];
     const shares: number[] = [];
     let totalShares = 0;
-    for (let i = 0; i < shareCountByMemberId.length; i++) {
-      const shareCount = shareCountByMemberId[i];
-      members.push(shareCount.memberId);
-      shares.push(shareCount.shares);
-      totalShares += shareCount.shares;
+    for (let i = 0; i < sortedMemberIds.length; i++) {
+      const memberId = sortedMemberIds[i];
+      const shareCount = shareCountByMemberId.find(
+        (s) => s.memberId === memberId
+      )?.shares;
+      if (shareCount === undefined) {
+        throw new Error('Share count is undefined');
+      }
+      memberIds.push(memberId);
+      shares.push(shareCount);
+      totalShares += shareCount;
     }
-    const memberCount = members.length;
-    return { members, shares, memberCount, totalShares };
+    return { memberIds, shares, memberCount, totalShares };
   }
 
+  /**
+   * Convert a map of member ids to share counts to an array of member share count entries
+   * @param countMap
+   * @returns
+   */
   public static shareCountsMapToCountEntries(
     countMap: Map<string, number>
   ): Array<IMemberShareCount> {
     const entries: Array<IMemberShareCount> = [];
-    countMap.forEach((shareCount, memberId) => {
-      entries.push({ memberId, shares: shareCount });
+    countMap.forEach((shares, memberId) => {
+      entries.push({ memberId, shares: shares });
     });
     return entries;
   }
 
+  /**
+   * Given an array of memberIds and a corresponding array of share counts, return a map of member ids to share counts
+   * @param memberIds
+   * @param shares
+   * @returns
+   */
   public static shareCountsArrayToMap(
-    members: string[],
+    memberIds: string[],
     shares: number[]
   ): Map<string, number> {
     const countMap: Map<string, number> = new Map();
-    for (let i = 0; i < members.length; i++) {
-      const memberId = members[i];
+    for (let i = 0; i < memberIds.length; i++) {
+      const memberId = memberIds[i];
       const shareCount = shares[i];
       countMap.set(memberId, shareCount);
     }
@@ -251,8 +285,8 @@ export default abstract class StaticHelpersSealing {
     const sharesByMemberId = new Map<string, Shares>();
     const encryptedSharesByMemberId = new Map<string, EncryptedShares>();
     let shareIndex = 0;
-    for (let i = 0; i < sortedMembers.members.length; i++) {
-      const memberId = sortedMembers.members[i];
+    for (let i = 0; i < sortedMembers.memberIds.length; i++) {
+      const memberId = sortedMembers.memberIds[i];
       const member = members.find((v) => v.id === memberId);
       if (!member) {
         throw new Error('Member not found');
@@ -319,7 +353,7 @@ export default abstract class StaticHelpersSealing {
     );
     let shareIndex = 0;
     for (let i = 0; i < sortedMembers.memberCount; i++) {
-      const memberId = sortedMembers.members[i];
+      const memberId = sortedMembers.memberIds[i];
       const member = members.find((v) => v.id === memberId);
       if (!member) {
         throw new Error('Member not found');

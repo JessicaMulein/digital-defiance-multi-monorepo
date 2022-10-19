@@ -58,7 +58,7 @@ export interface IMemberShareCount {
 }
 
 export interface ISortedMemberShareCountArrays {
-  members: string[];
+  memberIds: string[];
   shares: number[],
   memberCount: number;
   totalShares: number;
