@@ -8,6 +8,12 @@ import BN = require('bn.js');
 import StaticHelpersKeyPair from './staticHelpers.keypair';
 
 export default abstract class StaticHelpersElliptic {
+  /**
+   * Appears to conver a number to an array of its bytes
+   * @param arr
+   * @param len
+   * @returns
+   */
   public static constructLength(arr: number[], len: number) {
     if (len < 0x80) {
       arr.push(len);

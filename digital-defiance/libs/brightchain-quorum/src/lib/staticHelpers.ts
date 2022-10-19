@@ -12,7 +12,6 @@ import QuorumMemberType from './quorumMemberType';
  * - Uses crypto for RSA key generation, encryption/decryption
  */
 export default abstract class StaticHelpers {
-
   /**
    * Generates the given number of random values of the specified number of bits, with an optional seed.
    * @param n number of values
@@ -27,7 +26,7 @@ export default abstract class StaticHelpers {
   ): bigint[] {
     const rand = new Rand(seed);
     const values: bigint[] = new Array<bigint>(n);
-    const maxValue = BigInt(2) ** BigInt(y + 1) - BigInt(1);
+    const maxValue = BigInt(2) ** BigInt(y) - BigInt(1);
     // 2^y - 1 = maxValue
     // 2^8 - 1 = 255
     // 2^11 - 1 = 2047
