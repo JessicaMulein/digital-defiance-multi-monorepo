@@ -3,6 +3,7 @@ import QuorumMember from './member';
 import { ec as EC } from 'elliptic';
 import StaticHelpers from './staticHelpers.checksum';
 import StaticHelpersElliptic from './staticHelpers.elliptic';
+import { IMemberShareCount } from './interfaces';
 
 export default class QuorumDataRecord {
   public readonly id: string;
@@ -23,7 +24,7 @@ export default class QuorumDataRecord {
     memberIDs: string[],
     sharesRequired: number,
     encryptedData: Buffer,
-    shareRatiosByMemberId?: Array<{ memberId: string; ratio: number }>,
+    shareCountsByMemberId?: Array<IMemberShareCount>,
     checksum?: Buffer,
     signature?: EC.Signature,
     id?: string,
@@ -46,9 +47,9 @@ export default class QuorumDataRecord {
       throw new Error('Shares required must be at least 2');
     }
     // the share radio member ids must be a subset of the member ids
-    if (shareRatiosByMemberId) {
-      for (let i = 0; i < shareRatiosByMemberId.length; i++) {
-        const shareRatio = shareRatiosByMemberId[i];
+    if (shareCountsByMemberId) {
+      for (let i = 0; i < shareCountsByMemberId.length; i++) {
+        const shareRatio = shareCountsByMemberId[i];
         if (!memberIDs.includes(shareRatio.memberId)) {
           throw new Error('Share ratio member ID not found in member IDs');
         }

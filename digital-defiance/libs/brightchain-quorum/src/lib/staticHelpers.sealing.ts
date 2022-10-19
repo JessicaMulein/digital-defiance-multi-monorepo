@@ -3,7 +3,12 @@ import * as secrets from 'secrets.js-34r7h';
 import { Shares } from 'secrets.js-34r7h';
 import QuorumDataRecord from './quorumDataRecord';
 import QuorumMember from './member';
-import { IQoroumSealResults, EncryptedShares } from './interfaces';
+import {
+  IQoroumSealResults,
+  EncryptedShares,
+  IMemberShareCount,
+  ISortedMemberShareCountArrays,
+} from './interfaces';
 import StaticHelpers from './staticHelpers.checksum';
 import StaticHelpersKeyPair from './staticHelpers.keypair';
 import StaticHelpersSymmetric from './staticHelpers.symmetric';
@@ -30,6 +35,58 @@ export default abstract class StaticHelpersSealing {
     secrets.init(bits, config.typeCSPRNG);
   }
 
+  public static determineShareCountsByMemberId(
+    amongstMemberIds: string[],
+    shareCountByMemberId?: Array<IMemberShareCount>
+  ): Map<string, number> {
+    const sharesByMemberId: Map<string, number> = new Map();
+    for (let i = 0; i < amongstMemberIds.length; i++) {
+      const memberId = amongstMemberIds[i];
+      const sharesForMember =
+        shareCountByMemberId?.find((s) => s.memberId === memberId)?.shares ?? 1;
+      if (sharesForMember < 1) {
+        throw new Error('Share ratio must be greater than or equal to 1');
+      }
+      sharesByMemberId.set(memberId, sharesForMember);
+    }
+    return sharesByMemberId;
+  }
+
+  public static shareCountsMapToSortedArrays(
+    countMap: Map<string, number>
+  ): ISortedMemberShareCountArrays {
+    const members: string[] = [];
+    const shares: number[] = [];
+    countMap.forEach((shareCount, memberId) => {
+      members.push(memberId);
+      shares.push(shareCount);
+    });
+    return { members, shares };
+  }
+
+  public static shareCountsMapToCountEntries(
+    countMap: Map<string, number>
+  ): Array<IMemberShareCount> {
+    const entries: Array<IMemberShareCount> = [];
+    countMap.forEach((shareCount, memberId) => {
+      entries.push({ memberId, shares: shareCount });
+    });
+    return entries;
+  }
+
+  public static shareCountsArrayToMap(
+    members: string[],
+    shares: number[]
+  ): Map<string, number> {
+    const countMap: Map<string, number> = new Map();
+    for (let i = 0; i < members.length; i++) {
+      const memberId = members[i];
+      const shareCount = shares[i];
+      countMap.set(memberId, shareCount);
+    }
+    return countMap;
+  }
+
   /**
    * Using shamir's secret sharing, split the given data into the given number of shares
    * @param data
@@ -41,7 +98,7 @@ export default abstract class StaticHelpersSealing {
     agent: QuorumMember,
     data: T,
     amongstMemberIds: string[],
-    shareCountByMemberId?: Array<{ memberId: string; shareCount: number }>,
+    shareCountByMemberId?: Array<IMemberShareCount>,
     threshold?: number
   ): IQoroumSealResults {
     if (amongstMemberIds.length < 2) {
@@ -59,36 +116,21 @@ export default abstract class StaticHelpersSealing {
     if (sharesRequired < 2) {
       throw new Error('At least two shares/members are required');
     }
-    const sharesByMemberId: Map<string, number> = new Map();
-    for (let i = 0; i < amongstMemberIds.length; i++) {
-      const memberId = amongstMemberIds[i];
-      const sharesForMember =
-        shareCountByMemberId?.find((s) => s.memberId === memberId)
-          ?.shareCount ?? 1;
-      if (sharesForMember < 1) {
-        throw new Error('Share ratio must be greater than or equal to 1');
-      }
-      sharesByMemberId.set(memberId, sharesForMember);
-    }
-    const totalShares = Array.from(sharesByMemberId.values()).reduce(
-      (a, b) => a + b,
-      0
-    );
-    const shareCountsByMemberIdArray = Array.from(sharesByMemberId.entries());
-    const shareCounts: Array<{ memberId: string; ratio: number }> =
-      shareCountsByMemberIdArray.map(([memberId, shareRatio]) => {
-        return {
-          memberId,
-          ratio: shareRatio,
-        };
-      });
+    const sharesByMemberIdMap: Map<string, number> =
+      StaticHelpersSealing.determineShareCountsByMemberId(
+        amongstMemberIds,
+        shareCountByMemberId
+      );
 
     const encryptedData = StaticHelpersSymmetric.symmetricEncrypt<T>(data);
 
     // TODO: consider computing the number of shares a user needs if you want to consider them "required"
     // eg if you normally would have say 3 shares and require 2 but require that one of the members is a specific one
     // alice: 1 share, bob (required): 3 shares, carol: 1 share = total 5 shares
-
+    const totalShares = Array.from(sharesByMemberIdMap.values()).reduce(
+      (a, b) => a + b,
+      0
+    );
     // split the key using shamir's secret sharing
     StaticHelpersSealing.reinitSecrets(amongstMemberIds.length);
     const keyShares = secrets.share(
@@ -102,7 +144,7 @@ export default abstract class StaticHelpersSealing {
       amongstMemberIds,
       sharesRequired,
       encryptedData.encryptedData,
-      shareCounts
+      StaticHelpersSealing.shareCountsMapToCountEntries(sharesByMemberIdMap)
     );
     return {
       keyShares: keyShares,
@@ -140,12 +182,17 @@ export default abstract class StaticHelpersSealing {
   ): Map<string, EncryptedShares> {
     const sortedMembers = members.sort((a, b) => a.id.localeCompare(b.id));
     const sharesByMemberId = new Map<string, Shares>();
+    const shareCountsByMemberId: Map<string, number> =
+      StaticHelpersSealing.determineShareCountsByMemberId(
+        members.map((v) => v.id),
+        shareCountByMemberId
+      );
     const encryptedSharesByMemberId = new Map<string, EncryptedShares>();
     let shareIndex = 0;
     for (let i = 0; i < sortedMembers.length; i++) {
       const member = sortedMembers[i];
       const shareCount =
-        shareCountByMemberId?.find((s) => s.memberId === member.id)
+        shareCountsByMemberId.find((s) => s.memberId === member.id)
           ?.shareCount ?? 1;
       const sharesForMember = shares.slice(shareIndex, shareIndex + shareCount);
       sharesByMemberId.set(member.id, sharesForMember);

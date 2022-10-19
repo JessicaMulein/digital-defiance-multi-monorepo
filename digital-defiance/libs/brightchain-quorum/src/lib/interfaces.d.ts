@@ -52,6 +52,16 @@ export interface IQoroumSealResults {
   record: QuorumDataRecord;
 }
 
+export interface IMemberShareCount {
+  memberId: string;
+  shares: number;
+}
+
+export interface ISortedMemberShareCountArrays {
+  members: string[];
+  shares: number[]
+}
+
 export interface ISymmetricEncryptionResults {
   encryptedData: Buffer;
   key: Buffer;
