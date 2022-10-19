@@ -61,7 +61,8 @@ export default abstract class StaticHelpersKeyPair {
   /**
    * Helper to convert the bits to bytes for the symmetric key size
    */
-  public static readonly SymmetricKeyBytes = StaticHelpersKeyPair.SymmetricKeyBits / 8;
+  public static readonly SymmetricKeyBytes =
+    StaticHelpersKeyPair.SymmetricKeyBits / 8;
 
   /**
    * The symmetric algorithm data mode (CBC/CTR, etc)
@@ -209,12 +210,12 @@ export default abstract class StaticHelpersKeyPair {
     const keyPairResult = generateKeyPairSync('rsa', keyPairOptions);
     const derivedKey = StaticHelpersPbkdf2.deriveKeyFromPassword(password);
     const encryptedPrivateKey = StaticHelpersSymmetric.symmetricEncrypt(
-      Buffer.from(keyPairResult.privateKey, 'ASCII'),
+      Buffer.from(keyPairResult.privateKey, 'utf8'),
       derivedKey.hash,
       true
     );
     return {
-      publicKey: Buffer.from(keyPairResult.publicKey, 'ASCII'),
+      publicKey: Buffer.from(keyPairResult.publicKey, 'utf8'),
       privateKey: Buffer.concat([
         StaticHelpers.valueToBuffer(derivedKey.salt.length),
         StaticHelpers.valueToBuffer(derivedKey.iterations),
@@ -234,7 +235,8 @@ export default abstract class StaticHelpersKeyPair {
     privateKey: Buffer,
     password: string
   ): Buffer {
-    const keyComponents = StaticHelpersKeyPair.extractDataKeyComponents(privateKey);
+    const keyComponents =
+      StaticHelpersKeyPair.extractDataKeyComponents(privateKey);
     const derivedKey = StaticHelpersPbkdf2.deriveKeyFromPassword(
       password,
       keyComponents.salt,
@@ -532,7 +534,10 @@ export default abstract class StaticHelpersKeyPair {
     encryptedData: Buffer,
     key: Buffer
   ): Buffer {
-    const ivBuffer = encryptedData.slice(0, StaticHelpersKeyPair.SymmetricKeyIvBytes);
+    const ivBuffer = encryptedData.slice(
+      0,
+      StaticHelpersKeyPair.SymmetricKeyIvBytes
+    );
     const ciphertextBuffer = encryptedData.slice(
       StaticHelpersKeyPair.SymmetricKeyIvBytes
     );
@@ -553,7 +558,10 @@ export default abstract class StaticHelpersKeyPair {
    */
   public static symmetricDecrypt<T>(encryptedData: Buffer, key: Buffer): T {
     return JSON.parse(
-      StaticHelpersSymmetric.symmetricDecryptBuffer(encryptedData, key).toString()
+      StaticHelpersSymmetric.symmetricDecryptBuffer(
+        encryptedData,
+        key
+      ).toString()
     ) as T;
   }
 
