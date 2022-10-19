@@ -1,7 +1,6 @@
-import { EncryptedShares, IMemberShareCount } from './interfaces';
+import { IMemberShareCount } from './interfaces';
 import QuorumMember from './member';
 import QuorumMemberType from './quorumMemberType';
-import StaticHelpers from './staticHelpers.checksum';
 import StaticHelpersSealing from './staticHelpers.sealing';
 
 describe('brightchainQuorum', () => {
@@ -21,13 +20,38 @@ describe('brightchainQuorum', () => {
   });
   it('should determine the correct number of shares when additional information is given', () => {
     const memberIds = ['member1', 'member2', 'member3', 'member4'];
+    const member1Shares = Math.ceil(Math.random() * 10);
+    const member2Shares = Math.ceil(Math.random() * 10);
+    const member3Shares = Math.ceil(Math.random() * 10);
+    const member4Shares = Math.ceil(Math.random() * 10);
+    const additionalInformation: Array<IMemberShareCount> = [
+      { memberId: 'member1', shares: member1Shares },
+      { memberId: 'member2', shares: member2Shares },
+      { memberId: 'member3', shares: member3Shares },
+      { memberId: 'member4', shares: member4Shares },
+    ];
+    const sharesByMemberId =
+      StaticHelpersSealing.determineShareCountsByMemberId(
+        memberIds,
+        additionalInformation
+      );
+    expect(sharesByMemberId.size).toEqual(4);
+    expect(sharesByMemberId.get('member1')).toEqual(member1Shares);
+    expect(sharesByMemberId.get('member2')).toEqual(member2Shares);
+    expect(sharesByMemberId.get('member3')).toEqual(member3Shares);
+    expect(sharesByMemberId.get('member4')).toEqual(member4Shares);
+  });
+  it('should determine the correct number of shares when partial additional information is given', () => {
+    const memberIds = ['member1', 'member2', 'member3', 'member4'];
+    const member2Shares = Math.ceil(Math.random() * 10);
+    const member3Shares = Math.ceil(Math.random() * 10);
     const shareCountByMemberId = undefined;
     const additionalInformation: Map<string, number> = new Map<
       string,
       number
     >();
-    additionalInformation.set('member2', 2);
-    additionalInformation.set('member3', 3);
+    additionalInformation.set('member2', member2Shares);
+    additionalInformation.set('member3', member3Shares);
     const sharesByMemberId =
       StaticHelpersSealing.determineShareCountsByMemberId(
         memberIds,
@@ -35,9 +59,24 @@ describe('brightchainQuorum', () => {
       );
     expect(sharesByMemberId.size).toEqual(4);
     expect(sharesByMemberId.get('member1')).toEqual(1);
-    expect(sharesByMemberId.get('member2')).toEqual(2);
-    expect(sharesByMemberId.get('member3')).toEqual(3);
+    expect(sharesByMemberId.get('member2')).toEqual(member2Shares);
+    expect(sharesByMemberId.get('member3')).toEqual(member3Shares);
     expect(sharesByMemberId.get('member4')).toEqual(1);
+  });
+  it('should throw when a bad member id is given in the additional information', () => {
+    const memberIds = ['member1', 'member2', 'member3', 'member4'];
+    const additionalInformation: Array<IMemberShareCount> = [
+      {
+        memberId: 'member5',
+        shares: 9,
+      },
+    ];
+    expect(() => {
+      StaticHelpersSealing.determineShareCountsByMemberId(
+        memberIds,
+        additionalInformation
+      );
+    }).toThrow();
   });
   it('should not lose information converting betweeen map and arrays', () => {
     const memberIds = ['member1', 'member2', 'member3', 'member4'];

@@ -49,16 +49,16 @@ export default abstract class StaticHelpersSealing {
     if (shareCountByMemberId) {
       // ensure every entry in shareCountByMemberId has a corresponding member id and that the share count is valid
       for (let i = 0; i < shareCountByMemberId.length; i++) {
-        const shareCount = shareCountByMemberId[i];
-        if (!amongstMemberIds.includes(shareCount.memberId)) {
+        const shares = shareCountByMemberId[i];
+        if (!amongstMemberIds.includes(shares.memberId)) {
           throw new Error(
-            `Member id ${shareCount.memberId} not found in list of member ids`
+            `Member id ${shares.memberId} not found in list of member ids`
           );
         }
-        if (shareCount.shares < 1) {
-          throw new Error(`Share count ${shareCount.shares} is less than 1`);
+        if (shares.shares < 1) {
+          throw new Error(`Share count ${shares.shares} is less than 1`);
         }
-        totalShares += shareCount.shares;
+        totalShares += shares.shares;
       }
     } else {
       // if no share count array is provided, assume each member gets 1 share
@@ -85,12 +85,14 @@ export default abstract class StaticHelpersSealing {
     const sharesByMemberId: Map<string, number> = new Map();
     for (let i = 0; i < amongstMemberIds.length; i++) {
       const memberId = amongstMemberIds[i];
-      const sharesForMember =
-        shareCountByMemberId?.find((s) => s.memberId === memberId)?.shares ?? 1;
-      if (sharesForMember < 1) {
+      const sharesForMember = shareCountByMemberId?.find(
+        (s) => s.memberId === memberId
+      );
+      const shareCount = sharesForMember?.shares || 1;
+      if (shareCount < 1) {
         throw new Error('Share count must be greater than or equal to 1');
       }
-      sharesByMemberId.set(memberId, sharesForMember);
+      sharesByMemberId.set(memberId, shareCount);
     }
     return sharesByMemberId;
   }
