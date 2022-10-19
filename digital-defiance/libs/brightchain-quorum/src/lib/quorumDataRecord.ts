@@ -51,7 +51,7 @@ export default class QuorumDataRecord {
       for (let i = 0; i < shareCountsByMemberId.length; i++) {
         const shareRatio = shareCountsByMemberId[i];
         if (!memberIDs.includes(shareRatio.memberId)) {
-          throw new Error('Share ratio member ID not found in member IDs');
+          throw new Error('Share count member ID not found in member IDs');
         }
       }
     }

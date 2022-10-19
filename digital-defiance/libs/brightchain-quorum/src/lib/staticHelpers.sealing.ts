@@ -34,17 +34,61 @@ export default abstract class StaticHelpersSealing {
     secrets.init(bits, config.typeCSPRNG);
   }
 
+  /**
+   * Given a list of member ids and a share count array, ensure that all entries in the array correspond with a member id and that the share counts are valid
+   * @param amongstMemberIds
+   * @param shareCountByMemberId
+   * @throws Error if any member id is not found in the list of member ids or if any share count is less than 1
+   * @returns the total number of shares
+   */
+  public static validateShareCountArrayReturnTotalShares(
+    amongstMemberIds: string[],
+    shareCountByMemberId?: Array<IMemberShareCount>
+  ): number {
+    let totalShares = 0;
+    if (shareCountByMemberId) {
+      // ensure every entry in shareCountByMemberId has a corresponding member id and that the share count is valid
+      for (let i = 0; i < shareCountByMemberId.length; i++) {
+        const shareCount = shareCountByMemberId[i];
+        if (!amongstMemberIds.includes(shareCount.memberId)) {
+          throw new Error(
+            `Member id ${shareCount.memberId} not found in list of member ids`
+          );
+        }
+        if (shareCount.shares < 1) {
+          throw new Error(`Share count ${shareCount.shares} is less than 1`);
+        }
+        totalShares += shareCount.shares;
+      }
+    } else {
+      // if no share count array is provided, assume each member gets 1 share
+      totalShares = amongstMemberIds.length;
+    }
+    return totalShares;
+  }
+
+  /**
+   * Given a list of members and an optional list of share counts, determine how many shares each member should get
+   * Each member is otherwise given 1 share unless a higher number is found in the array
+   * @param amongstMemberIds
+   * @param shareCountByMemberId
+   * @returns
+   */
   public static determineShareCountsByMemberId(
     amongstMemberIds: string[],
     shareCountByMemberId?: Array<IMemberShareCount>
   ): Map<string, number> {
+    StaticHelpersSealing.validateShareCountArrayReturnTotalShares(
+      amongstMemberIds,
+      shareCountByMemberId
+    );
     const sharesByMemberId: Map<string, number> = new Map();
     for (let i = 0; i < amongstMemberIds.length; i++) {
       const memberId = amongstMemberIds[i];
       const sharesForMember =
         shareCountByMemberId?.find((s) => s.memberId === memberId)?.shares ?? 1;
       if (sharesForMember < 1) {
-        throw new Error('Share ratio must be greater than or equal to 1');
+        throw new Error('Share count must be greater than or equal to 1');
       }
       sharesByMemberId.set(memberId, sharesForMember);
     }
@@ -267,8 +311,11 @@ export default abstract class StaticHelpersSealing {
       shareCountsByMemberId
     );
 
+    if (encryptedShares.length !== sortedMembers.totalShares) {
+      throw new Error('The number of encrypted shares does not match');
+    }
     const decryptedShares: Array<string> = new Array<string>(
-      sortedMembers.totalShares
+      encryptedShares.length
     );
     let shareIndex = 0;
     for (let i = 0; i < sortedMembers.memberCount; i++) {
