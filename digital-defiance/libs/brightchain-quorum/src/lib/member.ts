@@ -124,16 +124,12 @@ export default class QuorumMember extends QuorumMemberData {
     dataKeyPair?: ISimpleKeyPairBuffer,
     id?: string
   ) {
-    const thisId = id ?? uuid.v4();
-    if (!uuid.validate(thisId)) {
-      throw new Error('Invalid quorum member ID');
-    }
     super(
       name,
       contactEmail,
       undefined, // dateCreated
       undefined, // dateUpdates
-      thisId
+      id
     );
     this.memberType = memberType;
     this._signingKeyPair = null;
@@ -226,7 +222,9 @@ export default class QuorumMember extends QuorumMemberData {
       type,
       name,
       contactEmail,
-      StaticHelpersKeyPair.rebuildSigningKeyPairResultFromKeyPair(keyPair.signing),
+      StaticHelpersKeyPair.rebuildSigningKeyPairResultFromKeyPair(
+        keyPair.signing
+      ),
       keyPair.data,
       newId
     );
