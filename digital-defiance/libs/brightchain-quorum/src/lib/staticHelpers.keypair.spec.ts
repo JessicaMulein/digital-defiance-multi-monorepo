@@ -1,4 +1,6 @@
 import { mnemonicToEntropy, validateMnemonic } from 'bip39';
+import QuorumMember from './member';
+import QuorumMemberType from './quorumMemberType';
 import StaticHelpersKeyPair from './staticHelpers.keypair';
 
 describe('brightchainQuorum', () => {
@@ -103,5 +105,18 @@ describe('brightchainQuorum', () => {
     expect(
       StaticHelpersKeyPair.challengeDataKeyPair(keyPair, password)
     ).toBeTruthy();
+  });
+  it("should throw an error when trying to get a key when we don't have one", () => {
+    const member = new QuorumMember(
+      QuorumMemberType.User,
+      'alice',
+      'alice@example.com',
+    );
+    expect(() => member.dataKeyPair).toThrowError();
+    expect(() => member.signingKeyPair).toThrowError();
+    expect(() => member.dataPrivateKey).toThrowError();
+    expect(() => member.dataPublicKey).toThrowError();
+    expect(() => member.signingPrivateKey).toThrowError();
+    expect(() => member.signingPublicKey).toThrowError();
   });
 });

@@ -145,14 +145,23 @@ export default class QuorumMember extends QuorumMemberData {
    */
   public loadSigningKeyPair(keyPair: ISimpleKeyPairBuffer) {
     const curve = new EC(StaticHelpersKeyPair.DefaultECMode);
-    const kp = curve.keyFromPrivate(keyPair.privateKey.toString('hex'), 'hex');
-    if (!kp.validate()) {
+    let valid = false;
+    try {
+      const kp = curve.keyFromPrivate(
+        keyPair.privateKey.toString('hex'),
+        'hex'
+      );
+      valid = kp.validate().result;
+      this._signingKeyPair = {
+        ecCurve: curve,
+        keyPair: kp,
+      };
+    } catch (e) {
+      valid = false;
+    }
+    if (!valid) {
       throw new Error('Invalid key pair');
     }
-    this._signingKeyPair = {
-      ecCurve: curve,
-      keyPair: kp,
-    };
   }
 
   /**

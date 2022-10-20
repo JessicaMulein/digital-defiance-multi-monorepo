@@ -1,5 +1,9 @@
+import exp = require('constants');
+import { randomUUID } from 'crypto';
 import QuorumMember from './member';
 import QuorumMemberType from './quorumMemberType';
+import StaticHelpers from './staticHelpers';
+import StaticHelpersKeyPair from './staticHelpers.keypair';
 describe('brightchainQuorum', () => {
   it('should sign and verify a message for a member', () => {
     const member = QuorumMember.newMember(
@@ -74,6 +78,7 @@ describe('brightchainQuorum', () => {
       'Bob Smith',
       'bob@example.com'
     );
+    expect(member.hasDataPrivateKey).toEqual(true);
     expect(member.hasDataKeyPair).toEqual(true);
     const noKeyMember = new QuorumMember(
       QuorumMemberType.User,
@@ -81,6 +86,7 @@ describe('brightchainQuorum', () => {
       'charlie@example.com'
     );
     expect(noKeyMember.hasDataKeyPair).toEqual(false);
+    expect(noKeyMember.hasDataPrivateKey).toEqual(false);
   });
   it('should check whether a user has a signing key pair', () => {
     const member = QuorumMember.newMember(
@@ -89,11 +95,51 @@ describe('brightchainQuorum', () => {
       'alice@example.com'
     );
     expect(member.hasSigningKeyPair).toEqual(true);
+    expect(member.hasSigningPrivateKey).toEqual(true);
     const noKeyMember = new QuorumMember(
       QuorumMemberType.User,
       'Bob Smith',
       'bob@example.com'
     );
     expect(noKeyMember.hasSigningKeyPair).toEqual(false);
+    expect(noKeyMember.hasSigningPrivateKey).toEqual(false);
+  });
+  it('should throw with an invalid signing key', () => {
+    const newId = randomUUID();
+    const keyPair = StaticHelpersKeyPair.generateMemberKeyPairs(newId);
+    expect(() => {
+      new QuorumMember(
+        QuorumMemberType.User,
+        'alice',
+        'alice@example.com',
+        {
+          publicKey: keyPair.signing.publicKey,
+          privateKey: Buffer.from([]),
+        },
+        {
+          publicKey: keyPair.data.publicKey,
+          privateKey: keyPair.data.privateKey,
+        }
+      )
+    }).toThrowError('Invalid key pair');
+  });
+  it('should throw with an invalid data key', () => {
+    const newId = randomUUID();
+    const keyPair = StaticHelpersKeyPair.generateMemberKeyPairs(newId);
+    expect(() => {
+      new QuorumMember(
+        QuorumMemberType.User,
+        'alice',
+        'alice@example.com',
+        {
+          publicKey: keyPair.signing.publicKey,
+          privateKey: keyPair.signing.privateKey,
+        },
+        {
+          publicKey: keyPair.data.publicKey,
+          privateKey: Buffer.from([]),
+        }
+      )
+      }).toThrowError('Invalid key pair');
   });
 });
