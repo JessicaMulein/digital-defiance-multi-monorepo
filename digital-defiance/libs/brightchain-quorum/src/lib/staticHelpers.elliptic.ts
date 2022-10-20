@@ -27,7 +27,7 @@ export default abstract class StaticHelpersElliptic {
     arr.push(len);
   }
 
-  public static getLength(buf: number[], p: { place: number }) {
+  public static getLength(buf: number[], p: Position) {
     const initial = buf[p.place++];
     if (!(initial & 0x80)) {
       return initial;
