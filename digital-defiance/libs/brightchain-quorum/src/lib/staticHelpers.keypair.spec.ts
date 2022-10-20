@@ -4,6 +4,7 @@ import QuorumMemberType from './quorumMemberType';
 import StaticHelpersKeyPair from './staticHelpers.keypair';
 import * as uuid from 'uuid';
 import { ec as EC } from 'elliptic';
+import { ISimpleKeyPairBuffer } from './interfaces';
 
 describe('brightchainQuorum', () => {
   it('should generate a keypair and seed', () => {
@@ -121,14 +122,35 @@ describe('brightchainQuorum', () => {
     expect(() => member.signingPrivateKey).toThrowError();
     expect(() => member.signingPublicKey).toThrowError();
   });
-  it("should fail to get the signing private key when we have a public key only", () => {
-    const memberId = uuid.v4();
-    const keyPairs = StaticHelpersKeyPair.generateMemberKeyPairs(memberId);
-    const signingPublicKey = Buffer.from(keyPairs.signing.getPublic('hex'), 'hex');
-    const member = new QuorumMember(QuorumMemberType.User, 'alice', 'alice@example.com', {
-      publicKey: signingPublicKey,
+  it('should fail to get the signing private key when we have a public key only', () => {
+    const alice = QuorumMember.newMember(
+      QuorumMemberType.User,
+      'alice',
+      'alice@example.com'
+    );
+    const curve = new EC(StaticHelpersKeyPair.DefaultECMode);
+    const pubOnly = curve.keyFromPublic(alice.signingPublicKey, 'hex');
+    // take a perfectly good user and make her bad. remove her signing private key
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    alice._signingKeyPair = pubOnly;
+    expect(() => alice.signingPrivateKey).toThrow();
+    expect(alice.hasSigningPrivateKey).toBeFalsy();
+  });
+  it('should fail to get the data private key when we have a public key only', () => {
+    const alice = QuorumMember.newMember(
+      QuorumMemberType.User,
+      'alice',
+      'alice@example.com'
+    );
+    // take a perfectly good user and make her bad. remove her data private key
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    alice._dataKeyPair = {
+      publicKey: alice.dataPublicKey,
       privateKey: Buffer.alloc(0),
-    }, keyPairs.data);
-    expect(() => member.signingPrivateKey).toThrowError();
+    };
+    expect(() => alice.dataPrivateKey).toThrow();
+    expect(alice.hasDataPrivateKey).toBeFalsy();
   });
 });

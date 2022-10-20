@@ -16,7 +16,7 @@ export default abstract class StaticHelpersPbkdf2 {
   /**
    * Number of pbkdf2 iterations per second when hashing a password.
    */
-  public static readonly Pbkdf2IterationsPerSecond: number = 1310000;
+  public static readonly Pbkdf2IterationsPerSecond: number = 1308000;
 
   /**
    * Generate an options object for pbkdf2
