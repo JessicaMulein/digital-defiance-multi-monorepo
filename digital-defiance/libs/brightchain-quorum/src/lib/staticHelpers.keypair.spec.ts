@@ -90,7 +90,7 @@ describe('brightchainQuorum', () => {
   });
   it('should encrypt and decrypt an rsa private key', () => {
     const password = 'password';
-    const keyPair = StaticHelpersKeyPair.generateRsaKeyPair(password);
+    const keyPair = StaticHelpersKeyPair.generateDataKeyPair(password);
     const decryptedKey = StaticHelpersKeyPair.decryptDataPrivateKey(
       keyPair.privateKey,
       password
@@ -99,7 +99,9 @@ describe('brightchainQuorum', () => {
   });
   it('should generate an rsa keypair and then challenge the key', () => {
     const password = 'password';
-    const keyPair = StaticHelpersKeyPair.generateRsaKeyPair(password);
-    expect(StaticHelpersKeyPair.challengeRsaKeyPair(keyPair, password)).toBeTruthy();
+    const keyPair = StaticHelpersKeyPair.generateDataKeyPair(password);
+    expect(
+      StaticHelpersKeyPair.challengeDataKeyPair(keyPair, password)
+    ).toBeTruthy();
   });
 });

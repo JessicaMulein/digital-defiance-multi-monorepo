@@ -302,7 +302,7 @@ export default abstract class StaticHelpersSealing {
         throw new Error('No shares found for member');
       }
       const encryptedSharesForMember: EncryptedShares = new Array<string>(
-        sharesForMember.length
+        shareCount
       );
       for (let j = 0; j < sharesForMember.length; j++) {
         const share = sharesForMember[j];
@@ -315,6 +315,7 @@ export default abstract class StaticHelpersSealing {
             encryptedKeyShare
           ).toString('hex');
       }
+      encryptedSharesByMemberId.set(member.id, encryptedSharesForMember);
     }
 
     return encryptedSharesByMemberId;

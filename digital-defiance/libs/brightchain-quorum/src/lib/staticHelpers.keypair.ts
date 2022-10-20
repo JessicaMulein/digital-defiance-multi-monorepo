@@ -7,7 +7,6 @@ import {
   mnemonicToEntropy,
   entropyToMnemonic,
 } from 'bip39';
-import QuorumDataRecord from './quorumDataRecord';
 import QuorumMember from './member';
 import {
   createCipheriv,
@@ -19,9 +18,8 @@ import {
   privateDecrypt,
   constants as cryptoConstants,
   RsaPublicKey,
-  createHash,
+  KeyPairSyncResult,
 } from 'crypto';
-import QuorumMemberType from './quorumMemberType';
 import {
   IDataKeyComponents,
   IDataAndSigningKeys,
@@ -31,7 +29,6 @@ import {
   ISealResults,
 } from './interfaces';
 import StaticHelpersPbkdf2 from './staticHelpers.pbkdf2';
-import StaticHelpersChecksum from './staticHelpers.checksum';
 import StaticHelpers from './staticHelpers';
 import StaticHelpersSymmetric from './staticHelpers.symmetric';
 
@@ -205,7 +202,10 @@ export default abstract class StaticHelpersKeyPair {
    * @param password
    * @returns
    */
-  public static generateRsaKeyPair(password: string): ISimpleKeyPairBuffer {
+  public static generateDataKeyPair(
+    password: string,
+    loopPrevention?: number
+  ): ISimpleKeyPairBuffer {
     const keyPairOptions = StaticHelpersKeyPair.DataKeyPairOptions;
     const keyPairResult = generateKeyPairSync('rsa', keyPairOptions);
     const derivedKey = StaticHelpersPbkdf2.deriveKeyFromPassword(password);
@@ -214,14 +214,34 @@ export default abstract class StaticHelpersKeyPair {
       derivedKey.hash,
       true
     );
+    const privateKeyData = Buffer.concat([
+      StaticHelpers.valueToBuffer(derivedKey.salt.length),
+      StaticHelpers.valueToBuffer(derivedKey.iterations),
+      derivedKey.salt,
+      encryptedPrivateKey.encryptedData,
+    ]);
+
+    const kpBuffer: ISimpleKeyPairBuffer = {
+      publicKey: Buffer.from(keyPairResult.publicKey, 'utf8'),
+      privateKey: privateKeyData,
+    };
+
+    if (!StaticHelpersKeyPair.challengeDataKeyPair(kpBuffer, password)) {
+      const maxTries = 100;
+      if (loopPrevention !== undefined && loopPrevention > maxTries) {
+        throw new Error(
+          `Unable to generate a valid key pair after ${maxTries} tries.`
+        );
+      }
+      return StaticHelpersKeyPair.generateDataKeyPair(
+        password,
+        loopPrevention ? loopPrevention + 1 : 1
+      );
+    }
+
     return {
       publicKey: Buffer.from(keyPairResult.publicKey, 'utf8'),
-      privateKey: Buffer.concat([
-        StaticHelpers.valueToBuffer(derivedKey.salt.length),
-        StaticHelpers.valueToBuffer(derivedKey.iterations),
-        derivedKey.salt,
-        encryptedPrivateKey.encryptedData,
-      ]),
+      privateKey: privateKeyData,
     };
   }
 
@@ -266,8 +286,9 @@ export default abstract class StaticHelpersKeyPair {
     if (buf.length < saltLength + 8) {
       throw new Error('Buffer length mismatch');
     }
-    const salt = buf.slice(8, 8 + saltLength);
-    const data = buf.slice(8 + saltLength);
+    const uintArrOfBuf = Uint8Array.from(buf);
+    const salt: Buffer = Buffer.from(uintArrOfBuf.slice(8, 8 + saltLength));
+    const data: Buffer = Buffer.from(uintArrOfBuf.slice(8 + saltLength));
     return {
       salt,
       iterations,
@@ -281,7 +302,7 @@ export default abstract class StaticHelpersKeyPair {
    * @param password
    * @returns
    */
-  public static challengeRsaKeyPair(
+  public static challengeDataKeyPair(
     keyPair: ISimpleKeyPairBuffer,
     password: string
   ): boolean {
@@ -317,24 +338,56 @@ export default abstract class StaticHelpersKeyPair {
     }
   }
 
+  public static challengeSigningKeyPair(keyPair: EC.KeyPair): boolean {
+    try {
+      // generate a nonce
+      const nonce = randomBytes(32); // arbitrary length
+      // sign the nonce with the private key
+      const signature = keyPair.sign(nonce);
+      // verify the signature with the public key
+      const verified = keyPair.verify(nonce, signature);
+      return verified;
+    } catch (e) {
+      return false;
+    }
+  }
+
   /**
    * Generate an ED25519 key pair for signing/verifying messages
    * @param salt
    * @returns
    */
-  public static generateSigningKeyPair(salt?: string): ISigningKeyInfo {
+  public static generateSigningKeyPair(
+    salt?: string,
+    loopPrevent?: number
+  ): ISigningKeyInfo {
     const mnemonic = generateMnemonic(StaticHelpersKeyPair.MnemonicStrength);
     const entropy = mnemonicToEntropy(mnemonic);
     const seedBytes = mnemonicToSeedSync(mnemonic, salt);
     const curve = new EC(StaticHelpersKeyPair.DefaultECMode);
-    const kp = curve.genKeyPair({
+    const keyPair = curve.genKeyPair({
       entropy: seedBytes.toString('hex'),
       entropyEnc: 'hex',
     });
+    // test the key for degenerate keys
+    if (!StaticHelpersKeyPair.challengeSigningKeyPair(keyPair)) {
+      const attempts = 100;
+      if (loopPrevent !== undefined && loopPrevent > attempts) {
+        throw new Error(
+          'Unable to generate a valid key pair after ' + attempts + ' attempts'
+        );
+      }
+      return StaticHelpersKeyPair.generateSigningKeyPair(
+        salt,
+        loopPrevent ? loopPrevent + 1 : 1
+      );
+    }
+    const simpleKeyPair =
+      StaticHelpersKeyPair.convertSigningKeyPairToISimpleKeyPairBuffer(keyPair);
     return {
-      keyPair: kp,
-      publicKey: Buffer.from(kp.getPublic('hex'), 'hex'),
-      privateKey: Buffer.from(kp.getPrivate('hex'), 'hex'),
+      keyPair: keyPair,
+      publicKey: simpleKeyPair.publicKey,
+      privateKey: simpleKeyPair.privateKey,
       seedHex: seedBytes.toString('hex'),
       entropy: entropy,
       mnemonic: mnemonic,
@@ -358,10 +411,12 @@ export default abstract class StaticHelpersKeyPair {
       entropy: seedBytes.toString('hex'),
       entropyEnc: 'hex',
     });
+    const simpleKeyPair =
+      StaticHelpersKeyPair.convertSigningKeyPairToISimpleKeyPairBuffer(keyPair);
     return {
       keyPair: keyPair,
-      publicKey: Buffer.from(keyPair.getPublic('hex'), 'hex'),
-      privateKey: Buffer.from(keyPair.getPrivate('hex'), 'hex'),
+      publicKey: simpleKeyPair.publicKey,
+      privateKey: simpleKeyPair.privateKey,
       seedHex: seedBytes.toString('hex'),
       entropy: entropy,
       mnemonic: mnemonic,
@@ -376,7 +431,7 @@ export default abstract class StaticHelpersKeyPair {
     // TODO: check for degenerate keys.
     // TODO: verify each key can encrypt and decrypt a message and/or sign/verify a message
     const signingKey = StaticHelpersKeyPair.generateSigningKeyPair();
-    const dataKey = StaticHelpersKeyPair.generateRsaKeyPair(
+    const dataKey = StaticHelpersKeyPair.generateDataKeyPair(
       StaticHelpersKeyPair.signingKeyPairToDataKeyPassphraseFromMemberId(
         memberId,
         signingKey.keyPair
@@ -399,14 +454,17 @@ export default abstract class StaticHelpersKeyPair {
     keyPair: EC.KeyPair,
     salt?: string
   ): ISigningKeyInfo {
-    const privHex = keyPair.getPrivate('hex');
-    const mnemonic = entropyToMnemonic(privHex);
+    const simpleKeyPair =
+      StaticHelpersKeyPair.convertSigningKeyPairToISimpleKeyPairBuffer(keyPair);
+    const mnemonic = entropyToMnemonic(
+      simpleKeyPair.privateKey.toString('hex')
+    );
     const seedBytes = mnemonicToSeedSync(mnemonic, salt);
     const entropy = mnemonicToEntropy(mnemonic);
     return {
       keyPair: keyPair,
-      publicKey: Buffer.from(keyPair.getPublic('hex'), 'hex'),
-      privateKey: Buffer.from(privHex, 'hex'),
+      publicKey: simpleKeyPair.publicKey,
+      privateKey: simpleKeyPair.privateKey,
       seedHex: seedBytes.toString('hex'),
       entropy: entropy,
       mnemonic: mnemonic,
@@ -617,29 +675,12 @@ export default abstract class StaticHelpersKeyPair {
     return decryptedData;
   }
 
-  /**
-   * Given an array of members, ensure all members are not system accounts
-   * @param members
-   * @returns
-   */
-  public static membersAreAllUsers(members: QuorumMember[]): boolean {
-    return members.every((m) => m.memberType !== QuorumMemberType.System);
-  }
-
-  public static calculateChecksum(data: Buffer): Buffer {
-    return Buffer.from(
-      createHash(
-        StaticHelpersChecksum.CryptoChecksumVerificationAlgorithm(
-          QuorumDataRecord.checksumBits
-        )
-      )
-        .update(data)
-        .digest('hex'),
-      'hex'
-    );
-  }
-
-  public static validateChecksum(data: Buffer, checksum: Buffer): boolean {
-    return StaticHelpersChecksum.calculateChecksum(data) === checksum;
+  public static convertSigningKeyPairToISimpleKeyPairBuffer(
+    keyPair: EC.KeyPair
+  ): ISimpleKeyPairBuffer {
+    return {
+      publicKey: Buffer.from(keyPair.getPublic('hex'), 'hex'),
+      privateKey: Buffer.from(keyPair.getPrivate('hex'), 'hex'),
+    };
   }
 }
