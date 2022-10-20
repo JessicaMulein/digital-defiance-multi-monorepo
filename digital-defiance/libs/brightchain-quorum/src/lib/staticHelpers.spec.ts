@@ -1,3 +1,5 @@
+import QuorumMember from './member';
+import QuorumMemberType from './quorumMemberType';
 import StaticHelpers from './staticHelpers';
 
 describe('staticHelpers', () => {
@@ -26,5 +28,28 @@ describe('staticHelpers', () => {
     values.forEach((value) => {
       expect(value).toBeLessThanOrEqual(2 ** Y - 1);
     });
+  });
+  it('should flag when there is a non-user member', () => {
+    const alice = QuorumMember.newMember(
+      QuorumMemberType.User,
+      'alice',
+      'alice@example.com'
+    );
+    const bob = QuorumMember.newMember(
+      QuorumMemberType.Admin,
+      'bob',
+      'bob@example.com'
+    );
+    const charlie = QuorumMember.newMember(
+      QuorumMemberType.System,
+      'charlie',
+      'charlie@example.com'
+    );
+
+    expect(StaticHelpers.membersAreAllUsers([alice, bob])).toEqual(true);
+
+    expect(StaticHelpers.membersAreAllUsers([alice, bob, charlie])).toEqual(
+      false
+    );
   });
 });

@@ -53,6 +53,11 @@ export default abstract class StaticHelpers {
    * @returns
    */
   public static membersAreAllUsers(members: QuorumMember[]): boolean {
-    return members.every((m) => m.memberType !== QuorumMemberType.System);
+    for (const member of members) {
+      if (member.memberType == QuorumMemberType.System) {
+        return false;
+      }
+    }
+    return true;
   }
 }
