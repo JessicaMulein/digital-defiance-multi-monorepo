@@ -71,10 +71,17 @@ describe('brightchain-quorum staticHelpers.elliptic', () => {
     expect(p.place).toBe(1);
   });
   it('should test getLength', () => {
-    const data = [0x85, 0x06, 0x00, 0x01, 0x7f, 0x02, 0x01, 0x7f];
+    const data = [0x85, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00];
     const p = { place: 0 };
     const rlen = StaticHelpersElliptic.getLength(data, p);
-    expect(rlen).toBe(5);
+    expect(rlen).toBe(false);
     expect(p.place).toBe(1);
+  });
+  it('should test getLength', () => {
+    const data = [0x84, 0x7f, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01];
+    const p = { place: 0 };
+    const rlen = StaticHelpersElliptic.getLength(data, p);
+    expect(rlen).toBe(2130772225);
+    expect(p.place).toBe(5);
   });
 });
