@@ -81,14 +81,6 @@ export default abstract class StaticHelpersKeyPair {
 
   public static readonly Sha3DefaultHashBits: number = 512;
 
-  public static CryptoSignatureVerificationAlgorithm(bits: number): string {
-    return `RSA-SHA3-${bits.toString()}`;
-  }
-
-  public static CryptoChecksumVerificationAlgorithm(bits: number): string {
-    return `sha3-${bits.toString()}`;
-  }
-
   /**
    * unused/future/unsupported on my platform/version.
    */
