@@ -419,20 +419,36 @@ export default abstract class StaticHelpersKeyPair {
    * Generate both key pairs for a new member
    * @returns
    */
-  public static generateMemberKeyPairs(memberId: string): IDataAndSigningKeys {
+  public static generateMemberKeyPairs(
+    memberId: string,
+    loopPrevention?: number
+  ): IDataAndSigningKeys {
     // TODO: check for degenerate keys.
     // TODO: verify each key can encrypt and decrypt a message and/or sign/verify a message
-    const signingKey = StaticHelpersKeyPair.generateSigningKeyPair();
-    const dataKey = StaticHelpersKeyPair.generateDataKeyPair(
-      StaticHelpersKeyPair.signingKeyPairToDataKeyPassphraseFromMemberId(
+    try {
+      const signingKey = StaticHelpersKeyPair.generateSigningKeyPair();
+      const dataKey = StaticHelpersKeyPair.generateDataKeyPair(
+        StaticHelpersKeyPair.signingKeyPairToDataKeyPassphraseFromMemberId(
+          memberId,
+          signingKey.keyPair
+        )
+      );
+      return {
+        signing: signingKey.keyPair,
+        data: dataKey,
+      };
+    } catch (e) {
+      const attempts = 100;
+      if (loopPrevention !== undefined && loopPrevention > attempts) {
+        throw new Error(
+          `Unable to generate a valid key pair after ${attempts} attempts`
+        );
+      }
+      return StaticHelpersKeyPair.generateMemberKeyPairs(
         memberId,
-        signingKey.keyPair
-      )
-    );
-    return {
-      signing: signingKey.keyPair,
-      data: dataKey,
-    };
+        loopPrevention ? loopPrevention + 1 : 1
+      );
+    }
   }
 
   /**

@@ -2,7 +2,6 @@ import * as uuid from 'uuid';
 import { ec as EC } from 'elliptic';
 import QuorumMemberData from './quorumMemberData';
 import { ISimpleKeyPairBuffer } from './interfaces';
-import StaticHelpers from './staticHelpers.checksum';
 import QuorumMemberType from './quorumMemberType';
 import StaticHelpersKeyPair from './staticHelpers.keypair';
 
@@ -16,10 +15,7 @@ export default class QuorumMember extends QuorumMemberData {
    * Signatures and verification are done using the signing key pair.
    * The key pair may or may not be loaded.
    */
-  private _signingKeyPair: null | {
-    readonly ecCurve: EC;
-    readonly keyPair: EC.KeyPair;
-  };
+  private _signingKeyPair: null | EC.KeyPair;
 
   /**
    * Data to/from/for the member is encrypted using the data key pair.
@@ -52,7 +48,7 @@ export default class QuorumMember extends QuorumMemberData {
     try {
       return (
         this._signingKeyPair !== null &&
-        this._signingKeyPair.keyPair.getPrivate('hex').length > 0
+        this._signingKeyPair.getPrivate('hex').length > 0
       );
     } catch (e) {
       return false;
@@ -63,21 +59,21 @@ export default class QuorumMember extends QuorumMemberData {
     if (this._signingKeyPair === null) {
       throw new Error('Signing key pair not set');
     }
-    return this._signingKeyPair.keyPair;
+    return this._signingKeyPair;
   }
 
   public get signingPublicKey(): Buffer {
     if (this._signingKeyPair === null) {
       throw new Error('Signing key pair not set');
     }
-    return Buffer.from(this._signingKeyPair.keyPair.getPublic('hex'), 'hex');
+    return Buffer.from(this._signingKeyPair.getPublic('hex'), 'hex');
   }
 
   public get signingPrivateKey(): Buffer {
     if (!this._signingKeyPair) {
       throw new Error('No data key pair');
     }
-    const privateKey = this._signingKeyPair.keyPair.getPrivate('hex');
+    const privateKey = this._signingKeyPair.getPrivate('hex');
     if (!privateKey) {
       throw new Error('No private key');
     }
@@ -136,7 +132,10 @@ export default class QuorumMember extends QuorumMemberData {
     if (signingKeyPair) {
       this.loadSigningKeyPair(signingKeyPair);
     }
-    this._dataKeyPair = dataKeyPair ?? null;
+    this._dataKeyPair = null;
+    if (dataKeyPair) {
+      this.loadDataKeyPair(dataKeyPair);
+    }
   }
 
   /**
@@ -146,22 +145,21 @@ export default class QuorumMember extends QuorumMemberData {
   public loadSigningKeyPair(keyPair: ISimpleKeyPairBuffer) {
     const curve = new EC(StaticHelpersKeyPair.DefaultECMode);
     let valid = false;
+    let kp: null | EC.KeyPair = null;
     try {
-      const kp = curve.keyFromPrivate(
-        keyPair.privateKey.toString('hex'),
-        'hex'
-      );
+      kp = curve.keyFromPrivate(keyPair.privateKey.toString('hex'), 'hex');
       valid = kp.validate().result;
-      this._signingKeyPair = {
-        ecCurve: curve,
-        keyPair: kp,
-      };
     } catch (e) {
       valid = false;
     }
-    if (!valid) {
+    if (
+      !valid ||
+      kp === null ||
+      !StaticHelpersKeyPair.challengeSigningKeyPair(kp)
+    ) {
       throw new Error('Invalid key pair');
     }
+    this._signingKeyPair = kp;
   }
 
   /**
@@ -169,6 +167,12 @@ export default class QuorumMember extends QuorumMemberData {
    * @param keyPair The key pair to load.
    */
   public loadDataKeyPair(keyPair: ISimpleKeyPairBuffer) {
+    // challenge the data key pair
+    const password =
+      StaticHelpersKeyPair.signingKeyPairToDataKeyPassphraseFromMember(this);
+    if (!StaticHelpersKeyPair.challengeDataKeyPair(keyPair, password)) {
+      throw new Error('Invalid data key pair');
+    }
     this._dataKeyPair = keyPair;
   }
 
@@ -183,7 +187,7 @@ export default class QuorumMember extends QuorumMemberData {
       throw new Error('No key pair');
     }
     return StaticHelpersKeyPair.signWithSigningKey(
-      this._signingKeyPair.keyPair,
+      this._signingKeyPair,
       data,
       options
     );
@@ -200,7 +204,7 @@ export default class QuorumMember extends QuorumMemberData {
       throw new Error('No key pair');
     }
     return StaticHelpersKeyPair.verifyWithSigningKey(
-      this._signingKeyPair.keyPair,
+      this._signingKeyPair,
       signature,
       data
     );
@@ -210,7 +214,7 @@ export default class QuorumMember extends QuorumMemberData {
   //   if (!this._signingKeyPair) {
   //     throw new Error('No key pair');
   //   }
-  //   return publicEncrypt(this._signingKeyPair.keyPair.getPublic(), data);
+  //   return publicEncrypt(this._signingKeyPair.getPublic(), data);
   // }
 
   /**

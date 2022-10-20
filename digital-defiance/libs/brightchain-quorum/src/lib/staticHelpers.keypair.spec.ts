@@ -2,6 +2,8 @@ import { mnemonicToEntropy, validateMnemonic } from 'bip39';
 import QuorumMember from './member';
 import QuorumMemberType from './quorumMemberType';
 import StaticHelpersKeyPair from './staticHelpers.keypair';
+import * as uuid from 'uuid';
+import { ec as EC } from 'elliptic';
 
 describe('brightchainQuorum', () => {
   it('should generate a keypair and seed', () => {
@@ -110,7 +112,7 @@ describe('brightchainQuorum', () => {
     const member = new QuorumMember(
       QuorumMemberType.User,
       'alice',
-      'alice@example.com',
+      'alice@example.com'
     );
     expect(() => member.dataKeyPair).toThrowError();
     expect(() => member.signingKeyPair).toThrowError();
@@ -118,5 +120,15 @@ describe('brightchainQuorum', () => {
     expect(() => member.dataPublicKey).toThrowError();
     expect(() => member.signingPrivateKey).toThrowError();
     expect(() => member.signingPublicKey).toThrowError();
+  });
+  it("should fail to get the signing private key when we have a public key only", () => {
+    const memberId = uuid.v4();
+    const keyPairs = StaticHelpersKeyPair.generateMemberKeyPairs(memberId);
+    const signingPublicKey = Buffer.from(keyPairs.signing.getPublic('hex'), 'hex');
+    const member = new QuorumMember(QuorumMemberType.User, 'alice', 'alice@example.com', {
+      publicKey: signingPublicKey,
+      privateKey: Buffer.alloc(0),
+    }, keyPairs.data);
+    expect(() => member.signingPrivateKey).toThrowError();
   });
 });

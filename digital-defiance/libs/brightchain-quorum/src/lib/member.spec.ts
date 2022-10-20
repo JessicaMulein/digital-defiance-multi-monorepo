@@ -72,6 +72,11 @@ describe('brightchainQuorum', () => {
       )
     ).toThrowError('Quorum member email has leading or trailing spaces');
   });
+  it('should fail to create a user with an invalid email', () => {
+    expect(() => {
+      QuorumMember.newMember(QuorumMemberType.User, 'Nope', 'x!foo');
+    }).toThrowError('Quorum member email is invalid');
+  });
   it('should check whether a user has a data key pair', () => {
     const member = QuorumMember.newMember(
       QuorumMemberType.User,
@@ -120,7 +125,7 @@ describe('brightchainQuorum', () => {
           publicKey: keyPair.data.publicKey,
           privateKey: keyPair.data.privateKey,
         }
-      )
+      );
     }).toThrowError('Invalid key pair');
   });
   it('should throw with an invalid data key', () => {
@@ -139,7 +144,7 @@ describe('brightchainQuorum', () => {
           publicKey: keyPair.data.publicKey,
           privateKey: Buffer.from([]),
         }
-      )
-      }).toThrowError('Invalid key pair');
+      );
+    }).toThrowError('Invalid key pair');
   });
 });
