@@ -82,4 +82,18 @@ describe('brightchainQuorum', () => {
     );
     expect(noKeyMember.hasDataKeyPair).toEqual(false);
   });
+  it('should check whether a user has a signing key pair', () => {
+    const member = QuorumMember.newMember(
+      QuorumMemberType.User,
+      'Alice Smith',
+      'alice@example.com'
+    );
+    expect(member.hasSigningKeyPair).toEqual(true);
+    const noKeyMember = new QuorumMember(
+      QuorumMemberType.User,
+      'Bob Smith',
+      'bob@example.com'
+    );
+    expect(noKeyMember.hasSigningKeyPair).toEqual(false);
+  });
 });
