@@ -1,4 +1,5 @@
 import BN = require('bn.js');
+import { randomBytes } from 'crypto';
 import { ec } from 'elliptic';
 import { Signature } from './signature';
 import StaticHelpersElliptic from './staticHelpers.elliptic';
@@ -33,5 +34,22 @@ describe('brightchain-quorum staticHelpers.elliptic', () => {
     StaticHelpersElliptic.constructLength(res, backHalf.length);
     res = res.concat(backHalf);
     expect(res).toEqual([0x30, 0x06, 0x02, 0x01, 0x7f, 0x02, 0x01, 0x7f]);
+  });
+  it('should test constructLength when length > 128', () => {
+    let arr = [0x02];
+    // need to construct a BN with an array length > 128
+    const rBuf = randomBytes(129);
+    const sBuf = randomBytes(129);
+    const r: number[] = new BN(rBuf).toArray();
+    const s: number[] = new BN(sBuf).toArray();
+    StaticHelpersElliptic.constructLength(arr, r.length);
+    arr = arr.concat(r);
+    arr.push(0x02);
+    StaticHelpersElliptic.constructLength(arr, s.length);
+    const backHalf = arr.concat(s);
+    let res = [0x30];
+    StaticHelpersElliptic.constructLength(res, backHalf.length);
+    res = res.concat(backHalf);
+    expect(res.length).toBe(268); // (129 + 5 + 1) * 2 ?
   });
 });
