@@ -107,7 +107,7 @@ export default class BrightChainMember implements IReadOnlyBasicObject {
     return this._dataKeyPair.privateKey;
   }
 
-  public readonly id: string;
+  public readonly id: Uint8Array;
   public readonly memberType: BrightChainMemberType;
   public readonly name: string;
   public readonly contactEmail: string;
@@ -124,11 +124,11 @@ export default class BrightChainMember implements IReadOnlyBasicObject {
     dateUpdated?: Date
   ) {
     this.memberType = memberType;
-    this.id = id || uuid.v4();
-    if (!uuid.validate(this.id)) {
+    const originalId = id || uuid.v4();
+    if (!uuid.validate(originalId)) {
       throw new Error('Invalid member ID');
     }
-
+    this.id = StaticHelpers.UuidV4ToUint8Array(originalId);
     this.name = name;
     if (!this.name || this.name.length == 0) {
       throw new Error('Member name missing');

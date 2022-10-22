@@ -56,24 +56,20 @@ export interface Position {
 
 export interface IBasicObject {
   /**
-   * ID of the data object. UUID v4.
+   * ID of the data object. Must be unique, usually UUID v4.
    */
-  id: string;
+  id: Uint8Array;
   /**
    * The date this object was created
    */
   dateCreated: Date;
-  /**
-   * The date this object was last updated
-   */
-  dateUpdated: Date;
 }
 
 export interface IBasicDataObject extends IBasicObject {
   /**
    * ID of the data object. UUID v4.
    */
-  id: string;
+  id: Uint8Array;
   /**
    * Flag indicating whether the data is encrypted
    */
@@ -81,42 +77,31 @@ export interface IBasicDataObject extends IBasicObject {
   /**
    * The data to be stored
    */
-  data: Buffer;
+  data: Uint8Array;
   /**
    * Checksum (SHA-3) of the data to verify integrity
    */
-  checksum: Buffer;
+  checksum: Uint8Array;
   /**
    * The ID of the member who created this object
    */
-  createdBy: string;
-  /**
-   * The ID of the member who last updated this object
-   */
-  updatedBy: string;
+  createdBy: Uint8Array;
   /**
    * The date this object was created
    */
   dateCreated: Date;
-  /**
-   * The date this object was last updated
-   */
-  dateUpdated: Date;
 }
 
 export interface IReadOnlyBasicObject extends IBasicObject {
-  readonly id: string;
+  readonly id: Uint8Array;
   readonly dateCreated: Date;
-  readonly dateUpdated: Date;
 }
 
 export interface IReadOnlyDataObject extends IBasicDataObject, IReadOnlyBasicObject {
-  readonly id: string;
+  readonly id: Uint8Array;
   readonly encrypted: boolean;
-  readonly data: Buffer;
-  readonly checksum: Buffer;
+  readonly data: Uint8Array;
+  readonly checksum: Uint8Array;
   readonly createdBy: string;
-  readonly updatedBy: string;
   readonly dateCreated: Date;
-  readonly dateUpdated: Date;
 }
