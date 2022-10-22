@@ -1,6 +1,6 @@
 import * as uuid from 'uuid';
 import { ec as EC } from 'elliptic';
-import { ISimpleKeyPairBuffer } from './interfaces';
+import { IReadOnlyBasicObject, ISimpleKeyPairBuffer } from './interfaces';
 import StaticHelpersKeyPair from './staticHelpers.keypair';
 import BrightChainMemberType from './memberType';
 import StaticHelpers from './staticHelpers';
@@ -10,7 +10,7 @@ import StaticHelpers from './staticHelpers';
  * @param id The unique identifier for this member.
  * @param name The name of this member.
  */
-export default class BrightChainMember {
+export default class BrightChainMember implements IReadOnlyBasicObject {
   /**
    * Signatures and verification are done using the signing key pair.
    * The key pair may or may not be loaded.
