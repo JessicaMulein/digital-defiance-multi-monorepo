@@ -21,6 +21,8 @@
     "brightchain"
   ],
   "nx": {
-    "tags": ["scope:brightchain"]
+    "tags": [
+      "scope:brightchain"
+    ]
   }
 }
