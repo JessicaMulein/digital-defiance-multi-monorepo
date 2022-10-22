@@ -1,7 +1,7 @@
 import { Shares } from 'secrets.js-34r7h';
 import * as uuid from 'uuid';
 import { EncryptedShares, IMemberShareCount } from './interfaces';
-import QuorumMember from './member';
+import BrightChainMember from 'libs/brightchain/src/lib/brightChainMember';
 import QuorumDataRecord from './quorumDataRecord';
 import SimpleStore from 'libs/brightchain/src/lib/stores/simpleStore';
 import BufferStore from 'libs/brightchain/src/lib/stores/bufferStore';
@@ -16,7 +16,7 @@ export default class BrightChainQuorum {
   /**
    * The node owner is the system key pair that is used to sign and verify with Quorum members
    */
-  private readonly nodeAgent: QuorumMember;
+  private readonly nodeAgent: BrightChainMember;
 
   /**
    * The name of the quorum
@@ -26,7 +26,7 @@ export default class BrightChainQuorum {
   /**
    * Quorum members collection, keys may or may not be loaded for a given member
    */
-  private readonly _members: SimpleStore<string, QuorumMember>;
+  private readonly _members: SimpleStore<string, BrightChainMember>;
 
   /**
    * Collection of signing public keys for each member of the quorum.
@@ -53,12 +53,12 @@ export default class BrightChainQuorum {
    */
   private readonly _documentsById: SimpleStore<string, QuorumDataRecord>;
 
-  constructor(nodeAgent: QuorumMember, name: string, id?: string) {
+  constructor(nodeAgent: BrightChainMember, name: string, id?: string) {
     this.id = id ?? uuid.v4();
     if (!uuid.validate(this.id)) {
       throw new Error('Invalid quorum ID');
     }
-    this._members = new SimpleStore<string, QuorumMember>();
+    this._members = new SimpleStore<string, BrightChainMember>();
     this._memberSigningPublicKeysByMemberId = new BufferStore<string>();
     this._memberDataPublicKeysByMemberId = new BufferStore<string>();
     this._documentKeySharesById = new SimpleStore<string, EncryptedShares>();
@@ -75,7 +75,7 @@ export default class BrightChainQuorum {
    * Physically add a member to the members collection and key stores
    * @param member
    */
-  protected storeMember(member: QuorumMember) {
+  protected storeMember(member: BrightChainMember) {
     this._members.set(member.id, member);
     this._memberSigningPublicKeysByMemberId.set(
       member.id,
@@ -105,9 +105,9 @@ export default class BrightChainQuorum {
    * @returns
    */
   public addDocument<T>(
-    agent: QuorumMember,
+    agent: BrightChainMember,
     document: T,
-    amongstMembers: QuorumMember[],
+    amongstMembers: BrightChainMember[],
     shareCountByMemberId?: Array<IMemberShareCount>
   ): QuorumDataRecord {
     const newDoc = StaticHelpersSealing.quorumSeal<T>(
@@ -164,7 +164,7 @@ export default class BrightChainQuorum {
    * @param id
    * @param members
    */
-  public canUnlock(id: string, members: QuorumMember[]) {
+  public canUnlock(id: string, members: BrightChainMember[]) {
     const doc = this._documentsById.get(id);
     if (!doc) {
       throw new Error('Document not found');

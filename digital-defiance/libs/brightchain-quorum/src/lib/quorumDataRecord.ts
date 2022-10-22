@@ -1,5 +1,5 @@
 import * as uuid from 'uuid';
-import QuorumMember from './member';
+import BrightChainMember from 'libs/brightchain/src/lib/brightChainMember';
 import { ec as EC } from 'elliptic';
 import StaticHelpers from 'libs/brightchain/src/lib/staticHelpers.checksum';
 import StaticHelpersElliptic from 'libs/brightchain/src/lib/staticHelpers.elliptic';
@@ -20,7 +20,7 @@ export default class QuorumDataRecord {
   public readonly dateUpdated: Date;
 
   constructor(
-    creator: QuorumMember,
+    creator: BrightChainMember,
     memberIDs: string[],
     sharesRequired: number,
     encryptedData: Buffer,

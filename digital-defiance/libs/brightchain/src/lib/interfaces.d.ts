@@ -1,5 +1,3 @@
-export type EncryptedShares = Array<string>;
-
 export interface ISimpleKeyPair {
   publicKey: string;
   privateKey: string;
@@ -45,18 +43,6 @@ export interface IPbkdf2Result {
 export interface ISealResults {
     encryptedData: Buffer;
     encryptedKey: Buffer;
-}
-
-export interface IMemberShareCount {
-  memberId: string;
-  shares: number;
-}
-
-export interface ISortedMemberShareCountArrays {
-  memberIds: string[];
-  shares: number[],
-  memberCount: number;
-  totalShares: number;
 }
 
 export interface ISymmetricEncryptionResults {

@@ -1,9 +1,9 @@
-import QuorumMember from './member';
+import BrightChainMember from 'libs/brightchain/src/lib/brightChainMember';
 import BrightChainQuorum from './quorum';
 import BrightChainMemberType from 'libs/brightchain/src/lib/memberType';
 describe('quorum', () => {
   it('should create a quorum', () => {
-    const nodeOwner = QuorumMember.newMember(
+    const nodeOwner = BrightChainMember.newMember(
       BrightChainMemberType.System,
       'Node Owner',
       'owner@example.com'
