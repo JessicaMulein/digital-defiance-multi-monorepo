@@ -67,21 +67,13 @@ export interface IBasicObject {
 
 export interface IBasicDataObject extends IBasicObject {
   /**
-   * ID of the data object. UUID v4.
+   * ID of the data object. checksum of the data.
    */
   id: Uint8Array;
-  /**
-   * Flag indicating whether the data is encrypted
-   */
-  encrypted: boolean;
   /**
    * The data to be stored
    */
   data: Uint8Array;
-  /**
-   * Checksum (SHA-3) of the data to verify integrity
-   */
-  checksum: Uint8Array;
   /**
    * The ID of the member who created this object
    */
@@ -97,11 +89,11 @@ export interface IReadOnlyBasicObject extends IBasicObject {
   readonly dateCreated: Date;
 }
 
-export interface IReadOnlyDataObject extends IBasicDataObject, IReadOnlyBasicObject {
-  readonly id: Uint8Array;
-  readonly encrypted: boolean;
+export interface IReadOnlyDataObject
+  extends IBasicDataObject,
+    IReadOnlyBasicObject {
+  readonly id: Uint8Array; // checksum
   readonly data: Uint8Array;
-  readonly checksum: Uint8Array;
-  readonly createdBy: string;
+  readonly createdBy: Uint8Array;
   readonly dateCreated: Date;
 }

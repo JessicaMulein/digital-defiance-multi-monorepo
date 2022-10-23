@@ -487,7 +487,9 @@ export default abstract class StaticHelpersKeyPair {
    * @param member
    * @returns
    */
-  public static recoverDataKeyFromSigningKey(member: BrightChainMember): Buffer {
+  public static recoverDataKeyFromSigningKey(
+    member: BrightChainMember
+  ): Buffer {
     if (!member.hasDataPrivateKey) {
       throw new Error('Member data private key not found');
     }
