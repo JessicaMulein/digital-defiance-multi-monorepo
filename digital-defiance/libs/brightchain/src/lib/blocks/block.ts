@@ -47,4 +47,29 @@ export default class Block implements IReadOnlyDataObject {
     }
     return new Block(agent, data);
   }
+  public toJSON(): string {
+    return JSON.stringify({
+      id: Buffer.from(this.id).toString('hex'),
+      data: Buffer.from(this.data).toString('hex'),
+      createdBy: Buffer.from(this.createdBy).toString('hex'),
+      dateCreated: this.dateCreated,
+    });
+  }
+  public static fromJSON(
+    json: string,
+    fetchMember: (memberId: Uint8Array) => BrightChainMember
+  ): Block {
+    const parsed = JSON.parse(json);
+    const parsedMemberId = Buffer.from(parsed.createdBy, 'hex');
+    const member = fetchMember(parsedMemberId);
+    if (!Buffer.from(member.id).equals(parsedMemberId)) {
+      throw new Error('Member mismatch');
+    }
+    return new Block(
+      member,
+      Buffer.from(parsed.data, 'hex'),
+      new Date(parsed.dateCreated),
+      Buffer.from(parsed.id, 'hex')
+    );
+  }
 }

@@ -47,8 +47,9 @@ describe('block', () => {
     const data = randomBytes(blockSizeToLength(blockSize));
     const dateCreated = new Date();
     const block = new Block(alice, data, dateCreated);
-    const json = JSON.stringify(block);
-    const rebuiltBlock = JSON.parse(json) as Block;
+    const json = block.toJSON();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const rebuiltBlock = Block.fromJSON(json, (memberId: Uint8Array) => alice);
     expect(rebuiltBlock).toBeTruthy();
     expect(rebuiltBlock.blockSize).toBe(block.blockSize);
     expect(rebuiltBlock.data).toEqual(block.data);
