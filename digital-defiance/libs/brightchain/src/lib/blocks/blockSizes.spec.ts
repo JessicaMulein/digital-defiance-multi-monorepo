@@ -41,6 +41,7 @@ describe('blockSizes', () => {
     expect(blockSizeToLength(BlockSize.Small)).toBe(4096);
     expect(blockSizeToLength(BlockSize.Medium)).toBe(1048576);
     expect(blockSizeToLength(BlockSize.Large)).toBe(1073741824);
+    expect(blockSizeToLength(8)).toBe(0);
   });
   it('should test lengthToBlockSize', () => {
     expect(lengthToBlockSize(0)).toBe(BlockSize.Unknown);
