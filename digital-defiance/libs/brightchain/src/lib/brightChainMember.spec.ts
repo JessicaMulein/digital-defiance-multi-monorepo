@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { randomBytes, randomUUID } from 'crypto';
 import BrightChainMember from './brightChainMember';
 import BrightChainMemberType from './memberType';
 import StaticHelpersKeyPair from './staticHelpers.keypair';
@@ -24,7 +24,21 @@ describe('brightchain', () => {
           'alice@example.com',
           undefined,
           undefined,
-          'xxx'
+          new Uint8Array(0)
+        )
+    ).toThrowError('Invalid member ID');
+  });
+  it('should fail to create with a made up id', () => {
+    // most if not all 16 byte values are valid. this test may be useless
+    expect(
+      () =>
+        new BrightChainMember(
+          BrightChainMemberType.User,
+          'alice',
+          'alice@example.com',
+          undefined,
+          undefined,
+          randomBytes(16)
         )
     ).toThrowError('Invalid member ID');
   });

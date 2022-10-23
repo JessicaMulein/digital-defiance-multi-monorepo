@@ -11,12 +11,14 @@ export default class Block implements IReadOnlyDataObject {
     dateCreated?: Date,
     checksum?: Uint8Array
   ) {
-    this.createdBy = creator.id;
-    this.data = data;
+    this.createdBy = Buffer.from(creator.id);
+    this.data = Buffer.from(data);
     if (!validateBlockSize(data.length)) {
       throw new Error(`Data length ${data.length} is not a valid block size`);
     }
-    this.id = StaticHelpersChecksum.calculateChecksum(Buffer.from(data));
+    this.id = Buffer.from(
+      StaticHelpersChecksum.calculateChecksum(Buffer.from(data))
+    );
     if (checksum && Buffer.from(this.id).equals(Buffer.from(checksum))) {
       throw new Error('Checksum mismatch');
     }
@@ -32,7 +34,7 @@ export default class Block implements IReadOnlyDataObject {
   }
   public readonly createdBy: Uint8Array;
   public get createdById(): string {
-    return StaticHelpers.Uint8ArrayToUuidV4(this.createdBy);
+    return StaticHelpers.Uint8ArrayToUuidV4(this.createdBy, false);
   }
   public readonly dateCreated: Date;
   public xor(other: Block, agent: BrightChainMember): Block {

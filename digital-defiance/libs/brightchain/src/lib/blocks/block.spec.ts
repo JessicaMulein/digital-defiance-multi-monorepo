@@ -37,4 +37,24 @@ describe('block', () => {
     );
     expect(block.dateCreated).toEqual(dateCreated);
   });
+  it('should convert a block to json and back', () => {
+    const alice = BrightChainMember.newMember(
+      BrightChainMemberType.User,
+      'alice',
+      'alice@example.com'
+    );
+    const blockSize = randomBlockSize();
+    const data = randomBytes(blockSizeToLength(blockSize));
+    const dateCreated = new Date();
+    const block = new Block(alice, data, dateCreated);
+    const json = JSON.stringify(block);
+    const rebuiltBlock = JSON.parse(json) as Block;
+    expect(rebuiltBlock).toBeTruthy();
+    expect(rebuiltBlock.blockSize).toBe(block.blockSize);
+    expect(rebuiltBlock.data).toEqual(block.data);
+    expect(rebuiltBlock.id).toEqual(block.id);
+    expect(rebuiltBlock.createdBy).toEqual(block.createdBy);
+    expect(rebuiltBlock.createdById).toEqual(block.createdById);
+    expect(rebuiltBlock.dateCreated).toEqual(block.dateCreated);
+  });
 });

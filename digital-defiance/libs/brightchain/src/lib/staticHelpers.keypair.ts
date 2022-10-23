@@ -525,7 +525,7 @@ export default abstract class StaticHelpersKeyPair {
     member: BrightChainMember
   ): string {
     return StaticHelpersKeyPair.signingKeyPairToDataKeyPassphraseFromMemberId(
-      StaticHelpers.Uint8ArrayToUuidV4(member.id),
+      StaticHelpers.Uint8ArrayToUuidV4(member.id, false),
       member.signingKeyPair
     );
   }

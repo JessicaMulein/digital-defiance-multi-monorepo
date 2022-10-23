@@ -119,16 +119,24 @@ export default class BrightChainMember implements IReadOnlyBasicObject {
     contactEmail: string,
     signingKeyPair?: ISimpleKeyPairBuffer,
     dataKeyPair?: ISimpleKeyPairBuffer,
-    id?: string,
+    id?: Uint8Array,
     dateCreated?: Date,
     dateUpdated?: Date
   ) {
     this.memberType = memberType;
-    const originalId = id || uuid.v4();
-    if (!uuid.validate(originalId)) {
-      throw new Error('Invalid member ID');
+    if (id !== undefined) {
+      if (id.length !== 16) {
+        throw new Error('Invalid member ID');
+      }
+      try {
+        StaticHelpers.Uint8ArrayToUuidV4(id); // throws if invalid
+      } catch (e) {
+        throw new Error('Invalid member ID');
+      }
+      this.id = Buffer.from(id);
+    } else {
+      this.id = Buffer.from(StaticHelpers.UuidV4ToUint8Array(uuid.v4()));
     }
-    this.id = StaticHelpers.UuidV4ToUint8Array(originalId);
     this.name = name;
     if (!this.name || this.name.length == 0) {
       throw new Error('Member name missing');
@@ -269,7 +277,7 @@ export default class BrightChainMember implements IReadOnlyBasicObject {
         keyPair.signing
       ),
       keyPair.data,
-      newId
+      StaticHelpers.UuidV4ToUint8Array(newId)
     );
   }
 }
