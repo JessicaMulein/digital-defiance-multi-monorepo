@@ -19,7 +19,7 @@ export default class Block implements IReadOnlyDataObject {
     this.id = Buffer.from(
       StaticHelpersChecksum.calculateChecksum(Buffer.from(data))
     );
-    if (checksum && Buffer.from(this.id).equals(Buffer.from(checksum))) {
+    if (checksum !== undefined && !Buffer.from(this.id).equals(Buffer.from(checksum))) {
       throw new Error('Checksum mismatch');
     }
     this.dateCreated = dateCreated ?? new Date();
@@ -65,11 +65,14 @@ export default class Block implements IReadOnlyDataObject {
     if (!Buffer.from(member.id).equals(parsedMemberId)) {
       throw new Error('Member mismatch');
     }
+    const data = Buffer.from(parsed.data, 'hex');
+    const dateCreated = new Date(parsed.dateCreated);
+    const parsedBlockId = Buffer.from(parsed.id, 'hex');
     return new Block(
       member,
-      Buffer.from(parsed.data, 'hex'),
-      new Date(parsed.dateCreated),
-      Buffer.from(parsed.id, 'hex')
+      data,
+      dateCreated,
+      parsedBlockId
     );
   }
 }

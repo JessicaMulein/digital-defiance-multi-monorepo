@@ -45,8 +45,9 @@ describe('block', () => {
     );
     const blockSize = randomBlockSize();
     const data = randomBytes(blockSizeToLength(blockSize));
+    const checksum = StaticHelpersChecksum.calculateChecksum(Buffer.from(data));
     const dateCreated = new Date();
-    const block = new Block(alice, data, dateCreated);
+    const block = new Block(alice, data, dateCreated, checksum);
     const json = block.toJSON();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const rebuiltBlock = Block.fromJSON(json, (memberId: Uint8Array) => alice);
