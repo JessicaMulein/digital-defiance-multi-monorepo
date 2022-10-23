@@ -1,5 +1,3 @@
-import Block from './block';
-
 export enum BlockSize {
   /// <summary>
   /// Invalid/indeterminate/unknown block size.
@@ -63,10 +61,6 @@ export const blockSizeMapInverse = new Map<number, BlockSize>([
   [1048576, BlockSize.Medium],
   [1073741824, BlockSize.Large],
 ]);
-
-export function blockToBlockSize(block: Block): number {
-  return lengthToBlockSize(block.data.length);
-}
 
 export function lengthToBlockSize(length: number): BlockSize {
   return blockSizeMapInverse.get(length) ?? BlockSize.Unknown;
