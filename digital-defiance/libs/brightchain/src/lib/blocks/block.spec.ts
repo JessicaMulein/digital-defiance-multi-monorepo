@@ -8,10 +8,7 @@ import BlockSize, { blockSizeToLength, blockSizes } from './blockSizes';
 
 function randomBlockSize(): BlockSize {
   // need to skip unknown block size
-  let blockIndex = 0;
-  do {
-    blockIndex = Math.floor(Math.random() * blockSizes.length);
-  } while (blockIndex == 0);
+  const blockIndex = 1 + Math.floor(Math.random() * (blockSizes.length - 1));
   return blockSizes[blockIndex];
 }
 
@@ -26,7 +23,8 @@ describe('block', () => {
     'bob',
     'bob@example.com'
   );
-  it('should create a block', () => {
+  it('should create a block', (done) => {
+    setTimeout(done, 5000);
     const blockSize = randomBlockSize();
     const data = randomBytes(blockSizeToLength(blockSize));
     const checksum = StaticHelpersChecksum.calculateChecksum(Buffer.from(data));
@@ -44,7 +42,8 @@ describe('block', () => {
     expect(block.dateCreated).toEqual(dateCreated);
     expect(true).toBeTruthy();
   });
-  it('should convert a block to json and back', () => {
+  it('should convert a block to json and back', (done) => {
+    setTimeout(done, 5000);
     const blockSize = randomBlockSize();
     const data = randomBytes(blockSizeToLength(blockSize));
     const checksum = StaticHelpersChecksum.calculateChecksum(Buffer.from(data));
@@ -62,7 +61,8 @@ describe('block', () => {
     expect(rebuiltBlock.dateCreated).toEqual(block.dateCreated);
     expect(true).toBeTruthy();
   });
-  it('should convert a block to json and fail to convert back with a bad member source', () => {
+  it('should convert a block to json and fail to convert back with a bad member source', (done) => {
+    setTimeout(done, 5000);
     const blockSize = randomBlockSize();
     const data = randomBytes(blockSizeToLength(blockSize));
     const checksum = StaticHelpersChecksum.calculateChecksum(Buffer.from(data));
@@ -75,7 +75,8 @@ describe('block', () => {
     );
     expect(true).toBeTruthy();
   });
-  it('should throw when given a bad checksum', () => {
+  it('should throw when given a bad checksum', (done) => {
+    setTimeout(done, 5000);
     const blockSize = randomBlockSize();
     const data = randomBytes(blockSizeToLength(blockSize));
     const dateCreated = new Date();
@@ -88,7 +89,8 @@ describe('block', () => {
     );
     expect(true).toBeTruthy();
   });
-  it('should throw when making an empty block', () => {
+  it('should throw when making an empty block', (done) => {
+    setTimeout(done, 5000);
     const data = Buffer.from(new Uint8Array());
     const dateCreated = new Date();
     expect(() => new Block(alice, data, dateCreated)).toThrow(
@@ -96,7 +98,8 @@ describe('block', () => {
     );
     expect(true).toBeTruthy();
   });
-  it('should throw when making a block of a bad size', () => {
+  it('should throw when making a block of a bad size', (done) => {
+    setTimeout(done, 5000);
     const blockSize = randomBlockSize();
     const data = randomBytes(blockSizeToLength(blockSize) + 1);
     const dateCreated = new Date();
@@ -105,7 +108,8 @@ describe('block', () => {
     );
     expect(true).toBeTruthy();
   });
-  it('should make dateCreated valus when not provided', () => {
+  it('should make dateCreated valus when not provided', (done) => {
+    setTimeout(done, 5000);
     const blockSize = randomBlockSize();
     const data = randomBytes(blockSizeToLength(blockSize));
     const checksum = StaticHelpersChecksum.calculateChecksum(Buffer.from(data));
@@ -119,13 +123,15 @@ describe('block', () => {
     expect(delta).toBeGreaterThanOrEqual(0);
     expect(true).toBeTruthy();
   });
-  it('should not xor with different block sizes', () => {
+  it('should not xor with different block sizes', (done) => {
+    setTimeout(done, 5000);
     const blockA = new Block(alice, randomBytes(BlockSize.Tiny), new Date());
     const blockB = new Block(alice, randomBytes(BlockSize.Nano), new Date());
     expect(() => blockA.xor(blockB, alice)).toThrow('Block sizes do not match');
     expect(true).toBeTruthy();
   });
-  it('should xor with same block sizes', () => {
+  it('should xor with same block sizes', (done) => {
+    setTimeout(done, 5000);
     const blockLength: number = BlockSize.Nano;
     const blockA = new Block(alice, randomBytes(blockLength), new Date());
     const blockB = new Block(alice, randomBytes(blockLength), new Date());
