@@ -21,6 +21,7 @@ export default class Block implements IReadOnlyDataObject {
     );
     if (
       checksum !== undefined &&
+      checksum.length == this.id.length &&
       !Buffer.from(this.id).equals(Buffer.from(checksum))
     ) {
       throw new Error('Checksum mismatch');
@@ -64,13 +65,16 @@ export default class Block implements IReadOnlyDataObject {
   ): Block {
     const parsed = JSON.parse(json);
     const parsedMemberId = Buffer.from(parsed.createdBy, 'hex');
-    const member = fetchMember(parsedMemberId);
-    if (!Buffer.from(member.id).equals(parsedMemberId)) {
-      throw new Error('Member mismatch');
-    }
     const data = Buffer.from(parsed.data, 'hex');
     const dateCreated = new Date(parsed.dateCreated);
     const parsedBlockId = Buffer.from(parsed.id, 'hex');
+    const member = fetchMember(parsedMemberId);
+    if (
+      member.id.length != parsedMemberId.length ||
+      !Buffer.from(member.id).equals(parsedMemberId)
+    ) {
+      throw new Error('Member mismatch');
+    }
     return new Block(member, data, dateCreated, parsedBlockId);
   }
 }

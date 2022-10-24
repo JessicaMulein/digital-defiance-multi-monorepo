@@ -1,7 +1,5 @@
 // TODO: move to brightchain, reference from there
-import {
-  createHash,
-} from 'crypto';
+import { createHash } from 'crypto';
 
 /**
  * @description
@@ -13,8 +11,6 @@ import {
  * - Uses crypto for RSA key generation, encryption/decryption
  */
 export default abstract class StaticHelpersChecksum {
-
-
   public static readonly Sha3DefaultHashBits: number = 512;
 
   public static CryptoChecksumVerificationAlgorithm(bits: number): string {
@@ -40,6 +36,10 @@ export default abstract class StaticHelpersChecksum {
   }
 
   public static validateChecksum(data: Buffer, checksum: Buffer): boolean {
-    return StaticHelpersChecksum.calculateChecksum(data).equals(checksum);
+    const calculatedChecksum = StaticHelpersChecksum.calculateChecksum(data);
+    return (
+      calculatedChecksum.length == checksum.length &&
+      calculatedChecksum.equals(checksum)
+    );
   }
 }

@@ -42,6 +42,7 @@ describe('block', () => {
       StaticHelpers.Uint8ArrayToUuidV4(alice.id)
     );
     expect(block.dateCreated).toEqual(dateCreated);
+    expect(true).toBeTruthy();
   });
   it('should convert a block to json and back', () => {
     const blockSize = randomBlockSize();
@@ -59,6 +60,7 @@ describe('block', () => {
     expect(rebuiltBlock.createdBy).toEqual(block.createdBy);
     expect(rebuiltBlock.createdById).toEqual(block.createdById);
     expect(rebuiltBlock.dateCreated).toEqual(block.dateCreated);
+    expect(true).toBeTruthy();
   });
   it('should convert a block to json and fail to convert back with a bad member source', () => {
     const blockSize = randomBlockSize();
@@ -71,6 +73,7 @@ describe('block', () => {
     expect(() => Block.fromJSON(json, (memberId: Uint8Array) => bob)).toThrow(
       'Member mismatch'
     );
+    expect(true).toBeTruthy();
   });
   it('should throw when given a bad checksum', () => {
     const blockSize = randomBlockSize();
@@ -83,6 +86,7 @@ describe('block', () => {
     expect(() => new Block(alice, data, dateCreated, badChecksum)).toThrow(
       'Checksum mismatch'
     );
+    expect(true).toBeTruthy();
   });
   it('should throw when making an empty block', () => {
     const data = Buffer.from(new Uint8Array());
@@ -90,6 +94,7 @@ describe('block', () => {
     expect(() => new Block(alice, data, dateCreated)).toThrow(
       `Data length ${data.length} is not a valid block size`
     );
+    expect(true).toBeTruthy();
   });
   it('should throw when making a block of a bad size', () => {
     const blockSize = randomBlockSize();
@@ -98,6 +103,7 @@ describe('block', () => {
     expect(() => new Block(alice, data, dateCreated)).toThrow(
       `Data length ${data.length} is not a valid block size`
     );
+    expect(true).toBeTruthy();
   });
   it('should make dateCreated valus when not provided', () => {
     const blockSize = randomBlockSize();
@@ -111,18 +117,21 @@ describe('block', () => {
     const delta = Math.abs(block.dateCreated.getTime() - dateCreated.getTime());
     expect(delta).toBeLessThan(1000);
     expect(delta).toBeGreaterThanOrEqual(0);
+    expect(true).toBeTruthy();
   });
   it('should not xor with different block sizes', () => {
     const blockA = new Block(alice, randomBytes(BlockSize.Tiny), new Date());
     const blockB = new Block(alice, randomBytes(BlockSize.Nano), new Date());
     expect(() => blockA.xor(blockB, alice)).toThrow('Block sizes do not match');
+    expect(true).toBeTruthy();
   });
   it('should xor with same block sizes', () => {
-    const blockA = new Block(alice, randomBytes(BlockSize.Nano), new Date());
-    const blockB = new Block(alice, randomBytes(BlockSize.Nano), new Date());
+    const blockLength: number = BlockSize.Nano;
+    const blockA = new Block(alice, randomBytes(blockLength), new Date());
+    const blockB = new Block(alice, randomBytes(blockLength), new Date());
     const blockC = blockA.xor(blockB, alice);
-    const expectedData = Buffer.alloc(BlockSize.Nano);
-    for (let i = 0; i < BlockSize.Nano; i++) {
+    const expectedData = Buffer.alloc(blockLength);
+    for (let i = 0; i < blockLength; i++) {
       expectedData[i] = blockA.data[i] ^ blockB.data[i];
     }
     expect(blockC.data).toEqual(expectedData);
@@ -130,5 +139,6 @@ describe('block', () => {
     expect(blockC.id).toEqual(
       Buffer.from(StaticHelpersChecksum.calculateChecksum(expectedData))
     );
+    expect(true).toBeTruthy();
   });
 });

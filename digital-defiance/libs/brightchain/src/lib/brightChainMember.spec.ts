@@ -3,17 +3,27 @@ import BrightChainMember from './brightChainMember';
 import BrightChainMemberType from './memberType';
 import StaticHelpersKeyPair from './staticHelpers.keypair';
 describe('brightchain', () => {
+  const alice = BrightChainMember.newMember(
+    BrightChainMemberType.User,
+    'Alice Smith',
+    'alice@example.com'
+  );
+  const bob = BrightChainMember.newMember(
+    BrightChainMemberType.User,
+    'Bob Smith',
+    'bob@example.com'
+  );
+  const noKeyCharlie = new BrightChainMember(
+    BrightChainMemberType.User,
+    'Charlie Smith',
+    'charlie@example.com'
+  );
   it('should sign and verify a message for a member', () => {
-    const member = BrightChainMember.newMember(
-      BrightChainMemberType.User,
-      'Bob Smith',
-      'bob@example.com'
-    );
     const message = Buffer.from('hello world');
-    const signature = member.sign(message);
-    const verified = member.verify(signature, message);
+    const signature = alice.sign(message);
+    const verified = alice.verify(signature, message);
     expect(verified).toBeTruthy();
-    expect(member.verify(signature, Buffer.from('hello worldx'))).toBeFalsy();
+    expect(alice.verify(signature, Buffer.from('hello worldx'))).toBeFalsy();
   });
   it('should fail to create with an invalid id', () => {
     expect(
@@ -94,36 +104,16 @@ describe('brightchain', () => {
     }).toThrowError('Member email is invalid');
   });
   it('should check whether a user has a data key pair', () => {
-    const member = BrightChainMember.newMember(
-      BrightChainMemberType.User,
-      'Bob Smith',
-      'bob@example.com'
-    );
-    expect(member.hasDataPrivateKey).toEqual(true);
-    expect(member.hasDataKeyPair).toEqual(true);
-    const noKeyMember = new BrightChainMember(
-      BrightChainMemberType.User,
-      'Charlie Smith',
-      'charlie@example.com'
-    );
-    expect(noKeyMember.hasDataKeyPair).toEqual(false);
-    expect(noKeyMember.hasDataPrivateKey).toEqual(false);
+    expect(bob.hasDataPrivateKey).toEqual(true);
+    expect(bob.hasDataKeyPair).toEqual(true);
+    expect(noKeyCharlie.hasDataKeyPair).toEqual(false);
+    expect(noKeyCharlie.hasDataPrivateKey).toEqual(false);
   });
   it('should check whether a user has a signing key pair', () => {
-    const member = BrightChainMember.newMember(
-      BrightChainMemberType.User,
-      'Alice Smith',
-      'alice@example.com'
-    );
-    expect(member.hasSigningKeyPair).toEqual(true);
-    expect(member.hasSigningPrivateKey).toEqual(true);
-    const noKeyMember = new BrightChainMember(
-      BrightChainMemberType.User,
-      'Bob Smith',
-      'bob@example.com'
-    );
-    expect(noKeyMember.hasSigningKeyPair).toEqual(false);
-    expect(noKeyMember.hasSigningPrivateKey).toEqual(false);
+    expect(alice.hasSigningKeyPair).toEqual(true);
+    expect(alice.hasSigningPrivateKey).toEqual(true);
+    expect(noKeyCharlie.hasSigningKeyPair).toEqual(false);
+    expect(noKeyCharlie.hasSigningPrivateKey).toEqual(false);
   });
   it('should throw with an invalid signing key', () => {
     const newId = randomUUID();
