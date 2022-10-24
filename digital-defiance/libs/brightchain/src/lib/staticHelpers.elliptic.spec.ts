@@ -84,4 +84,39 @@ describe('brightchain staticHelpers.elliptic', () => {
     expect(rlen).toBe(2130772225);
     expect(p.place).toBe(5);
   });
+  it('should test rmPadding', () => {
+    const data = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00];
+    const res = StaticHelpersElliptic.rmPadding(data);
+    expect(res).toEqual([0x00]);
+  });
+  it('should test rmPadding as string', () => {
+    const data = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00];
+    const dataString = data.map((x) => String.fromCharCode(x)).join('');
+    const res = StaticHelpersElliptic.rmPadding(dataString);
+    expect(res).toEqual(dataString);
+  });
+  it('should test rmPadding as string', () => {
+    const data = [0x00, 0x01, 0x81].map(c => String.fromCharCode(c)).join('');
+    const res = StaticHelpersElliptic.rmPadding(data);
+    expect(res).toEqual(data);
+  });
+  it('should test rmPadding with no data', () => {
+    const data: number[] = [];
+    const res = StaticHelpersElliptic.rmPadding(data);
+    expect(res).toEqual(data);
+  });
+  it('should throw an error when an empty string is given to rmPadding', () => {
+    const data = '';
+    expect(() => StaticHelpersElliptic.rmPadding(data)).toThrow();
+  });
+  it('should test rmPadding with no data as string', () => {
+    const data = String.fromCharCode(0x80);
+    const res = StaticHelpersElliptic.rmPadding(data);
+    expect(res).toEqual(data);
+  });
+  it("should exercise rmPadding with a string", () => {
+    const data: string = [0x00, 0x81, 0x83].map((x) => String.fromCharCode(x)).join('');
+    const res = StaticHelpersElliptic.rmPadding(data);
+    expect(res).toEqual(data);
+  });
 });
