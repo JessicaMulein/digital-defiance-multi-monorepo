@@ -7,37 +7,37 @@ export const enum BlockSize {
   /// <summary>
   /// Tiniest block size, best for keys. 128b.
   /// </summary>
-  Nano = 1,
+  Nano = 128,
 
   /// <summary>
   /// Best for extremely small messages. 256b.
   /// </summary>
-  Micro = 2,
+  Micro = 256,
 
   /// <summary>
   /// Message size, such as a small data blob, currently 512b.
   /// </summary>
-  Message = 3,
+  Message = 512,
 
   /// <summary>
   /// Tiny size, such as smaller messages and configs, currently 1K.
   /// </summary>
-  Tiny = 4,
+  Tiny = 1024,
 
   /// <summary>
   /// Small size, such as small data files up to a mb or so depending on desired block count, currently 4K.
   /// </summary>
-  Small = 5,
+  Small = 4096,
 
   /// <summary>
   /// Medium size, such as medium data files up to 5-100mb, currently 1M.
   /// </summary>
-  Medium = 6,
+  Medium = 1048576,
 
   /// <summary>
   /// Large size, such as large data files over 4M up to many terabytes.
   /// </summary>
-  Large = 7,
+  Large = 1073741824,
 }
 
 export const blockSizes = [
@@ -72,7 +72,7 @@ export function blockSizeToLength(blockSize: BlockSize): number {
 }
 
 export function validateBlockSize(length: number): boolean {
-  return blockSizeLengths.indexOf(length) >= 0;
+  return blockSizeLengths.indexOf(length) >= 1; // ignore 0 = unknown
 }
 
 export default BlockSize;

@@ -12,14 +12,17 @@ export default class Block implements IReadOnlyDataObject {
     checksum?: Uint8Array
   ) {
     this.createdBy = Buffer.from(creator.id);
-    this.data = Buffer.from(data);
     if (!validateBlockSize(data.length)) {
       throw new Error(`Data length ${data.length} is not a valid block size`);
     }
+    this.data = Buffer.from(data);
     this.id = Buffer.from(
       StaticHelpersChecksum.calculateChecksum(Buffer.from(data))
     );
-    if (checksum !== undefined && !Buffer.from(this.id).equals(Buffer.from(checksum))) {
+    if (
+      checksum !== undefined &&
+      !Buffer.from(this.id).equals(Buffer.from(checksum))
+    ) {
       throw new Error('Checksum mismatch');
     }
     this.dateCreated = dateCreated ?? new Date();
@@ -68,11 +71,6 @@ export default class Block implements IReadOnlyDataObject {
     const data = Buffer.from(parsed.data, 'hex');
     const dateCreated = new Date(parsed.dateCreated);
     const parsedBlockId = Buffer.from(parsed.id, 'hex');
-    return new Block(
-      member,
-      data,
-      dateCreated,
-      parsedBlockId
-    );
+    return new Block(member, data, dateCreated, parsedBlockId);
   }
 }
