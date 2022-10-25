@@ -200,7 +200,6 @@ export default class BrightChainMember implements IReadOnlyBasicObject {
     this._signingKeyPair = kp;
   }
 
-
   /**
    * Load a signing key pair for this member.
    * @param keyPair The key pair to load.
@@ -209,8 +208,17 @@ export default class BrightChainMember implements IReadOnlyBasicObject {
     // challenge the data key pair
     const password =
       StaticHelpersKeyPair.signingKeyPairToDataKeyPassphraseFromMember(this);
-    if (!StaticHelpersKeyPair.challengeDataKeyPair(keyPair, password)) {
-      throw new Error('Invalid data key pair');
+    let valid = false;
+    try {
+      valid =
+        valid || StaticHelpersKeyPair.challengeDataKeyPair(keyPair, password);
+    } catch (e) {
+      // empty
+    }
+    if (!valid) {
+      throw new Error(
+        'Unable to challenge data key pair with mneomonic from signing key pair'
+      );
     }
     this._dataKeyPair = keyPair;
   }

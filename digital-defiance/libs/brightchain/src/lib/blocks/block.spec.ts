@@ -15,9 +15,12 @@ const pTrace = HanselGretelBreadCrumbTrail.addCrumb(true, traceLog, 'block.spec.
 
 function randomBlockSize(): BlockSize {
   pTrace.forkAndAddCrumb('randomBlockSize');
-  // need to skip unknown block size
-  const blockIndex = 1 + Math.floor(Math.random() * (blockSizes.length - 1));
-  return blockSizes[blockIndex];
+  // how about we actually reduce the set to one fow now.
+  // TODO: determine deadlock/speed issues?
+  return BlockSize.Tiny;
+  // // need to skip unknown block size
+  // const blockIndex = 1 + Math.floor(Math.random() * (blockSizes.length - 1));
+  // return blockSizes[blockIndex];
 }
 
 const alice = BrightChainMember.newMember(
