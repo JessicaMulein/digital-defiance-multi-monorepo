@@ -38,6 +38,32 @@ describe('brightchain', () => {
         )
     ).toThrowError('Invalid member ID');
   });
+  it('should fail to sign when there is no signing key', () => {
+    expect(() => noKeyCharlie.sign(Buffer.from('hello world'))).toThrowError(
+      'No key pair'
+    );
+  });
+  it('should fail to verify when there is no signing key', () => {
+    expect(() => {
+      const signature = alice.sign(Buffer.from('hello world'));
+      noKeyCharlie.verify(signature, Buffer.from('hello world'));
+    }).toThrowError('No key pair');
+  });
+  it('should unload a data keypair or signing key[air when called', () => {
+    const dwight = BrightChainMember.newMember(
+      BrightChainMemberType.User,
+      'Dwight Smith',
+      'dwight@example.com'
+    );
+    expect(dwight.dataKeyPair).toBeTruthy();
+    dwight.unloadDataKeyPair();
+    expect(() => dwight.dataKeyPair).toThrowError('Data key pair not set');
+    expect(dwight.signingKeyPair).toBeTruthy();
+    dwight.unloadSigningKeyPair();
+    expect(() => dwight.signingKeyPair).toThrowError(
+      'Signing key pair not set'
+    );
+  });
   it('should fail to create with a made up id', () => {
     // most if not all 16 byte values are valid. this test may be useless
     expect(

@@ -200,6 +200,7 @@ export default class BrightChainMember implements IReadOnlyBasicObject {
     this._signingKeyPair = kp;
   }
 
+
   /**
    * Load a signing key pair for this member.
    * @param keyPair The key pair to load.
@@ -212,6 +213,14 @@ export default class BrightChainMember implements IReadOnlyBasicObject {
       throw new Error('Invalid data key pair');
     }
     this._dataKeyPair = keyPair;
+  }
+
+  public unloadDataKeyPair(): void {
+    this._dataKeyPair = null;
+  }
+
+  public unloadSigningKeyPair(): void {
+    this._signingKeyPair = null;
   }
 
   /**
