@@ -190,20 +190,13 @@ export default abstract class StaticHelpersKeyPair {
     return buffer;
   }
 
-  /**
-   * Generate an Asymmetric data key pair for data encryption to/from members
-   * @param password
-   * @returns
-   */
-  public static generateDataKeyPair(
-    password: string,
-    loopPrevention?: number
+  public static encryptPrivateKeyData(
+    result: KeyPairSyncResult<string, string>,
+    newPassword: string
   ): ISimpleKeyPairBuffer {
-    const keyPairOptions = StaticHelpersKeyPair.DataKeyPairOptions;
-    const keyPairResult = generateKeyPairSync('rsa', keyPairOptions);
-    const derivedKey = StaticHelpersPbkdf2.deriveKeyFromPassword(password);
+    const derivedKey = StaticHelpersPbkdf2.deriveKeyFromPassword(newPassword);
     const encryptedPrivateKey = StaticHelpersSymmetric.symmetricEncrypt(
-      Buffer.from(keyPairResult.privateKey, 'utf8'),
+      Buffer.from(result.privateKey, 'utf8'),
       derivedKey.hash,
       true
     );
@@ -215,9 +208,27 @@ export default abstract class StaticHelpersKeyPair {
     ]);
 
     const kpBuffer: ISimpleKeyPairBuffer = {
-      publicKey: Buffer.from(keyPairResult.publicKey, 'utf8'),
+      publicKey: Buffer.from(result.publicKey, 'utf8'),
       privateKey: privateKeyData,
     };
+    return kpBuffer;
+  }
+
+  /**
+   * Generate an Asymmetric data key pair for data encryption to/from members
+   * @param password
+   * @returns
+   */
+  public static generateDataKeyPair(
+    password: string,
+    loopPrevention?: number
+  ): ISimpleKeyPairBuffer {
+    const keyPairOptions = StaticHelpersKeyPair.DataKeyPairOptions;
+    const keyPairResult = generateKeyPairSync('rsa', keyPairOptions);
+    const kpBuffer = StaticHelpersKeyPair.encryptPrivateKeyData(
+      keyPairResult,
+      password
+    );
 
     if (!StaticHelpersKeyPair.challengeDataKeyPair(kpBuffer, password)) {
       const maxTries = 100;
@@ -232,10 +243,7 @@ export default abstract class StaticHelpersKeyPair {
       );
     }
 
-    return {
-      publicKey: Buffer.from(keyPairResult.publicKey, 'utf8'),
-      privateKey: privateKeyData,
-    };
+    return kpBuffer;
   }
 
   /**
@@ -459,7 +467,7 @@ export default abstract class StaticHelpersKeyPair {
    * @param salt
    * @returns
    */
-  public static rebuildSigningKeyPairResultFromKeyPair(
+  public static getSigningKeyInfoFromKeyPair(
     keyPair: EC.KeyPair,
     salt?: string
   ): ISigningKeyInfo {
@@ -525,7 +533,7 @@ export default abstract class StaticHelpersKeyPair {
     member: BrightChainMember
   ): string {
     return StaticHelpersKeyPair.signingKeyPairToDataKeyPassphraseFromMemberId(
-      StaticHelpers.Uint8ArrayToUuidV4(member.id, false),
+      member.uuid,
       member.signingKeyPair
     );
   }

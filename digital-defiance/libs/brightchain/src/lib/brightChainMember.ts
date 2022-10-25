@@ -4,7 +4,7 @@ import { IReadOnlyBasicObject, ISimpleKeyPairBuffer } from './interfaces';
 import StaticHelpersKeyPair from './staticHelpers.keypair';
 import BrightChainMemberType from './memberType';
 import StaticHelpers from './staticHelpers';
-
+import { KeyPairSyncResult } from 'crypto';
 /**
  * A member of Brightchain.
  * @param id The unique identifier for this member.
@@ -176,6 +176,10 @@ export default class BrightChainMember implements IReadOnlyBasicObject {
     this.dateUpdated = dateUpdated ?? now();
   }
 
+  public get uuid(): string {
+    return StaticHelpers.Uint8ArrayToUuidV4(this.id);
+  }
+
   /**
    * Load a signing key pair for this member.
    * @param keyPair The key pair to load.
@@ -265,6 +269,53 @@ export default class BrightChainMember implements IReadOnlyBasicObject {
     );
   }
 
+  public rekeySigningKeyPair(newSigningKeyPair: EC.KeyPair): void {
+    if (!StaticHelpersKeyPair.challengeSigningKeyPair(newSigningKeyPair)) {
+      throw new Error('Invalid new signing key pair');
+    }
+    if (!StaticHelpersKeyPair.challengeSigningKeyPair(this.signingKeyPair)) {
+      throw new Error('Invalid current signing key pair');
+    }
+
+    // get data private key with current passphrase, convert to new passphrase
+    const currentSigningKeyPassphrase =
+      StaticHelpersKeyPair.signingKeyPairToDataKeyPassphraseFromMemberId(
+        this.uuid,
+        this.signingKeyPair
+      );
+    const newSigningKeyPassphrase =
+      StaticHelpersKeyPair.signingKeyPairToDataKeyPassphraseFromMemberId(
+        this.uuid,
+        newSigningKeyPair
+      );
+
+    // using the current signing key prhase, decrypt the data key pair
+    const decryptedDataPrivateKey = StaticHelpersKeyPair.decryptDataPrivateKey(
+      this.signingPrivateKey,
+      currentSigningKeyPassphrase
+    ).toString('utf8');
+    // make a key pair sync result encryptPrivateKeyData can use
+    const newKpSyncResult: KeyPairSyncResult<string, string> = {
+      publicKey: this.dataPublicKey.toString('utf8'),
+      privateKey: decryptedDataPrivateKey,
+    };
+    const updatedDataKeyPairWithReCryptedPrivate =
+      StaticHelpersKeyPair.encryptPrivateKeyData(
+        newKpSyncResult,
+        newSigningKeyPassphrase
+      );
+    if (
+      !StaticHelpersKeyPair.challengeDataKeyPair(
+        updatedDataKeyPairWithReCryptedPrivate,
+        newSigningKeyPassphrase
+      )
+    ) {
+      throw new Error('Unable to rekey signing key pair successfully');
+    }
+    this._dataKeyPair = updatedDataKeyPairWithReCryptedPrivate;
+    this._signingKeyPair = newSigningKeyPair;
+  }
+
   // public publicEncrypt(data: Buffer): Buffer {
   //   if (!this._signingKeyPair) {
   //     throw new Error('No key pair');
@@ -290,9 +341,7 @@ export default class BrightChainMember implements IReadOnlyBasicObject {
       memberType,
       name,
       contactEmail,
-      StaticHelpersKeyPair.rebuildSigningKeyPairResultFromKeyPair(
-        keyPair.signing
-      ),
+      StaticHelpersKeyPair.getSigningKeyInfoFromKeyPair(keyPair.signing),
       keyPair.data,
       StaticHelpers.UuidV4ToUint8Array(newId)
     );
