@@ -1,4 +1,3 @@
-// TODO: split
 import Rand from 'rand-seed';
 import BrightChainMember from './brightChainMember';
 import BrightChainMemberType from './memberType';

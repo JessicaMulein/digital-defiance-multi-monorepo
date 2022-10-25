@@ -1,3 +1,5 @@
+import { ec} from 'elliptic';
+
 export interface ISimpleKeyPair {
   publicKey: string;
   privateKey: string;
@@ -9,7 +11,7 @@ export interface ISimpleKeyPairBuffer {
 }
 
 export interface ISigningKeyInfo {
-  keyPair: kp;
+  keyPair: ec.KeyPair;
   publicKey: Buffer;
   privateKey: Buffer;
   seedHex: string;

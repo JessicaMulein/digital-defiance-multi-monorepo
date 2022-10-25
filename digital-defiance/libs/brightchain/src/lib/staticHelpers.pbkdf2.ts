@@ -1,5 +1,3 @@
-// TODO: split
-import StaticHelpers from './staticHelpers.checksum';
 import { randomBytes, pbkdf2Sync } from 'crypto';
 import { IPbkdf2Result, IPbkf2Config } from './interfaces';
 import StaticHelpersKeyPair from './staticHelpers.keypair';

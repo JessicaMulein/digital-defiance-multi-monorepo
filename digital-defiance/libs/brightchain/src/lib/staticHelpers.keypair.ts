@@ -1,4 +1,3 @@
-// TODO: split
 import Rand from 'rand-seed';
 import { ec as EC } from 'elliptic';
 import {

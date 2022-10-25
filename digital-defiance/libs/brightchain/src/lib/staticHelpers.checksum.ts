@@ -1,4 +1,3 @@
-// TODO: move to brightchain, reference from there
 import { createHash } from 'crypto';
 
 /**

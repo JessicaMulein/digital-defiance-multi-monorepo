@@ -1,4 +1,3 @@
-// TODO: split
 import * as secrets from 'secrets.js-34r7h';
 import { Shares } from 'secrets.js-34r7h';
 import BrightChainMember from 'libs/brightchain/src/lib/brightChainMember';

@@ -82,11 +82,20 @@ describe('brightchain', () => {
     const frank = BrightChainMember.newMember(
       BrightChainMemberType.User,
       'Frank Smith',
-      'frank@example.com');
+      'frank@example.com'
+    );
 
-      const newSigningKeyPair = StaticHelpersKeyPair.generateSigningKeyPair();
-      frank.rekeySigningKeyPair(newSigningKeyPair.keyPair);
-      expect(frank.signingKeyPair).toEqual(newSigningKeyPair.keyPair);
+    const newSigningKeyPair = frank.rekeySigningKeyPair();
+    expect(frank.signingKeyPair).toEqual(newSigningKeyPair.keyPair);
+    expect(
+      StaticHelpersKeyPair.challengeSigningKeyPair(newSigningKeyPair.keyPair)
+    ).toBeTruthy();
+    expect(
+      StaticHelpersKeyPair.challengeDataKeyPair(
+        frank.dataKeyPair,
+        StaticHelpersKeyPair.signingKeyPairToDataKeyPassphraseFromMember(frank)
+      )
+    ).toBeTruthy();
   });
   it('should fail to create with a made up id', () => {
     // most if not all 16 byte values are valid. this test may be useless
@@ -174,7 +183,7 @@ describe('brightchain', () => {
         'alice',
         'alice@example.com',
         {
-          publicKey: keyPair.signing.publicKey,
+          publicKey: Buffer.from(keyPair.signing.getPublic('hex'), 'hex'),
           privateKey: Buffer.from([]),
         },
         {
@@ -193,14 +202,14 @@ describe('brightchain', () => {
         'alice',
         'alice@example.com',
         {
-          publicKey: keyPair.signing.publicKey,
-          privateKey: keyPair.signing.privateKey,
+          publicKey: Buffer.from(keyPair.signing.getPublic('hex'), 'hex'),
+          privateKey: Buffer.from(keyPair.signing.getPrivate('hex'), 'hex'),
         },
         {
           publicKey: keyPair.data.publicKey,
           privateKey: Buffer.from([]),
         }
       );
-    }).toThrowError('Invalid key pair');
+    }).toThrowError('Unable to challenge data key pair with mneomonic from signing key pair');
   });
 });

@@ -1,6 +1,6 @@
 import * as uuid from 'uuid';
 import { ec as EC } from 'elliptic';
-import { IReadOnlyBasicObject, ISimpleKeyPairBuffer } from './interfaces';
+import { IReadOnlyBasicObject, ISigningKeyInfo, ISimpleKeyPairBuffer } from './interfaces';
 import StaticHelpersKeyPair from './staticHelpers.keypair';
 import BrightChainMemberType from './memberType';
 import StaticHelpers from './staticHelpers';
@@ -269,13 +269,11 @@ export default class BrightChainMember implements IReadOnlyBasicObject {
     );
   }
 
-  public rekeySigningKeyPair(newSigningKeyPair: EC.KeyPair): void {
-    if (!StaticHelpersKeyPair.challengeSigningKeyPair(newSigningKeyPair)) {
-      throw new Error('Invalid new signing key pair');
-    }
+  public rekeySigningKeyPair(): ISigningKeyInfo {
     if (!StaticHelpersKeyPair.challengeSigningKeyPair(this.signingKeyPair)) {
       throw new Error('Invalid current signing key pair');
     }
+    const newSigningKeyPair = StaticHelpersKeyPair.generateSigningKeyPair();
 
     // get data private key with current passphrase, convert to new passphrase
     const currentSigningKeyPassphrase =
@@ -286,7 +284,7 @@ export default class BrightChainMember implements IReadOnlyBasicObject {
     const newSigningKeyPassphrase =
       StaticHelpersKeyPair.signingKeyPairToDataKeyPassphraseFromMemberId(
         this.uuid,
-        newSigningKeyPair
+        newSigningKeyPair.keyPair
       );
 
     // using the current signing key prhase, decrypt the data key pair
@@ -313,7 +311,8 @@ export default class BrightChainMember implements IReadOnlyBasicObject {
       throw new Error('Unable to rekey signing key pair successfully');
     }
     this._dataKeyPair = updatedDataKeyPairWithReCryptedPrivate;
-    this._signingKeyPair = newSigningKeyPair;
+    this._signingKeyPair = newSigningKeyPair.keyPair;
+    return newSigningKeyPair;
   }
 
   // public publicEncrypt(data: Buffer): Buffer {
