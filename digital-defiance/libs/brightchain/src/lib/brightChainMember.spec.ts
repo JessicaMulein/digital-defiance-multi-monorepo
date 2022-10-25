@@ -64,7 +64,7 @@ describe('brightchain', () => {
       'Signing key pair not set'
     );
   });
-  it('should fail if we swap out the signing keys', () => {
+  it('should fail if we swap out the signing keys without re-encrypting the data key', () => {
     const edith = BrightChainMember.newMember(
       BrightChainMemberType.User,
       'Edith Smith',
@@ -76,6 +76,17 @@ describe('brightchain', () => {
     expect(() => edith.loadDataKeyPair(edith.dataKeyPair)).toThrowError(
       'Unable to challenge data key pair with mneomonic from signing key pair'
     );
+  });
+  it('should let us swap out the signing keys', () => {
+    // TODO: make this not fail =(
+    const frank = BrightChainMember.newMember(
+      BrightChainMemberType.User,
+      'Frank Smith',
+      'frank@example.com');
+
+      const newSigningKeyPair = StaticHelpersKeyPair.generateSigningKeyPair();
+      frank.rekeySigningKeyPair(newSigningKeyPair.keyPair);
+      expect(frank.signingKeyPair).toEqual(newSigningKeyPair.keyPair);
   });
   it('should fail to create with a made up id', () => {
     // most if not all 16 byte values are valid. this test may be useless
