@@ -1,5 +1,5 @@
 import BrightChainMember from '../brightChainMember';
-import GuidV4, { Guid } from '../guid';
+import { FullHexGuid, fullHexFromBigInt } from '../guid';
 import { IReadOnlyDataObject } from '../interfaces';
 import StaticHelpersChecksum from '../staticHelpers.checksum';
 import BlockSize, { lengthToBlockSize, validateBlockSize } from './blockSizes';
@@ -35,8 +35,8 @@ export default class Block implements IReadOnlyDataObject {
     return this.id.toString(16);
   }
   public readonly createdBy: bigint;
-  public get createdById(): Guid {
-    return GuidV4.fromBigint(this.createdBy).guid;
+  public get createdById(): FullHexGuid {
+    return fullHexFromBigInt(this.createdBy);
   }
   public readonly dateCreated: Date;
   public xor(other: Block, agent: BrightChainMember): Block {

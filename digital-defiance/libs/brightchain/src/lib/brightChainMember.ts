@@ -9,7 +9,7 @@ import StaticHelpersKeyPair from './staticHelpers.keypair';
 import BrightChainMemberType from './memberType';
 import StaticHelpers from './staticHelpers';
 import { KeyPairSyncResult } from 'crypto';
-import GuidV4 from './guid';
+import GuidV4, { fullHexFromBigInt, FullHexGuid } from './guid';
 /**
  * A member of Brightchain.
  * @param id The unique identifier for this member.
@@ -132,7 +132,7 @@ export default class BrightChainMember implements IReadOnlyBasicObject {
     if (id !== undefined) {
       let newGuid: GuidV4;
       try {
-        newGuid = GuidV4.fromBigint(id);
+        newGuid = new GuidV4(fullHexFromBigInt(id));
       } catch (e) {
         throw new Error('Invalid member ID');
       }
@@ -179,8 +179,8 @@ export default class BrightChainMember implements IReadOnlyBasicObject {
     this.dateUpdated = dateUpdated ?? now();
   }
 
-  public get uuid(): string {
-    return GuidV4.fromBigint(this.id).guid;
+  public get uuid(): FullHexGuid {
+    return fullHexFromBigInt(this.id);
   }
 
   /**
