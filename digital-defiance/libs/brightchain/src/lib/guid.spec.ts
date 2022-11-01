@@ -1,4 +1,4 @@
-import GuidV4, { FullHexGuid } from './guid';
+import GuidV4, { FullHexGuid, GuidBrand, verifyGuid } from './guid';
 import * as uuid from 'uuid';
 
 describe('guid', () => {
@@ -34,5 +34,13 @@ describe('guid', () => {
     const uuidStr: FullHexGuid = uuid.v4() as FullHexGuid;
     const guidV4 = new GuidV4(uuidStr);
     expect(guidV4.guid).toEqual(uuidStr);
+  });
+  it("should test verifyGuid with validate=false", () => {
+    const uuidStr: FullHexGuid = uuid.v4() as FullHexGuid;
+    expect(verifyGuid(GuidBrand.FullHexGuid, uuidStr, false)).toBeTruthy();
+  });
+  it("should test verifyGuid with validate=true", () => {
+    const uuidStr: FullHexGuid = uuid.v4() as FullHexGuid;
+    expect(verifyGuid(GuidBrand.FullHexGuid, uuidStr, true)).toBeTruthy();
   });
 });

@@ -39,7 +39,7 @@ export const lengthMap: Map<GuidBrand, number> = new Map<GuidBrand, number>([
   [GuidBrand.RawBuffer, 16],
 ]);
 
-export const verifyFunctions: Map<GuidBrand, (guid: AnyBrand) => boolean> =
+export const verifyFunctions: Map<GuidBrand, (guid: AnyBrand, validate?: boolean) => boolean> =
   new Map<GuidBrand, (guid: AnyBrand) => boolean>([
     [GuidBrand.FullHexGuid, isFullHexGuid],
     [GuidBrand.ShortHexGuid, isShortHexGuid],
@@ -51,12 +51,12 @@ export const verifyFunctions: Map<GuidBrand, (guid: AnyBrand) => boolean> =
     [GuidBrand.RawBuffer, isRawGuid],
   ]);
 
-export function verifyGuid(band: GuidBrand, guid: AnyBrand): boolean {
+export function verifyGuid(band: GuidBrand, guid: AnyBrand, validate?: boolean): boolean {
   const verifyFunc = verifyFunctions.get(band);
   if (verifyFunc === undefined) {
     return false;
   }
-  return verifyFunc(guid);
+  return verifyFunc(guid, validate);
 }
 
 export function guidBrandToLength(brand: GuidBrand): number {
