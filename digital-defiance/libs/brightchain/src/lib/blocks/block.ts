@@ -1,6 +1,6 @@
 import BrightChainMember from '../brightChainMember';
+import GuidV4, { Guid } from '../guid';
 import { IReadOnlyDataObject } from '../interfaces';
-import StaticHelpers from '../staticHelpers';
 import StaticHelpersChecksum from '../staticHelpers.checksum';
 import BlockSize, { lengthToBlockSize, validateBlockSize } from './blockSizes';
 
@@ -16,13 +16,12 @@ export default class Block implements IReadOnlyDataObject {
       throw new Error(`Data length ${data.length} is not a valid block size`);
     }
     this.data = Buffer.from(data);
-    const rawChecksum = StaticHelpersChecksum.calculateChecksum(Buffer.from(data));
+    const rawChecksum = StaticHelpersChecksum.calculateChecksum(
+      Buffer.from(data)
+    );
     this.id = BigInt('0x' + rawChecksum.toString('hex'));
-      
-    if (
-      checksum !== undefined &&
-      this.id !== checksum
-    ) {
+
+    if (checksum !== undefined && this.id !== checksum) {
       throw new Error('Checksum mismatch');
     }
     this.dateCreated = dateCreated ?? new Date();
@@ -36,8 +35,8 @@ export default class Block implements IReadOnlyDataObject {
     return this.id.toString(16);
   }
   public readonly createdBy: bigint;
-  public get createdById(): string {
-    return StaticHelpers.BigIntToUuidV4(this.createdBy, false);
+  public get createdById(): Guid {
+    return GuidV4.fromBigint(this.createdBy).guid;
   }
   public readonly dateCreated: Date;
   public xor(other: Block, agent: BrightChainMember): Block {
@@ -68,9 +67,7 @@ export default class Block implements IReadOnlyDataObject {
     const dateCreated = new Date(parsed.dateCreated);
     const parsedBlockId = BigInt('0x' + parsed.id);
     const member = fetchMember(parsedMemberId);
-    if (
-      member.id != parsedMemberId
-    ) {
+    if (member.id != parsedMemberId) {
       throw new Error('Member mismatch');
     }
     return new Block(member, data, dateCreated, parsedBlockId);

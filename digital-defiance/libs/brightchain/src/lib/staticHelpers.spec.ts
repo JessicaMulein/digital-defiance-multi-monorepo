@@ -1,4 +1,3 @@
-import { randomUUID } from 'crypto';
 import BrightChainMember from './brightChainMember';
 import BrightChainMemberType from './memberType';
 import StaticHelpers from './staticHelpers';
@@ -62,11 +61,5 @@ describe('staticHelpers', () => {
     expect(StaticHelpers.validateEmail('alice@example@.com')).toBeFalsy();
     expect(StaticHelpers.validateEmail('alice@example.com')).toBeTruthy();
     //TODO: more
-  });
-  it("should convert uuid to and from bigint", () => {
-    const uuid = randomUUID();
-    const uuidBigint = StaticHelpers.UuidV4ToBigint(uuid);
-    const uuid2 = StaticHelpers.BigIntToUuidV4(uuidBigint);
-    expect(uuid).toEqual(uuid2);
   });
 });

@@ -1,7 +1,6 @@
 import Rand from 'rand-seed';
 import BrightChainMember from './brightChainMember';
 import BrightChainMemberType from './memberType';
-import * as uuid from 'uuid';
 
 /**
  * @description Static helper functions for Brightchain Quorum. Encryption and other utilities.
@@ -68,37 +67,5 @@ export default abstract class StaticHelpers {
       return true;
     }
     return false;
-  }
-
-  public static UuidV4ToBigint(id: string, validate?: boolean): bigint {
-    if ((validate === undefined || validate === true) && !uuid.validate(id)) {
-      throw new Error('Invalid UUID');
-    }
-    return BigInt('0x' + id.replace(/-/g, ''));
-  }
-
-  public static BigIntToUuidV4(bigInt: bigint, validate?: boolean): string {
-    const uuidBigInt = bigInt.toString(16).padStart(32, '0');
-    const rebuiltUuid =
-      uuidBigInt.slice(0, 8) +
-      '-' +
-      uuidBigInt.slice(8, 12) +
-      '-' +
-      uuidBigInt.slice(12, 16) +
-      '-' +
-      uuidBigInt.slice(16, 20) +
-      '-' +
-      uuidBigInt.slice(20);
-    if (
-      (validate === undefined || validate === true) &&
-      !uuid.validate(rebuiltUuid)
-    ) {
-      throw new Error('Invalid UUID');
-    }
-    return rebuiltUuid;
-  }
-
-  public static newUuidV4AsBigint(): bigint {
-    return StaticHelpers.UuidV4ToBigint(uuid.v4());
   }
 }

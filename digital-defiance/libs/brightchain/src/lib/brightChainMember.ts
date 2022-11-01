@@ -9,6 +9,7 @@ import StaticHelpersKeyPair from './staticHelpers.keypair';
 import BrightChainMemberType from './memberType';
 import StaticHelpers from './staticHelpers';
 import { KeyPairSyncResult } from 'crypto';
+import GuidV4 from './guid';
 /**
  * A member of Brightchain.
  * @param id The unique identifier for this member.
@@ -129,14 +130,15 @@ export default class BrightChainMember implements IReadOnlyBasicObject {
   ) {
     this.memberType = memberType;
     if (id !== undefined) {
+      let newGuid: GuidV4;
       try {
-        StaticHelpers.BigIntToUuidV4(id);
+        newGuid = GuidV4.fromBigint(id);
       } catch (e) {
         throw new Error('Invalid member ID');
       }
-      this.id = id;
+      this.id = newGuid.bigInt;
     } else {
-      this.id = StaticHelpers.newUuidV4AsBigint();
+      this.id = GuidV4.new().bigInt;
     }
     this.name = name;
     if (!this.name || this.name.length == 0) {
@@ -178,7 +180,7 @@ export default class BrightChainMember implements IReadOnlyBasicObject {
   }
 
   public get uuid(): string {
-    return StaticHelpers.BigIntToUuidV4(this.id, false);
+    return GuidV4.fromBigint(this.id).guid;
   }
 
   /**
@@ -343,7 +345,7 @@ export default class BrightChainMember implements IReadOnlyBasicObject {
       contactEmail,
       StaticHelpersKeyPair.getSigningKeyInfoFromKeyPair(keyPair.signing),
       keyPair.data,
-      StaticHelpers.UuidV4ToBigint(newId)
+      new GuidV4(newId).bigInt
     );
   }
 }
