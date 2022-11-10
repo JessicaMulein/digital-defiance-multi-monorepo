@@ -85,6 +85,23 @@ export class X86Cpu {
     this.Stack[--this.Registers[Registers.ESP]] = value;
   }
 
+  public static new(
+    memory: number | Uint32Array | ArrayBuffer,
+    registers: number | Uint32Array,
+    pc = -1
+  ): X86Cpu {
+    const cpu = new X86Cpu(memory, registers, pc);
+    cpu.Registers[Registers.ESP] = 1023;
+    return cpu;
+  }
+
+  public run() {
+    let op;
+    while (this.PC !== -1 && (op = this.read(1))) {
+      this.Instructions[op]();
+    }
+  }
+
   public static run(
     memory: number | Uint32Array | ArrayBuffer,
     registers: number | Uint32Array,

@@ -8,10 +8,6 @@ import { X86Cpu } from './x86Cpu';
 const LC_SEGMENT = 0x00000001;
 const LC_UNIXTHREAD = 0x00000005;
 
-const Memory = new ArrayBuffer(1048576);
-const Registers = new Uint32Array(8);
-let PC = -1;
-
 export function loadBinary(file: Blob) {
   const reader = new FileReader();
   reader.addEventListener('loadend', function () {
@@ -29,6 +25,7 @@ export function readBinary(buffer: Buffer): X86Cpu {
   if (header[0] !== 0xfeedface) {
     throw new Error('Invalid Mach magic');
   }
+  const cpu = X86Cpu.new(1048576, 8);
   // var cpuType = header[1];
   // var cpuSubtype = header[2];
   // var fileType = header[3];
@@ -41,40 +38,49 @@ export function readBinary(buffer: Buffer): X86Cpu {
     const commandEnd = currentCommandStart + commandSize / 4;
     const commandBuffer = buffer.subarray(currentCommandStart, commandEnd);
 
-    handleCommand(buffer, commandBuffer);
+    handleCommand(cpu, buffer, commandBuffer);
 
     currentCommandStart = commandEnd;
   }
-  if (PC !== -1) {
-    const cpu = X86Cpu.run(Memory, Registers, PC);
+
+  if (cpu.PC !== -1) {
+    cpu.run();
     return cpu;
   }
-  PC = -1;
+  cpu.PC = -1;
   throw new Error('Invalid Mach-O file');
 }
 
-export function handleCommand(buffer: Buffer, commandBuffer: Buffer) {
+export function handleCommand(
+  cpu: X86Cpu,
+  buffer: Buffer,
+  commandBuffer: Buffer
+) {
   const command = commandBuffer[0];
   switch (command) {
     case LC_SEGMENT:
-      handleSegmentCommand(buffer, commandBuffer);
+      handleSegmentCommand(cpu, buffer, commandBuffer);
       break;
     case LC_UNIXTHREAD:
-      handleUnixThreadCommand(buffer, commandBuffer);
+      handleUnixThreadCommand(cpu, buffer, commandBuffer);
       break;
     default:
     // Unhandled command
   }
 }
 
-export function handleSegmentCommand(buffer: Buffer, commandBuffer: Buffer) {
+export function handleSegmentCommand(
+  cpu: X86Cpu,
+  buffer: Buffer,
+  commandBuffer: Buffer
+) {
   const vmAddress = commandBuffer[6] >> 2;
   const vmSize = commandBuffer[7] >> 2;
   const fileOffset = commandBuffer[8] >> 2;
   const fileSize = commandBuffer[9] >> 2;
   const fileEnd = fileOffset + fileSize;
 
-  const view = new Uint32Array(Memory);
+  const view = new Uint32Array(cpu.Program);
 
   for (let i = 0; i < vmSize; i++) {
     if (fileOffset + i >= fileEnd) {
@@ -84,19 +90,23 @@ export function handleSegmentCommand(buffer: Buffer, commandBuffer: Buffer) {
   }
 }
 
-export function handleUnixThreadCommand(buffer: Buffer, commandBuffer: Buffer) {
+export function handleUnixThreadCommand(
+  cpu: X86Cpu,
+  buffer: Buffer,
+  commandBuffer: Buffer
+) {
   const offset = 4;
-  Registers[Registers.EAX] = commandBuffer[offset + 0]; // eax
-  Registers[Registers.ECX] = commandBuffer[offset + 2]; // ecx
-  Registers[Registers.EDX] = commandBuffer[offset + 3]; // edx
-  Registers[Registers.EBX] = commandBuffer[offset + 1]; // ebx
-  Registers[Registers.ESP] = commandBuffer[offset + 7]; // esp
-  Registers[Registers.EBP] = commandBuffer[offset + 6]; // ebp
-  Registers[Registers.ESI] = commandBuffer[offset + 5]; // esi
-  Registers[Registers.EDI] = commandBuffer[offset + 4]; // edi
+  cpu.Registers[Registers.EAX] = commandBuffer[offset + 0]; // eax
+  cpu.Registers[Registers.ECX] = commandBuffer[offset + 2]; // ecx
+  cpu.Registers[Registers.EDX] = commandBuffer[offset + 3]; // edx
+  cpu.Registers[Registers.EBX] = commandBuffer[offset + 1]; // ebx
+  cpu.Registers[Registers.ESP] = commandBuffer[offset + 7]; // esp
+  cpu.Registers[Registers.EBP] = commandBuffer[offset + 6]; // ebp
+  cpu.Registers[Registers.ESI] = commandBuffer[offset + 5]; // esi
+  cpu.Registers[Registers.EDI] = commandBuffer[offset + 4]; // edi
   //var ss = commandBuffer[offset + 8];
   //var eflags = commandBuffer[offset + 9];
-  PC = commandBuffer[offset + 10];
+  cpu.PC = commandBuffer[offset + 10];
   //var cs = commandBuffer[offset + 11];
   //var ds = commandBuffer[offset + 12];
   //var es = commandBuffer[offset + 13];
