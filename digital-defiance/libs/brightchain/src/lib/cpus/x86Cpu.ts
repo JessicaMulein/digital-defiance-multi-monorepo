@@ -3,9 +3,6 @@
 'use strict';
 import RegisterName from './registers';
 import {
-  X83Instructions,
-  fn0x81Instructions,
-  fn0x0fInstructions,
   syscallInstructions,
   buildInstructionArray,
 } from './instructionTables';
@@ -26,9 +23,6 @@ export class X86Cpu {
   public PC: number;
   public Instructions: Array<() => void>;
   public Syscalls: Map<number, () => void>;
-  public x83Instructions: Map<number, (reg: number, op2: number) => void>;
-  public fn0x81Instructions: Map<number, (reg: number, value?: number) => void>;
-  public fn0x0fInstructions: Map<number, () => void>;
 
   constructor(
     memory: ArrayBuffer | Uint8Array | number,
@@ -53,9 +47,6 @@ export class X86Cpu {
     this.PC = pc;
     this.Instructions = buildInstructionArray(this);
     this.Syscalls = syscallInstructions(this);
-    this.x83Instructions = X83Instructions(this);
-    this.fn0x81Instructions = fn0x81Instructions(this);
-    this.fn0x0fInstructions = fn0x0fInstructions(this);
   }
   public readonly Stack = new Uint32Array(X86Cpu.StackSize);
 
