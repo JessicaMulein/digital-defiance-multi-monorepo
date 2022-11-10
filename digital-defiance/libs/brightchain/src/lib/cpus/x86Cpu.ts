@@ -1,7 +1,7 @@
 // https://gist.githubusercontent.com/tadeuzagallo/3853299f033bf9b746e4/raw/43467ba1bee7251e1b653123f29e6ff5643a0735/x86.js
 // https://gist.github.com/tadeuzagallo/3853299f033bf9b746e4
 'use strict';
-import RegisterName from './registers';
+import Registers from './registers';
 import {
   syscallInstructions,
   buildInstructionArray,
@@ -78,11 +78,11 @@ export class X86Cpu {
   }
 
   public pop() {
-    return this.Stack[this.Registers[RegisterName.ESP]++];
+    return this.Stack[this.Registers[Registers.ESP]++];
   }
 
   public push(value: number): void {
-    this.Stack[--this.Registers[RegisterName.ESP]] = value;
+    this.Stack[--this.Registers[Registers.ESP]] = value;
   }
 
   public static run(
@@ -91,7 +91,7 @@ export class X86Cpu {
     pc: number
   ): X86Cpu {
     const cpu = new X86Cpu(memory, registers, pc);
-    cpu.Registers[RegisterName.ESP] = 1023;
+    cpu.Registers[Registers.ESP] = 1023;
     let op;
     while (cpu.PC !== -1 && (op = cpu.read(1))) {
       cpu.Instructions[op]();

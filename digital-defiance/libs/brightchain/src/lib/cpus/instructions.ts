@@ -6,7 +6,7 @@ import {
   getX83Instruction,
   X83Instructions,
 } from './instructionTables';
-import RegisterName from './registers';
+import Registers from './registers';
 import { X86Cpu } from './x86Cpu';
 
 // pop reg
@@ -109,13 +109,13 @@ export function addRegPad(cpu: X86Cpu): () => void {
 
 export function addEAX(cpu: X86Cpu): () => void {
   return function () {
-    cpu.Registers[RegisterName.EAX] += cpu.read(4);
+    cpu.Registers[Registers.EAX] += cpu.read(4);
   };
 }
 
 export function subRAX(cpu: X86Cpu): () => void {
   return function () {
-    cpu.Registers[RegisterName.EAX] -= cpu.read(4);
+    cpu.Registers[Registers.EAX] -= cpu.read(4);
   };
 }
 
@@ -278,7 +278,7 @@ export function sysCallExit(cpu: X86Cpu): () => void {
   return function () {
     console.log(
       'Program returned %s',
-      cpu.Stack[cpu.Registers[RegisterName.ESP + 1]]
+      cpu.Stack[cpu.Registers[Registers.ESP + 1]]
     );
     cpu.PC = -1;
   };
@@ -286,7 +286,7 @@ export function sysCallExit(cpu: X86Cpu): () => void {
 
 export function sysCallInterrupt(cpu: X86Cpu): () => void {
   return function () {
-    const syscallOp = cpu.Registers[RegisterName.EAX];
+    const syscallOp = cpu.Registers[Registers.EAX];
     const syscallFunc = getSysCallInstruction(cpu, syscallOp);
     syscallFunc();
   };

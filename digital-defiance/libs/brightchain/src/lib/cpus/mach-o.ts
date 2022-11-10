@@ -2,7 +2,7 @@
 // https://gist.github.com/tadeuzagallo/3853299f033bf9b746e4
 'use strict';
 
-import RegisterName from './registers';
+import Registers from './registers';
 import { X86Cpu } from './x86Cpu';
 
 const LC_SEGMENT = 0x00000001;
@@ -86,14 +86,14 @@ export function handleSegmentCommand(buffer: Buffer, commandBuffer: Buffer) {
 
 export function handleUnixThreadCommand(buffer: Buffer, commandBuffer: Buffer) {
   const offset = 4;
-  Registers[RegisterName.EAX] = commandBuffer[offset + 0]; // eax
-  Registers[RegisterName.ECX] = commandBuffer[offset + 2]; // ecx
-  Registers[RegisterName.EDX] = commandBuffer[offset + 3]; // edx
-  Registers[RegisterName.EBX] = commandBuffer[offset + 1]; // ebx
-  Registers[RegisterName.ESP] = commandBuffer[offset + 7]; // esp
-  Registers[RegisterName.EBP] = commandBuffer[offset + 6]; // ebp
-  Registers[RegisterName.ESI] = commandBuffer[offset + 5]; // esi
-  Registers[RegisterName.EDI] = commandBuffer[offset + 4]; // edi
+  Registers[Registers.EAX] = commandBuffer[offset + 0]; // eax
+  Registers[Registers.ECX] = commandBuffer[offset + 2]; // ecx
+  Registers[Registers.EDX] = commandBuffer[offset + 3]; // edx
+  Registers[Registers.EBX] = commandBuffer[offset + 1]; // ebx
+  Registers[Registers.ESP] = commandBuffer[offset + 7]; // esp
+  Registers[Registers.EBP] = commandBuffer[offset + 6]; // ebp
+  Registers[Registers.ESI] = commandBuffer[offset + 5]; // esi
+  Registers[Registers.EDI] = commandBuffer[offset + 4]; // edi
   //var ss = commandBuffer[offset + 8];
   //var eflags = commandBuffer[offset + 9];
   PC = commandBuffer[offset + 10];

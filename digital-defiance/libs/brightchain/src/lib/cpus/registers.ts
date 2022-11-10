@@ -1,4 +1,4 @@
-export enum RegisterName {
+export enum Registers {
   EAX = 0,
   ECX = 1,
   EDX = 2,
@@ -9,4 +9,4 @@ export enum RegisterName {
   EDI = 7,
 }
 
-export default RegisterName;
+export default Registers;

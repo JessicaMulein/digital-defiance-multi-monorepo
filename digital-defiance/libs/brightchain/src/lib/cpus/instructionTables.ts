@@ -1,8 +1,8 @@
 import { X86Cpu } from './x86Cpu';
-import { RegisterName } from './registers';
+import { Registers } from './registers';
 import * as instructions from './instructions';
 
-export enum InstructionOpcode {
+export enum Instructions {
   // fn0x0f
   fn0x0f = 0x0f,
   // mov imm8 reg
@@ -56,59 +56,61 @@ export enum InstructionOpcode {
   jmpImm8 = 0xeb,
 }
 
-export function Instructions(cpu: X86Cpu): Map<number, () => void> {
+export function buildInstructionMapForCpu(
+  cpu: X86Cpu
+): Map<number, () => void> {
   return new Map<number, () => void>([
-    [InstructionOpcode.fn0x0f, instructions.invokeFn0x0f(cpu)],
-    [InstructionOpcode.movImm8RegEAX, instructions.mov(cpu, RegisterName.EAX)],
-    [InstructionOpcode.movImm8RegECX, instructions.mov(cpu, RegisterName.ECX)],
-    [InstructionOpcode.movImm8RegEDX, instructions.mov(cpu, RegisterName.EDX)],
-    [InstructionOpcode.movImm8RegEBX, instructions.mov(cpu, RegisterName.EBX)],
-    [InstructionOpcode.movImm8RegESP, instructions.mov(cpu, RegisterName.ESP)],
-    [InstructionOpcode.decEAX, instructions.dec(cpu, RegisterName.EAX)],
-    [InstructionOpcode.decECX, instructions.dec(cpu, RegisterName.ECX)],
-    [InstructionOpcode.decEDX, instructions.dec(cpu, RegisterName.EDX)],
-    [InstructionOpcode.decEBX, instructions.dec(cpu, RegisterName.EBX)],
-    [InstructionOpcode.decESP, instructions.dec(cpu, RegisterName.ESP)],
-    [InstructionOpcode.decEBP, instructions.dec(cpu, RegisterName.EBP)],
-    [InstructionOpcode.decESI, instructions.dec(cpu, RegisterName.ESI)],
-    [InstructionOpcode.decEDI, instructions.dec(cpu, RegisterName.EDI)],
-    [InstructionOpcode.pushEAX, instructions.pushr(cpu, RegisterName.EAX)],
-    [InstructionOpcode.pushECX, instructions.pushr(cpu, RegisterName.ECX)],
-    [InstructionOpcode.pushEDX, instructions.pushr(cpu, RegisterName.EDX)],
-    [InstructionOpcode.pushEBX, instructions.pushr(cpu, RegisterName.EBX)],
-    [InstructionOpcode.pushESP, instructions.pushr(cpu, RegisterName.ESP)],
-    [InstructionOpcode.pushEBP, instructions.pushr(cpu, RegisterName.EBP)],
-    [InstructionOpcode.pushESI, instructions.pushr(cpu, RegisterName.ESI)],
-    [InstructionOpcode.pushEDI, instructions.pushr(cpu, RegisterName.EDI)],
-    [InstructionOpcode.popEAX, instructions.popr(cpu, RegisterName.EAX)],
-    [InstructionOpcode.popECX, instructions.popr(cpu, RegisterName.ECX)],
-    [InstructionOpcode.popEDX, instructions.popr(cpu, RegisterName.EDX)],
-    [InstructionOpcode.popEBX, instructions.popr(cpu, RegisterName.EBX)],
-    [InstructionOpcode.popESP, instructions.popr(cpu, RegisterName.ESP)],
-    [InstructionOpcode.popEBP, instructions.popr(cpu, RegisterName.EBP)],
-    [InstructionOpcode.popESI, instructions.popr(cpu, RegisterName.ESI)],
-    [InstructionOpcode.popEDI, instructions.popr(cpu, RegisterName.EDI)],
-    [InstructionOpcode.pushImm8, instructions.pushi(cpu)],
-    [InstructionOpcode.movRegReg, instructions.movRegReg(cpu)],
-    [InstructionOpcode.yam, instructions.yam(cpu)],
-    [InstructionOpcode.ret, instructions.ret(cpu)],
-    [InstructionOpcode.movl, instructions.movl(cpu)],
-    [InstructionOpcode.lea, instructions.lea(cpu)],
-    [InstructionOpcode.addReg, instructions.addReg(cpu)],
-    [InstructionOpcode.addRegPad, instructions.addRegPad(cpu)],
-    [InstructionOpcode.addEAX, instructions.addEAX(cpu)],
-    [InstructionOpcode.subRAX, instructions.subRAX(cpu)],
-    [InstructionOpcode.jge, instructions.jge(cpu)],
-    [InstructionOpcode.x81, instructions.invokeX81(cpu)],
-    [InstructionOpcode.x83, instructions.invokeX83(cpu)],
-    [InstructionOpcode.int, instructions.int(cpu)],
-    [InstructionOpcode.call, instructions.call(cpu)],
-    [InstructionOpcode.jmpImm8, instructions.jmpImm8(cpu)],
+    [Instructions.fn0x0f, instructions.invokeFn0x0f(cpu)],
+    [Instructions.movImm8RegEAX, instructions.mov(cpu, Registers.EAX)],
+    [Instructions.movImm8RegECX, instructions.mov(cpu, Registers.ECX)],
+    [Instructions.movImm8RegEDX, instructions.mov(cpu, Registers.EDX)],
+    [Instructions.movImm8RegEBX, instructions.mov(cpu, Registers.EBX)],
+    [Instructions.movImm8RegESP, instructions.mov(cpu, Registers.ESP)],
+    [Instructions.decEAX, instructions.dec(cpu, Registers.EAX)],
+    [Instructions.decECX, instructions.dec(cpu, Registers.ECX)],
+    [Instructions.decEDX, instructions.dec(cpu, Registers.EDX)],
+    [Instructions.decEBX, instructions.dec(cpu, Registers.EBX)],
+    [Instructions.decESP, instructions.dec(cpu, Registers.ESP)],
+    [Instructions.decEBP, instructions.dec(cpu, Registers.EBP)],
+    [Instructions.decESI, instructions.dec(cpu, Registers.ESI)],
+    [Instructions.decEDI, instructions.dec(cpu, Registers.EDI)],
+    [Instructions.pushEAX, instructions.pushr(cpu, Registers.EAX)],
+    [Instructions.pushECX, instructions.pushr(cpu, Registers.ECX)],
+    [Instructions.pushEDX, instructions.pushr(cpu, Registers.EDX)],
+    [Instructions.pushEBX, instructions.pushr(cpu, Registers.EBX)],
+    [Instructions.pushESP, instructions.pushr(cpu, Registers.ESP)],
+    [Instructions.pushEBP, instructions.pushr(cpu, Registers.EBP)],
+    [Instructions.pushESI, instructions.pushr(cpu, Registers.ESI)],
+    [Instructions.pushEDI, instructions.pushr(cpu, Registers.EDI)],
+    [Instructions.popEAX, instructions.popr(cpu, Registers.EAX)],
+    [Instructions.popECX, instructions.popr(cpu, Registers.ECX)],
+    [Instructions.popEDX, instructions.popr(cpu, Registers.EDX)],
+    [Instructions.popEBX, instructions.popr(cpu, Registers.EBX)],
+    [Instructions.popESP, instructions.popr(cpu, Registers.ESP)],
+    [Instructions.popEBP, instructions.popr(cpu, Registers.EBP)],
+    [Instructions.popESI, instructions.popr(cpu, Registers.ESI)],
+    [Instructions.popEDI, instructions.popr(cpu, Registers.EDI)],
+    [Instructions.pushImm8, instructions.pushi(cpu)],
+    [Instructions.movRegReg, instructions.movRegReg(cpu)],
+    [Instructions.yam, instructions.yam(cpu)],
+    [Instructions.ret, instructions.ret(cpu)],
+    [Instructions.movl, instructions.movl(cpu)],
+    [Instructions.lea, instructions.lea(cpu)],
+    [Instructions.addReg, instructions.addReg(cpu)],
+    [Instructions.addRegPad, instructions.addRegPad(cpu)],
+    [Instructions.addEAX, instructions.addEAX(cpu)],
+    [Instructions.subRAX, instructions.subRAX(cpu)],
+    [Instructions.jge, instructions.jge(cpu)],
+    [Instructions.x81, instructions.invokeX81(cpu)],
+    [Instructions.x83, instructions.invokeX83(cpu)],
+    [Instructions.int, instructions.int(cpu)],
+    [Instructions.call, instructions.call(cpu)],
+    [Instructions.jmpImm8, instructions.jmpImm8(cpu)],
   ]);
 }
 
 export function buildInstructionArray(cpu: X86Cpu): Array<() => void> {
-  const instructionList = Instructions(cpu);
+  const instructionList = buildInstructionMapForCpu(cpu);
   const instructionArray = new Array<() => void>(0xff);
   for (let i = 0; i < instructionArray.length; i++) {
     instructionArray[i] = instructions.noOp(cpu);
@@ -190,7 +192,7 @@ export function getInterruptInstruction(
 }
 
 export function getFn0x0fInstruction(cpu: X86Cpu, opcode: number): () => void {
-  const instruction = cpu.fn0x0fInstructions.get(opcode);
+  const instruction = fn0x0fInstructions(cpu).get(opcode);
   if (instruction === undefined) {
     throw new Error('Invalid opcode');
   }
@@ -201,7 +203,7 @@ export function getFn0x81Instruction(
   cpu: X86Cpu,
   opcode: number
 ): (reg: number, value?: number) => void {
-  const instruction = cpu.fn0x81Instructions.get(opcode);
+  const instruction = fn0x81Instructions(cpu).get(opcode);
   if (instruction === undefined) {
     throw new Error('Invalid opcode');
   }
@@ -212,7 +214,7 @@ export function getX83Instruction(
   cpu: X86Cpu,
   opcode: number
 ): (reg: number, op2: number) => void {
-  const instruction = cpu.x83Instructions.get(opcode);
+  const instruction = X83Instructions(cpu).get(opcode);
   if (instruction === undefined) {
     throw new Error('Invalid opcode');
   }
