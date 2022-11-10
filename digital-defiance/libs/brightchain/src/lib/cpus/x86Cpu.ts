@@ -21,7 +21,7 @@ export class X86Cpu {
     number,
     () => void
   >();
-  public readonly Program: Uint32Array;
+  public readonly Program: Uint8Array;
   public readonly Registers: Uint32Array;
   public PC: number;
   public Instructions: Array<() => void>;
@@ -31,18 +31,18 @@ export class X86Cpu {
   public fn0x0fInstructions: Map<number, () => void>;
 
   constructor(
-    memory: ArrayBuffer | Uint32Array | number,
+    memory: ArrayBuffer | Uint8Array | number,
     registers: number | Uint32Array,
     pc: number
   ) {
-    if (memory instanceof Uint32Array) {
+    if (memory instanceof Uint8Array) {
       this.Program = memory;
     } else if (memory instanceof ArrayBuffer) {
       // uint32 array from arraybuffer
-      this.Program = new Uint32Array(memory);
+      this.Program = new Uint8Array(memory);
     } else {
       // number of bytes
-      this.Program = new Uint32Array(memory);
+      this.Program = new Uint8Array(memory);
     }
     if (registers instanceof Uint32Array) {
       this.Registers = new Uint32Array(registers);
