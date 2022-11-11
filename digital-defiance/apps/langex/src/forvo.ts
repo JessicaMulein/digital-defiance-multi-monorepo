@@ -1,7 +1,21 @@
 import * as $ from 'jquery';
+import { SupportedLanguage } from './interfaces';
 
-async function getForvoSoundSources(text: string): Promise<string | null> {
-  const url = 'https://forvo.com/search/' + encodeURIComponent(text) + '/ja';
+const baseUrl = 'https://forvo.com/';
+
+export async function scrapeForvoWordSoundSources(language: SupportedLanguage, text: string): Promise<string | null> {
+  const url = `${baseUrl}word/${encodeURIComponent(text)}/#${language}`;
+  let result: string | null = null;
+  await $.ajax(url).done(function (data) {
+    const article = $(data).find('article.pronunciations#language-' + language);
+    console.log(article);
+    result = null;
+  });
+  return result;
+}
+
+export async function scrapeForvoSearchSoundSources(language: SupportedLanguage, text: string): Promise<string | null> {
+  const url = `${baseUrl}search/${encodeURIComponent(text)}/${language}`;
   let result: string | null = null;
   await $.ajax(url).done(function (data) {
     const play = $(data).find('.results_match .play');
