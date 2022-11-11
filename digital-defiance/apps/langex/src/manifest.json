@@ -21,5 +21,13 @@
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": ["storage", "activeTab", "scripting", "contextMenus"]
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "contextMenus",
+    "nativeMessaging",
+    "https://forvo.com/",
+    "https://audio00.forvo.com/"
+  ]
 }
