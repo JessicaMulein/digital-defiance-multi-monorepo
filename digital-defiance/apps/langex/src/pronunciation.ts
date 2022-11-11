@@ -3,7 +3,8 @@ import { SupportedLanguage } from './interfaces';
 
 /**
  * Gets the pronunciation of the given text in the given language.
- * TODO: Add Google Translate support.
+ * TODO: enable web speech api https://wicg.github.io/speech-api/
+ * TODO: Add Google TTS support.
  * TODO: Pay for Forvo API access, support official API and scraping
  */
 export class Pronunciation {
