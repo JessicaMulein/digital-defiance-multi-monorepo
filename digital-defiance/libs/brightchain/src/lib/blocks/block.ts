@@ -68,7 +68,7 @@ export default class Block implements IReadOnlyDataObjectDTO {
     const data = Buffer.from(parsed.data, 'hex');
     const dateCreated = new Date(parsed.dateCreated);
     try {
-      const memberId = toFullHexGuid(parsed.id);
+      const memberId = toFullHexGuid(parsed.createdBy);
       const member = fetchMember(memberId);
       if (member.id != memberId) {
         throw new Error('Member mismatch');
