@@ -1,0 +1,20 @@
+{
+  "name": "langex",
+  "version": "1.0.0",
+  "description": "langex: LanguageExtension",
+  "main": "src/main.ts",
+  "private": true,
+  "scripts": {
+    "test": "npx nx test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Digital-Defiance/nx-monorepo.git"
+  },
+  "author": "Digital Defiance, Jessica Mulein",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Digital-Defiance/nx-monorepo/issues"
+  },
+  "homepage": "https://github.com/Digital-Defiance/nx-monorepo#readme"
+}

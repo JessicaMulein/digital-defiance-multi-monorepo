@@ -1,49 +1,84 @@
 
 export enum SpeechSources {
-  WebSpeechAPI = 0,
-  GoogleTTS = 1,
-  ForvoAPI = 2,
-  ForvoScraped = 3,
+  WebSpeechAPI = 'Web speech API',
+  GoogleTTS = 'Google Text to Speech',
+  ForvoAPI = 'Forvo API',
+  ForvoDirect = 'Forvo direct',
 }
 
 export enum PreferredVoiceGender {
-  Either = 0,
-  Female = 1,
-  Male = 2,
+  Either = 'Either',
+  Female = 'Female',
+  Male = 'Male',
 }
 
 export enum AudioStorageOption {
-  None = -1,
-  LocalStorage = 0,
-  SyncedStorage = 1,
+  None = 'None',
+  LocalStorage = 'Local Storage',
+  SyncedStorage = 'Synced Storage',
 }
 
-export interface DetectionResult {
+export enum WordMastery {
+  Unrecognized = 'Unrecognized',
+  Unfamiliar = 'Unfamiliar',
+  Practice = 'Practice',
+  Familiar = 'Familiar',
+  Mastered = 'Mastered',
+}
+
+export interface WordMasteryStatus {
+  word: string;
+  language: string;
+  status: WordMastery;
+  color: CSSStyleDeclaration.color;
+}
+
+/**
+ * Each word will be highlighted with a color depending on its mastery status.
+ * Ideally these will have an alpha transparency
+ */
+export const DefaultWordMasteryColors: { [key: WordMastery]: CSSStyleDeclaration.color } = {
+  [WordMastery.Unrecognized]: '#FFFFFF', // white/page background
+  [WordMastery.Unfamiliar]: 'yellow',
+  [WordMastery.Practice]: 'orange',
+  [WordMastery.Familiar]: 'green',
+  [WordMastery.Mastered]: '#FFFFFF', // white/page background
+};
+
+
+export interface GoogleDetectionResult {
+  "confidence": number;
+  "isReliable": boolean;
+  "language": string;
+}
+
+export interface PageLanguageDetectionResult {
   page: string;
-  selection: string;
+  selection: WordMasteryStatus;
 }
 
 export interface ISettings {
-  color: string;
+  wordMasteryColors: { [key: WordMastery]: CSSStyleDeclaration.color };
   lingvoApiKey: string;
+  lingvoApiEnabled: boolean;
   forvoApiKey: string;
+  forvoApiEnabled: boolean;
+  googleApiKey: string;
+  googleApiEnabled: boolean;
   preferredVoiceGender: PreferredVoiceGender;
   storeAudio: AudioStorageOption;
   /**
-   * Languages to use for translation, in order of preference.
+   * Languages being studied to use for translation, in order of preference/likelihood
+   * iso369-2 codes
    */
   languages: string[];
   /**
    * Supported speech sources, in order of preference.
    */
   speechSources: SpeechSources[];
-}
-
-export default {
-  AudioStorageOption,
-  DetectionResult,
-  ISettings,
-  PreferredVoiceGender,
-  SupportedLanguage,
-  SpeechSources,
+  /**
+   * The first load with default settings will be false, then they will be saved in the browser and successive loads will be true.
+   * false means that the user has not yet saved their settings.
+   */
+  initialized?: boolean = false;
 }

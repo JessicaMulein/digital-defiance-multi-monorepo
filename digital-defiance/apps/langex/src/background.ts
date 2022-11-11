@@ -13,16 +13,12 @@ const settingsManager: SettingsManager = new SettingsManager([
   SpeechSources.WebSpeechAPI,
   SpeechSources.GoogleTTS,
   SpeechSources.ForvoAPI,
-  SpeechSources.ForvoScraped,
+  SpeechSources.ForvoDirect,
 ]);
-settingsManager.load();
+settingsManager.loadSettings();
 
 chrome.runtime.onInstalled.addListener(
   (details: chrome.runtime.InstalledDetails) => {
-    console.log(
-      'Default background color set to %cgreen',
-      `color: ${settingsManager.Settings.color}`
-    );
     // create new menu
     chrome.contextMenus.create({
       id: 'searchForWord',

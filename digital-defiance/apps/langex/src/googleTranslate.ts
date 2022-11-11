@@ -1,13 +1,44 @@
-// Imports the Google Cloud client library
-import { v2 as TranslateV2 } from '@google-cloud/translate';
-import { DetectionResult } from './interfaces';
+import * as $ from 'jquery';
+import { GoogleDetectionResult, WordMasteryStatus } from './interfaces';
 
 export class GoogleTranslate {
-  public readonly translator: TranslateV2.Translate;
+  private authenticated: boolean;
+  private apiKey: string;
+  constructor(apiKey: string) {
+    this.authenticated = false;
+    this.apiKey = apiKey;
+  }
 
-  constructor() {
-    // Creates a client
-    this.translator = new TranslateV2.Translate();
+  public authenticate(): boolean {
+    throw new Error('Method not implemented.');
+    this.authenticated = true;
+    return this.authenticated;
+  }
+
+  public async postLanguageDetection(text: string | string[]): Promise<GoogleDetectionResult[]> {
+    if (!this.authenticated) {
+      this.authenticate();
+      if (!this.authenticated) {
+        throw new Error('Authentication failed');
+      }
+    }
+    throw new Error('Method not implemented.');
+    const url = 'https://translation.googleapis.com/language/translate/v2/detect';
+    // post to the url
+    const results: GoogleDetectionResult[] = [];
+    // await $.ajax({
+    //   method: 'POST',
+    //   url: url,
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': `Bearer ${this.apiKey}`
+    //   }
+    // }, { q: text }, (data) => {
+    //   data.data.detections.forEach((detection: GoogleDetectionResult) => {
+    //     results.push(detection);
+    //   });
+    // });
+    return results;
   }
 
   /**
@@ -19,23 +50,7 @@ export class GoogleTranslate {
    */
   public async detectLanguage(
     text: string | string[]
-  ): Promise<Array<DetectionResult>> {
-    const [detections] =
-      typeof text === 'string'
-        ? await this.translator.detect(text)
-        : await this.translator.detect(text);
-    const detectionsArray = Array.isArray(detections)
-      ? detections
-      : [detections];
-    console.log('Detections:');
-    const detectionResults: Array<DetectionResult> = [];
-    detectionsArray.forEach((detection) => {
-      console.log(`${detection.input} => ${detection.language}`);
-      detectionResults.push({
-        page: '',
-        selection: detection.language,
-      });
-    });
-    return detectionResults;
+  ): Promise<Array<WordMasteryStatus>> {
+    throw new Error('Method not implemented.');
   }
 }
