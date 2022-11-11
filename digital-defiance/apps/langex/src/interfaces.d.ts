@@ -1,20 +1,20 @@
-export enum SupportedLanguage {
-  UnknownUnsupported = '',
-  English = 'en',
-  Russian = 'ru',
-  Ukrainian = 'uk',
-}
 
 export enum SpeechSources {
-  ForvoAPI,
-  ForvoScraped,
-  GoogleTTS,
-  WebSpeechAPI,
+  WebSpeechAPI = 0,
+  GoogleTTS = 1,
+  ForvoAPI = 2,
+  ForvoScraped = 3,
+}
+
+export enum AudioStorageOption {
+  None = -1,
+  LocalStorage = 0,
+  SyncedStorage = 1,
 }
 
 export interface DetectionResult {
-  page: SupportedLanguage;
-  selection: SupportedLanguage;
+  page: string;
+  selection: string;
 }
 
 export interface ISettings {
@@ -24,7 +24,7 @@ export interface ISettings {
   /**
    * Languages to use for translation, in order of preference.
    */
-  languages: SupportedLanguage[];
+  languages: string[];
   /**
    * Supported speech sources, in order of preference.
    */

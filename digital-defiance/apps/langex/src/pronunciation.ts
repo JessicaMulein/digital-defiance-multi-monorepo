@@ -1,5 +1,4 @@
 import * as Forvo from './forvo';
-import { SupportedLanguage } from './interfaces';
 
 /**
  * Gets the pronunciation of the given text in the given language.
@@ -9,14 +8,14 @@ import { SupportedLanguage } from './interfaces';
  */
 export class Pronunciation {
   public static async getWordSoundSources(
-    language: SupportedLanguage,
+    language: string,
     text: string
   ): Promise<string | null> {
     return await Forvo.scrapeForvoWordSoundSources(language, text);
   }
 
   public static async getSearchSoundSources(
-    language: SupportedLanguage,
+    language: string,
     text: string
   ): Promise<string | null> {
     return await Forvo.scrapeForvoSearchSoundSources(language, text);

@@ -21,6 +21,7 @@
     "@angular/router": "~14.2.0",
     "@google-cloud/translate": "^7.0.4",
     "@nrwl/angular": "^15.0.13",
+    "all-iso-language-codes": "^1.0.9",
     "jquery": "^3.6.1",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",

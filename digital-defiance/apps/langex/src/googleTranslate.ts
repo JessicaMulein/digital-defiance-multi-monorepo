@@ -1,6 +1,6 @@
 // Imports the Google Cloud client library
 import { v2 as TranslateV2 } from '@google-cloud/translate';
-import { DetectionResult, SupportedLanguage } from './interfaces';
+import { DetectionResult } from './interfaces';
 
 export class GoogleTranslate {
   public readonly translator: TranslateV2.Translate;
@@ -32,8 +32,8 @@ export class GoogleTranslate {
     detectionsArray.forEach((detection) => {
       console.log(`${detection.input} => ${detection.language}`);
       detectionResults.push({
-        page: SupportedLanguage.UnknownUnsupported,
-        selection: SupportedLanguage.UnknownUnsupported,
+        page: '',
+        selection: detection.language,
       });
     });
     return detectionResults;

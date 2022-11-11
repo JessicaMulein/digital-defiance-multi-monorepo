@@ -1,4 +1,5 @@
-import { ISettings, SpeechSources, SupportedLanguage } from './interfaces.d';
+import { ISettings, SpeechSources } from './interfaces.d';
+import { languageSupported } from './languages';
 
 /**
  * Use browser/chrome storage to store settings
@@ -7,9 +8,14 @@ export class SettingsManager {
   private static readonly initializeKey = '__initialized';
   private readonly settings: ISettings;
   constructor(
-    defaultLanguages: SupportedLanguage[] = [SupportedLanguage.English],
+    defaultLanguages: string[] = ['en'],
     defaultSpeechSources: SpeechSources[] = [SpeechSources.WebSpeechAPI]
   ) {
+    if (!this.verifyLanguages(defaultLanguages)) {
+      throw new Error(
+        'SettingsManager: defaultLanguages must be an array of valid languages'
+      );
+    }
     this.settings = {
       color: '#3aa757',
       lingvoApiKey: '',
@@ -19,6 +25,12 @@ export class SettingsManager {
     };
 
     this.load();
+  }
+
+  private verifyLanguages(languages: string[]): boolean {
+    return languages.every((language) => {
+      return languageSupported(language);
+    });
   }
 
   public save(): void {

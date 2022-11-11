@@ -1,14 +1,14 @@
 // src/background.ts
 /// <reference types="chrome"/>
 
-import { SpeechSources, SupportedLanguage } from './interfaces.d';
+import { SpeechSources } from './interfaces.d';
 import { searchForWord } from './lingvo';
 import { SettingsManager } from './settingsManager';
 
 const settingsManager: SettingsManager = new SettingsManager([
-  SupportedLanguage.English,
-  SupportedLanguage.Russian,
-  SupportedLanguage.Ukrainian,
+  'en',
+  'uk',
+  'ru',
 ], [
   SpeechSources.WebSpeechAPI,
   SpeechSources.GoogleTTS,
