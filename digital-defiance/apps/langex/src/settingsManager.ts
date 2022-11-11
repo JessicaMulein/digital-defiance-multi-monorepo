@@ -1,4 +1,4 @@
-import { ISettings, SpeechSources } from './interfaces.d';
+import { AudioStorageOption, ISettings, PreferredVoiceGender, SpeechSources } from './interfaces.d';
 import { languageSupported } from './languages';
 
 /**
@@ -20,6 +20,8 @@ export class SettingsManager {
       color: '#3aa757',
       lingvoApiKey: '',
       forvoApiKey: '',
+      preferredVoiceGender: PreferredVoiceGender.Either,
+      storeAudio: AudioStorageOption.None,
       languages: defaultLanguages,
       speechSources: defaultSpeechSources,
     };

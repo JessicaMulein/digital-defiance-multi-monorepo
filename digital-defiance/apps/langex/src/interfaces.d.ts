@@ -6,6 +6,12 @@ export enum SpeechSources {
   ForvoScraped = 3,
 }
 
+export enum PreferredVoiceGender {
+  Either = 0,
+  Female = 1,
+  Male = 2,
+}
+
 export enum AudioStorageOption {
   None = -1,
   LocalStorage = 0,
@@ -21,6 +27,8 @@ export interface ISettings {
   color: string;
   lingvoApiKey: string;
   forvoApiKey: string;
+  preferredVoiceGender: PreferredVoiceGender;
+  storeAudio: AudioStorageOption;
   /**
    * Languages to use for translation, in order of preference.
    */
@@ -32,8 +40,10 @@ export interface ISettings {
 }
 
 export default {
-  SupportedLanguage,
-  SpeechSources,
+  AudioStorageOption,
   DetectionResult,
   ISettings,
+  PreferredVoiceGender,
+  SupportedLanguage,
+  SpeechSources,
 }
