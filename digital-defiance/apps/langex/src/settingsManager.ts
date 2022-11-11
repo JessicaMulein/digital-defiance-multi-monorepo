@@ -20,14 +20,16 @@ export class SettingsManager {
   private readonly settings: ISettings;
 
   constructor(
-    defaultLanguages: string[] = ['en'],
+    primaryLanguage: string = 'en',
+    primaryLocale: string = 'en-US',
+    defaultStudiedLanguages: string[] = ['uk', 'ru'],
     defaultSpeechSources: SpeechSources[] = [SpeechSources.WebSpeechAPI]
   ) {
     if (SettingsManager.singleton) {
       throw new Error('SettingsManager is a singleton');
     }
     SettingsManager.singleton = this;
-    if (!this.verifyLanguages(defaultLanguages)) {
+    if (!this.verifyLanguages(defaultStudiedLanguages)) {
       throw new Error(
         'SettingsManager: defaultLanguages must be an array of valid languages'
       );
@@ -39,9 +41,11 @@ export class SettingsManager {
       forvoApiEnabled: false,
       googleApiKey: '',
       googleApiEnabled: false,
-      languages: defaultLanguages,
+      primaryLanguage: primaryLanguage,
+      primaryLocale: primaryLocale,
       preferredVoiceGender: PreferredVoiceGender.Either,
       storeAudio: AudioStorageOption.None,
+      studiedLanguages: defaultStudiedLanguages,
       speechSources: defaultSpeechSources,
       wordMasteryColors: DefaultWordMasteryColors,
     };
@@ -187,11 +191,7 @@ export class SettingsManager {
     return this.studiedLanguages.includes(language);
   }
 
-  public learnWord(
-    language: string,
-    word: string,
-    status: WordMastery
-  ): void {
+  public learnWord(language: string, word: string, status: WordMastery): void {
     if (!languageSupported(language)) {
       return;
     }

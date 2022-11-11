@@ -5,16 +5,17 @@ import { SpeechSources } from './interfaces.d';
 import { searchForWord } from './lingvo';
 import { SettingsManager } from './settingsManager';
 
-const settingsManager: SettingsManager = new SettingsManager([
+const settingsManager: SettingsManager = new SettingsManager(
   'en',
-  'uk',
-  'ru',
-], [
-  SpeechSources.WebSpeechAPI,
-  SpeechSources.GoogleTTS,
-  SpeechSources.ForvoAPI,
-  SpeechSources.ForvoDirect,
-]);
+  'en-US',
+  ['uk', 'ru'],
+  [
+    SpeechSources.WebSpeechAPI,
+    SpeechSources.GoogleTTS,
+    SpeechSources.ForvoAPI,
+    SpeechSources.ForvoDirect,
+  ]
+);
 settingsManager.loadSettings();
 
 chrome.runtime.onInstalled.addListener(

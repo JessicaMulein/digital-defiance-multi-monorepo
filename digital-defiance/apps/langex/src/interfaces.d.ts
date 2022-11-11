@@ -1,4 +1,3 @@
-
 export enum SpeechSources {
   WebSpeechAPI = 'Web speech API',
   GoogleTTS = 'Google Text to Speech',
@@ -37,7 +36,9 @@ export interface WordMasteryStatus {
  * Each word will be highlighted with a color depending on its mastery status.
  * Ideally these will have an alpha transparency
  */
-export const DefaultWordMasteryColors: { [key: WordMastery]: CSSStyleDeclaration.color } = {
+export const DefaultWordMasteryColors: {
+  [key: WordMastery]: CSSStyleDeclaration.color;
+} = {
   [WordMastery.Unrecognized]: '#FFFFFF', // white/page background
   [WordMastery.Unfamiliar]: 'yellow',
   [WordMastery.Practice]: 'orange',
@@ -45,11 +46,10 @@ export const DefaultWordMasteryColors: { [key: WordMastery]: CSSStyleDeclaration
   [WordMastery.Mastered]: '#FFFFFF', // white/page background
 };
 
-
 export interface GoogleDetectionResult {
-  "confidence": number;
-  "isReliable": boolean;
-  "language": string;
+  confidence: number;
+  isReliable: boolean;
+  language: string;
 }
 
 export interface PageLanguageDetectionResult {
@@ -65,13 +65,23 @@ export interface ISettings {
   forvoApiEnabled: boolean;
   googleApiKey: string;
   googleApiEnabled: boolean;
+  /**
+   * The iso 639-2 language code of the primary langauge of the speaker, which studied words will be translated to and from.
+   * e.g. 'uk' for Ukrainian
+   */
+  primaryLanguage: string;
+  /**
+   * The primary language for forvo and speech synthesis
+   * e.g. 'en-US' for American English
+   */
+  primaryLocale: string;
   preferredVoiceGender: PreferredVoiceGender;
   storeAudio: AudioStorageOption;
   /**
-   * Languages being studied to use for translation, in order of preference/likelihood
+   * Languages being studied to use for translation, in order of preference/likelihood, not including your primary language.
    * iso369-2 codes
    */
-  languages: string[];
+  studiedLanguages: string[];
   /**
    * Supported speech sources, in order of preference.
    */
