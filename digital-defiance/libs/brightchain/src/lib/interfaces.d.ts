@@ -1,4 +1,5 @@
 import { ec } from 'elliptic';
+import { FullHexGuid } from './guid';
 
 export interface ISimpleKeyPair {
   publicKey: string;
@@ -56,22 +57,22 @@ export interface Position {
   place: number;
 }
 
-export interface IBasicObject {
+export interface IBasicObjectDTO {
   /**
    * ID of the data object. Must be unique, usually UUID v4.
    */
-  id: bigint;
+  id: string;
   /**
    * The date this object was created
    */
   dateCreated: Date;
 }
 
-export interface IBasicDataObject extends IBasicObject {
+export interface IBasicDataObjectDTO extends IBasicObjectDTO {
   /**
    * ID of the data object. checksum of the data.
    */
-  id: bigint;
+  id: string;
   /**
    * The data to be stored
    */
@@ -79,23 +80,23 @@ export interface IBasicDataObject extends IBasicObject {
   /**
    * The ID of the member who created this object
    */
-  createdBy: bigint;
+  createdBy: FullHexGuid;
   /**
    * The date this object was created
    */
   dateCreated: Date;
 }
 
-export interface IReadOnlyBasicObject extends IBasicObject {
-  readonly id: bigint;
+export interface IReadOnlyBasicObjectDTO extends IBasicObjectDTO {
+  readonly id: string;
   readonly dateCreated: Date;
 }
 
-export interface IReadOnlyDataObject
-  extends IBasicDataObject,
-    IReadOnlyBasicObject {
-  readonly id: bigint; // checksum
+export interface IReadOnlyDataObjectDTO
+  extends IBasicDataObjectDTO,
+    IReadOnlyBasicObjectDTO {
+  readonly id: string; // checksum
   readonly data: Uint8Array;
-  readonly createdBy: bigint;
+  readonly createdBy: FullHexGuid;
   readonly dateCreated: Date;
 }
