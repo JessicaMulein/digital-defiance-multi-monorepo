@@ -6,6 +6,7 @@
 * qURI Social/Five by Five Social (\*\*\*\*\* by \*\*\*\*\*)
 * Stargate-256
 * Stargate-N
+* langex: LanguageExtension
 
 ### Nx Monorepo
 
