@@ -36,9 +36,7 @@ export interface WordMasteryStatus {
  * Each word will be highlighted with a color depending on its mastery status.
  * Ideally these will have an alpha transparency
  */
-export const DefaultWordMasteryColors: {
-  [key: WordMastery]: CSSStyleDeclaration.color;
-} = {
+export const DefaultWordMasteryColors: Record<WordMastery, string> = {
   [WordMastery.Unrecognized]: '#FFFFFF', // white/page background
   [WordMastery.Unfamiliar]: 'yellow',
   [WordMastery.Practice]: 'orange',
@@ -58,7 +56,7 @@ export interface PageLanguageDetectionResult {
 }
 
 export interface ISettings {
-  wordMasteryColors: { [key: WordMastery]: CSSStyleDeclaration.color };
+  wordMasteryColors: Record<WordMastery, string>;
   lingvoApiKey: string;
   lingvoApiEnabled: boolean;
   forvoApiKey: string;
@@ -86,9 +84,13 @@ export interface ISettings {
    * Supported speech sources, in order of preference.
    */
   speechSources: SpeechSources[];
-  /**
-   * The first load with default settings will be false, then they will be saved in the browser and successive loads will be true.
-   * false means that the user has not yet saved their settings.
-   */
-  initialized?: boolean = false;
+}
+
+export enum MessageType {
+  SettingsUpdate
+}
+
+export interface IChromeMessage {
+  type: MessageType;
+  data: any;
 }

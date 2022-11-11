@@ -1,22 +1,23 @@
 // src/background.ts
 /// <reference types="chrome"/>
 
-import { SpeechSources } from './interfaces.d';
-import { searchForWord } from './lingvo';
-import { SettingsManager } from './settingsManager';
+import { IChromeMessage, MessageType } from './app/shared/interfaces.d';
+import { searchForWord } from './app/shared/lingvo';
+import { SettingsManager } from './app/shared/settingsManager';
+// TODO: get app settings from messaging with front end
+const settingsManager: SettingsManager = new SettingsManager();
+console.log('SettingsComponent: settingsManager loaded in background', settingsManager.Settings);
 
-const settingsManager: SettingsManager = new SettingsManager(
-  'en',
-  'en-US',
-  ['uk', 'ru'],
-  [
-    SpeechSources.WebSpeechAPI,
-    SpeechSources.GoogleTTS,
-    SpeechSources.ForvoAPI,
-    SpeechSources.ForvoDirect,
-  ]
-);
-settingsManager.loadSettings();
+chrome.runtime.onMessage.addListener((request: IChromeMessage, sender, sendResponse) => {
+  console.log('background.ts: received message', request);
+  console.log(sender.tab ?
+    "from a content script:" + sender.tab.url :
+    "from the extension");
+    if (request.type === MessageType.SettingsUpdate) {
+      console.log('background.ts: loading updates settings from extension', request.data);
+      settingsManager.loadSettings();
+    }
+});
 
 chrome.runtime.onInstalled.addListener(
   (details: chrome.runtime.InstalledDetails) => {

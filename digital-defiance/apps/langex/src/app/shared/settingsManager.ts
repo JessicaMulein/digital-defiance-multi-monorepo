@@ -1,10 +1,7 @@
+import AppSettings from './appSettings';
 import {
-  AudioStorageOption,
-  ISettings,
   WordMastery,
-  PreferredVoiceGender,
   SpeechSources,
-  DefaultWordMasteryColors,
 } from './interfaces.d';
 import { languageSupported } from './languages';
 
@@ -17,7 +14,7 @@ export class SettingsManager {
   private static readonly keyIdentifier = '__langex';
   private static readonly learnedWordKey = 'learnedWords';
   private static readonly studiedLanguagesKey = 'studiedLanguages';
-  private readonly settings: ISettings;
+  private readonly settings: AppSettings;
 
   constructor(
     primaryLanguage: string = 'en',
@@ -34,21 +31,7 @@ export class SettingsManager {
         'SettingsManager: defaultLanguages must be an array of valid languages'
       );
     }
-    this.settings = {
-      lingvoApiKey: '',
-      lingvoApiEnabled: false,
-      forvoApiKey: '',
-      forvoApiEnabled: false,
-      googleApiKey: '',
-      googleApiEnabled: false,
-      primaryLanguage: primaryLanguage,
-      primaryLocale: primaryLocale,
-      preferredVoiceGender: PreferredVoiceGender.Either,
-      storeAudio: AudioStorageOption.None,
-      studiedLanguages: defaultStudiedLanguages,
-      speechSources: defaultSpeechSources,
-      wordMasteryColors: DefaultWordMasteryColors,
-    };
+    this.settings = new AppSettings(primaryLanguage, primaryLocale, defaultStudiedLanguages, defaultSpeechSources);
 
     this.loadSettings();
   }
@@ -81,7 +64,7 @@ export class SettingsManager {
    * Saves only the settings object to chrome storage
    */
   public saveSettings(): void {
-    const serializedSettings: Record<string, unknown> = {};
+    const serializedSettings: Record<string, string> = {};
     // walk through settings and serialize each value
     for (const settingKey in this.settings) {
       const value: string = JSON.stringify((this.settings as any)[settingKey]);
@@ -113,10 +96,6 @@ export class SettingsManager {
         }
       }
     });
-    if (this.settings.initialized === undefined || !this.settings.initialized) {
-      this.settings.initialized = true;
-      this.saveSettings();
-    }
   }
 
   /**
@@ -157,8 +136,26 @@ export class SettingsManager {
     chrome.storage.sync.remove(keyIdentifier);
   }
 
-  public get Settings(): ISettings {
+  public get Settings(): AppSettings {
     return this.settings;
+  }
+
+  public set Settings(value: AppSettings) {
+    console.log('SettingsManager: set Settings', value);
+    this.settings.forvoApiKey = value.forvoApiKey;
+    this.settings.forvoApiEnabled = value.forvoApiEnabled;
+    this.settings.googleApiKey = value.googleApiKey;
+    this.settings.googleApiEnabled = value.googleApiEnabled;
+    this.settings.lingvoApiKey = value.lingvoApiKey;
+    this.settings.lingvoApiEnabled = value.lingvoApiEnabled;
+    this.settings.preferredVoiceGender = value.preferredVoiceGender;
+    this.settings.primaryLanguage = value.primaryLanguage;
+    this.settings.primaryLocale = value.primaryLocale;
+    this.settings.studiedLanguages = value.studiedLanguages;
+    this.settings.speechSources = value.speechSources;
+    this.settings.storeAudio = value.storeAudio;
+    this.settings.wordMasteryColors = value.wordMasteryColors;
+    this.saveSettings();
   }
 
   public get studiedLanguages(): string[] {
@@ -191,7 +188,7 @@ export class SettingsManager {
     return this.studiedLanguages.includes(language);
   }
 
-  public learnWord(language: string, word: string, status: WordMastery): void {
+  public updateWord(language: string, word: string, status: WordMastery): void {
     if (!languageSupported(language)) {
       return;
     }
@@ -202,7 +199,7 @@ export class SettingsManager {
     this.saveExtraData(SettingsManager.learnedWordKey, status, language, word);
   }
 
-  public learnedWord(language: string, word: string): WordMastery {
+  public lookupWordMastery(language: string, word: string): WordMastery {
     const learnedWord = this.loadExtraData<WordMastery>(
       SettingsManager.learnedWordKey,
       language,
