@@ -46,7 +46,16 @@ BrightChain quorum- confidential quorum
 ```
   path: nx-monorepo/digital-defiance/libs/brightchain-quorum
 ``` 
-link: https://github.com/Digital-Defiance/nx-monorepo/tree/main/digital-defiance/apps/brightchain-quorum#readme
+link: https://github.com/Digital-Defiance/nx-monorepo/tree/main/digital-defiance/libs/brightchain-quorum#readme
+
+## langex
+LangEx- LanguageExtension. Learn new languages in your browser while reading any page.
+```
+  path: nx-monorepo/digital-defiance/apps/langex
+```
+link: https://github.com/Digital-Defiance/nx-monorepo/tree/main/digital-defiance/apps/langex#readme
+
+<hr>
 
 <p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
 
