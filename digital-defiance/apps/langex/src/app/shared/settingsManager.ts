@@ -1,5 +1,4 @@
 import AppSettings from './appSettings';
-import { languageSupported } from './languages';
 import SpeechSources from './speechSources';
 import WordMastery from './wordMastery';
 
@@ -24,11 +23,6 @@ export class SettingsManager {
       throw new Error('SettingsManager is a singleton');
     }
     SettingsManager.singleton = this;
-    if (!this.verifyLanguages(defaultStudiedLanguages)) {
-      throw new Error(
-        'SettingsManager: defaultLanguages must be an array of valid languages'
-      );
-    }
     this.settings = new AppSettings(primaryLanguage, primaryLocale, defaultStudiedLanguages, defaultSpeechSources);
 
     this.loadSettings();
@@ -50,12 +44,6 @@ export class SettingsManager {
   private verifyColor(color: string): boolean {
     const colorRegex = /^#[0-9A-F]{6}$/i;
     return colorRegex.test(color);
-  }
-
-  private verifyLanguages(languages: string[]): boolean {
-    return languages.every((language) => {
-      return languageSupported(language);
-    });
   }
 
   /**
@@ -163,18 +151,13 @@ export class SettingsManager {
     );
     if (extraData) {
       extraData.forEach((language) => {
-        if (languageSupported(language)) {
           languages.push(language);
-        }
       });
     }
     return languages;
   }
 
   public studyLanguage(language: string): void {
-    if (!languageSupported(language)) {
-      return;
-    }
     const studiedLanguages = this.studiedLanguages;
     if (!studiedLanguages.includes(language)) {
       studiedLanguages.push(language);
@@ -187,9 +170,6 @@ export class SettingsManager {
   }
 
   public updateWord(language: string, word: string, status: WordMastery): void {
-    if (!languageSupported(language)) {
-      return;
-    }
     if (status === WordMastery.Unrecognized) {
       this.removeExtraData(SettingsManager.learnedWordKey, language, word);
       return;
