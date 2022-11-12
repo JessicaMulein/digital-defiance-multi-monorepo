@@ -6,11 +6,10 @@ import WordMastery from './wordMastery';
  * Use browser/chrome storage to store settings
  */
 export class SettingsManager {
-  private static singleton: SettingsManager | null = null;
-  private static readonly settingsKey = '__langex_settings';
-  private static readonly keyIdentifier = '__langex';
-  private static readonly learnedWordKey = 'learnedWords';
-  private static readonly studiedLanguagesKey = 'studiedLanguages';
+  public static readonly settingsKey = '__langex_settings';
+  public static readonly keyIdentifier = '__langex';
+  public static readonly learnedWordKey = 'learnedWords';
+  public static readonly studiedLanguagesKey = 'studiedLanguages';
   private readonly settings: AppSettings;
 
   constructor(
@@ -19,20 +18,14 @@ export class SettingsManager {
     defaultStudiedLanguages: string[] = ['uk', 'ru'],
     defaultSpeechSources: SpeechSources[] = [SpeechSources.WebSpeechAPI]
   ) {
-    if (SettingsManager.singleton) {
-      throw new Error('SettingsManager is a singleton');
-    }
-    SettingsManager.singleton = this;
-    this.settings = new AppSettings(primaryLanguage, primaryLocale, defaultStudiedLanguages, defaultSpeechSources);
+    this.settings = new AppSettings(
+      primaryLanguage,
+      primaryLocale,
+      defaultStudiedLanguages,
+      defaultSpeechSources
+    );
 
     this.loadSettings();
-  }
-
-  public static get instance(): SettingsManager {
-    if (!SettingsManager.singleton) {
-      throw new Error('SettingsManager not initialized');
-    }
-    return SettingsManager.singleton;
   }
 
   public static getKeyIdentifier(key: string, ...args: string[]): string {
@@ -50,38 +43,36 @@ export class SettingsManager {
    * Saves only the settings object to chrome storage
    */
   public saveSettings(): void {
-    const serializedSettings: Record<string, string> = {};
-    // walk through settings and serialize each value
-    for (const settingKey in this.settings) {
-      const value: string = JSON.stringify((this.settings as any)[settingKey]);
-      serializedSettings[settingKey] = value;
-    }
     chrome.storage.sync.set({
-      [SettingsManager.settingsKey]: JSON.stringify(serializedSettings),
+      [SettingsManager.settingsKey]: JSON.stringify(this.settings),
     });
+  }
+
+  public updateSetting(key: string, value: any, save = false): void {
+    if (!Object.prototype.hasOwnProperty.call(this.settings, key)) {
+      throw new Error(`SettingsManager: updateSetting: key ${key} not found`);
+    }
+    (this.settings as any)[key] = value;
+    if (save) {
+      this.saveSettings();
+    }
   }
 
   /**
    * Loads the settings object from chrome storage
    */
   public loadSettings(): void {
-    chrome.storage.sync.get(SettingsManager.settingsKey, (items: { [key: string]: any }) => {
-      if (items[SettingsManager.settingsKey]) {
-        const serializedSettings: Record<string, unknown> = JSON.parse(
-          items[SettingsManager.settingsKey] as string
-        );
-        // walk through settings and deserialize each value
-        for (const settingKey in serializedSettings) {
-          const value: string = serializedSettings[settingKey] as string;
-          if (
-            !Object.prototype.hasOwnProperty.call(this.settings, settingKey)
-          ) {
-            continue;
-          }
-          (this.settings as any)[settingKey] = JSON.parse(value);
+    chrome.storage.sync.get(
+      SettingsManager.settingsKey,
+      (items: { [key: string]: any }) => {
+        if (items[SettingsManager.settingsKey]) {
+          const serializedSettings: AppSettings = JSON.parse(
+            items[SettingsManager.settingsKey] as string
+          );
+          this.setSettingsFromOther(serializedSettings as AppSettings);
         }
       }
-    });
+    );
   }
 
   /**
@@ -122,11 +113,7 @@ export class SettingsManager {
     chrome.storage.sync.remove(keyIdentifier);
   }
 
-  public get Settings(): AppSettings {
-    return this.settings;
-  }
-
-  public set Settings(value: AppSettings) {
+  private setSettingsFromOther(value: AppSettings): void {
     console.log('SettingsManager: set Settings', value);
     this.settings.forvoApiKey = value.forvoApiKey;
     this.settings.forvoApiEnabled = value.forvoApiEnabled;
@@ -141,6 +128,14 @@ export class SettingsManager {
     this.settings.speechSources = value.speechSources;
     this.settings.storeAudio = value.storeAudio;
     this.settings.wordMasteryColors = value.wordMasteryColors;
+  }
+
+  public get Settings(): AppSettings {
+    return this.settings;
+  }
+
+  public set Settings(value: AppSettings) {
+    this.setSettingsFromOther(value);
     this.saveSettings();
   }
 
@@ -151,7 +146,7 @@ export class SettingsManager {
     );
     if (extraData) {
       extraData.forEach((language) => {
-          languages.push(language);
+        languages.push(language);
       });
     }
     return languages;
