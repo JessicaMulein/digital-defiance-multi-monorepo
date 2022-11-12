@@ -1,29 +1,8 @@
-export enum SpeechSources {
-  WebSpeechAPI = 'Web speech API',
-  GoogleTTS = 'Google Text to Speech',
-  ForvoAPI = 'Forvo API',
-  ForvoDirect = 'Forvo direct',
-}
-
-export enum PreferredVoiceGender {
-  Either = 'Either',
-  Female = 'Female',
-  Male = 'Male',
-}
-
-export enum AudioStorageOption {
-  None = 'None',
-  LocalStorage = 'Local Storage',
-  SyncedStorage = 'Synced Storage',
-}
-
-export enum WordMastery {
-  Unrecognized = 'Unrecognized',
-  Unfamiliar = 'Unfamiliar',
-  Practice = 'Practice',
-  Familiar = 'Familiar',
-  Mastered = 'Mastered',
-}
+import AudioStorageOption from "./audioStorageOption";
+import MessageType from "./messageType";
+import PreferredVoiceGender from "./preferredVoiceGender";
+import SpeechSources from "./speechSources";
+import WordMastery from "./wordMastery";
 
 export interface WordMasteryStatus {
   word: string;
@@ -84,10 +63,6 @@ export interface ISettings {
    * Supported speech sources, in order of preference.
    */
   speechSources: SpeechSources[];
-}
-
-export enum MessageType {
-  SettingsUpdate
 }
 
 export interface IChromeMessage {

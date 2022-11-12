@@ -19,5 +19,9 @@
   "homepage": "https://github.com/Digital-Defiance/nx-monorepo#readme",
   "dependencies": {
     "rxjs": "^7.5.7"
+  },
+  "devDependencies": {
+    "@types/sinon-chrome": "^2.2.11",
+    "sinon-chrome": "^3.0.1"
   }
 }

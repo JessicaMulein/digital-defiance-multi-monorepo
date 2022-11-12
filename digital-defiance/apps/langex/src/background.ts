@@ -1,11 +1,13 @@
 // src/background.ts
 /// <reference types="chrome"/>
 
-import { IChromeMessage, MessageType } from './app/shared/interfaces.d';
+import MessageType from './app/shared/messageType';
+import { IChromeMessage} from './app/shared/interfaces.d';
 import { searchForWord } from './app/shared/lingvo';
 import { SettingsManager } from './app/shared/settingsManager';
 // TODO: get app settings from messaging with front end
 const settingsManager: SettingsManager = new SettingsManager();
+settingsManager.loadSettings();
 console.log('SettingsComponent: settingsManager loaded in background', settingsManager.Settings);
 
 chrome.runtime.onMessage.addListener((request: IChromeMessage, sender, sendResponse) => {

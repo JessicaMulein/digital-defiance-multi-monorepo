@@ -1,11 +1,11 @@
 import {
-  AudioStorageOption,
   DefaultWordMasteryColors,
   ISettings,
-  PreferredVoiceGender,
-  SpeechSources,
-  WordMastery,
 } from './interfaces.d';
+import AudioStorageOption from './audioStorageOption';
+import PreferredVoiceGender from './preferredVoiceGender';
+import SpeechSources from './speechSources';
+import WordMastery from './wordMastery';
 
 export default class AppSettings implements ISettings {
   public lingvoApiKey: string;

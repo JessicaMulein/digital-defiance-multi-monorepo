@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import AppSettings from './appSettings';
 import { AppSettingsService } from './appSettings.service';
-import { IChromeMessage, MessageType } from './interfaces';
+import MessageType from './messageType';
+import { IChromeMessage } from './interfaces';
 import { SettingsManager } from './settingsManager';
 
 @Component({

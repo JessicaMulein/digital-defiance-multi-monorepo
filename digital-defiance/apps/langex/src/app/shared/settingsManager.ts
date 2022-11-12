@@ -1,9 +1,7 @@
 import AppSettings from './appSettings';
-import {
-  WordMastery,
-  SpeechSources,
-} from './interfaces.d';
 import { languageSupported } from './languages';
+import SpeechSources from './speechSources';
+import WordMastery from './wordMastery';
 
 /**
  * Use browser/chrome storage to store settings
@@ -79,7 +77,7 @@ export class SettingsManager {
    * Loads the settings object from chrome storage
    */
   public loadSettings(): void {
-    chrome.storage.sync.get(SettingsManager.settingsKey, (items) => {
+    chrome.storage.sync.get(SettingsManager.settingsKey, (items: { [key: string]: any }) => {
       if (items[SettingsManager.settingsKey]) {
         const serializedSettings: Record<string, unknown> = JSON.parse(
           items[SettingsManager.settingsKey] as string
@@ -120,7 +118,7 @@ export class SettingsManager {
       ...extraKeyArgs
     );
     let value: T | null = null;
-    chrome.storage.sync.get(keyIdentifier, (items) => {
+    chrome.storage.sync.get(keyIdentifier, (items: { [key: string]: any }) => {
       if (items[keyIdentifier]) {
         value = JSON.parse(items[keyIdentifier] as string);
       }
