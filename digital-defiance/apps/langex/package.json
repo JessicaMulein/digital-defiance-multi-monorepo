@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "@types/sinon-chrome": "^2.2.11",
+    "sinon": "^14.0.2",
     "sinon-chrome": "^3.0.1"
   }
 }
