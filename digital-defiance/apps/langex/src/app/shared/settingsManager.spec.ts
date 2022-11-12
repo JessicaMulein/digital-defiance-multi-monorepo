@@ -19,10 +19,13 @@ describe('AppComponent', () => {
     expect(settingsManager.Settings.forvoApiKey).toBe('');
     settingsManager.updateSetting('forvoApiKey', 'test');
     settingsManager.saveSettings();
-    // I guess we can either only check that the call was made or emulate the storage so that the calls work
 
     sinon.assert.calledOnce(chrome.storage.sync.get);
     sinon.assert.calledOnce(chrome.storage.sync.set);
+    sinon.assert.calledWith(chrome.storage.sync.set, {
+      __langex_settings:
+        '{"lingvoApiKey":"","lingvoApiEnabled":false,"forvoApiKey":"test","forvoApiEnabled":false,"googleApiKey":"","googleApiEnabled":false,"primaryLanguage":"en","primaryLocale":"en-US","preferredVoiceGender":"Either","storeAudio":"None","studiedLanguages":["uk","ru"],"speechSources":["Web speech API"]}',
+    });
     // let records = 0;
     // chrome.storage.sync.get([[SettingsManager.settingsKey]], (items: { [key: string]: any }) => {
     //     records++;
