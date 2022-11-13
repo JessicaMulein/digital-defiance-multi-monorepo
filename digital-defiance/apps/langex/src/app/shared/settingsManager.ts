@@ -114,7 +114,6 @@ export class SettingsManager {
   }
 
   private setSettingsFromOther(value: AppSettings): void {
-    console.log('SettingsManager: set Settings', value);
     this.settings.forvoApiKey = value.forvoApiKey;
     this.settings.forvoApiEnabled = value.forvoApiEnabled;
     this.settings.googleApiKey = value.googleApiKey;
