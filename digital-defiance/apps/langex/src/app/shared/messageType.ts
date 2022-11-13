@@ -1,5 +1,5 @@
 export enum MessageType {
-    SettingsUpdate
+    SettingsUpdate = 'settingsUpdate',
   }
 
 export default MessageType;

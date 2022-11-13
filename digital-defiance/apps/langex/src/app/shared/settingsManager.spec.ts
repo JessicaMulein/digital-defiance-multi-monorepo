@@ -7,10 +7,11 @@ import SpeechSources from './speechSources';
 import PreferredVoiceGender from './preferredVoiceGender';
 import AudioStorageOption from './audioStorageOption';
 import AppSettings from './appSettings';
+import MessageContext from './messageContext';
 
 function makeExpectedSettings(
-  changeKey: string,
-  changeValue: any
+  changeKey?: string,
+  changeValue?: any
 ): { [key: string]: any } {
   const expectedSettings: ISettings = {
     lingvoApiKey: '',
@@ -27,11 +28,13 @@ function makeExpectedSettings(
     speechSources: [SpeechSources.WebSpeechAPI],
     wordMasteryColors: DefaultWordMasteryColors,
   };
-  // ensure settings has the changeKey
-  if (!(changeKey in expectedSettings)) {
-    throw new Error(`Invalid changeKey: ${changeKey}`);
+  if (changeKey !== undefined && changeValue !== undefined) {
+    // ensure settings has the changeKey
+    if (!(changeKey in expectedSettings)) {
+      throw new Error(`Invalid changeKey: ${changeKey}`);
+    }
+    (expectedSettings as any)[changeKey] = changeValue;
   }
-  (expectedSettings as any)[changeKey] = changeValue;
   const expectedSettingsObject: { [key: string]: any } = {};
   expectedSettingsObject[SettingsManager.settingsKey] = JSON.stringify(
     expectedSettings as AppSettings
@@ -44,7 +47,7 @@ describe('AppComponent', () => {
     chrome.reset();
   });
   it('should create the manager', () => {
-    const settingsManager = new SettingsManager();
+    const settingsManager = new SettingsManager(MessageContext.Extension);
     expect(settingsManager).toBeTruthy();
     // creating a new instance loads the settings
     sinon.assert.calledOnce(chrome.storage.sync.get);
@@ -58,7 +61,7 @@ describe('AppComponent', () => {
     );
     chrome.storage.sync.get.yields(expectedSettings);
 
-    const settingsManager = new SettingsManager();
+    const settingsManager = new SettingsManager(MessageContext.Extension);
     expect(settingsManager).toBeTruthy();
     expect(settingsManager.Settings.forvoApiKey).toBe(updatedForvoApiKey);
   });
@@ -69,7 +72,7 @@ describe('AppComponent', () => {
       updatedForvoApiKey
     );
 
-    const settingsManager = new SettingsManager();
+    const settingsManager = new SettingsManager(MessageContext.Extension);
     expect(settingsManager).toBeTruthy();
     expect(settingsManager.Settings.forvoApiKey).toBe('');
     settingsManager.updateSetting('forvoApiKey', updatedForvoApiKey);
@@ -79,5 +82,12 @@ describe('AppComponent', () => {
     sinon.assert.calledOnce(chrome.storage.sync.set);
 
     sinon.assert.calledWith(chrome.storage.sync.set, expectedSettings);
+  });
+  it('should be able to get from storage using the helper',  () => {
+    const expectedSettings = makeExpectedSettings();
+    chrome.storage.sync.get.yields(expectedSettings);
+    const result = SettingsManager.storageGetKey(SettingsManager.settingsKey);
+    const expected = expectedSettings[SettingsManager.settingsKey];
+    expect(result).toBe(expected);
   });
 });

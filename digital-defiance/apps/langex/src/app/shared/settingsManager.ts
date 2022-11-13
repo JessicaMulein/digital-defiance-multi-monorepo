@@ -1,4 +1,7 @@
 import AppSettings from './appSettings';
+import { IChromeMessage } from './interfaces';
+import MessageContext from './messageContext';
+import MessageType from './messageType';
 import SpeechSources from './speechSources';
 import WordMastery from './wordMastery';
 
@@ -10,14 +13,17 @@ export class SettingsManager {
   public static readonly keyIdentifier = '__langex';
   public static readonly learnedWordKey = 'learnedWords';
   public static readonly studiedLanguagesKey = 'studiedLanguages';
+  public readonly context: MessageContext;
   private readonly settings: AppSettings;
 
   constructor(
+    context: MessageContext,
     primaryLanguage: string = 'en',
     primaryLocale: string = 'en-US',
     defaultStudiedLanguages: string[] = ['uk', 'ru'],
     defaultSpeechSources: SpeechSources[] = [SpeechSources.WebSpeechAPI]
   ) {
+    this.context = context;
     this.settings = new AppSettings(
       primaryLanguage,
       primaryLocale,
@@ -26,6 +32,29 @@ export class SettingsManager {
     );
 
     this.loadSettings();
+  }
+
+  public static sendMessage(message: IChromeMessage): void {
+    chrome.runtime.sendMessage(message);
+  }
+
+  public static storageSetKey(key: string, value: any): void {
+    chrome.storage.sync.set({ [key]: value });
+  }
+
+  public static storageGetKey(key: string): any {
+    let value: any = null;
+    let count = 0;
+    chrome.storage.sync.get(key, (items: { [key: string]: any }) => {
+      count++;
+      if (items[key] !== undefined) {
+        value = items[key];
+      }
+    });
+    if (count > 1) {
+      throw new Error('SettingsManager: storageGetKey: count > 1');
+    }
+    return value;
   }
 
   public static getKeyIdentifier(key: string, ...args: string[]): string {
@@ -43,8 +72,11 @@ export class SettingsManager {
    * Saves only the settings object to chrome storage
    */
   public saveSettings(): void {
-    chrome.storage.sync.set({
-      [SettingsManager.settingsKey]: JSON.stringify(this.settings),
+    SettingsManager.storageSetKey(SettingsManager.settingsKey, JSON.stringify(this.settings));
+    SettingsManager.sendMessage({
+      type: MessageType.SettingsUpdate,
+      context: this.context,
+      data: this.settings,
     });
   }
 
@@ -61,18 +93,17 @@ export class SettingsManager {
   /**
    * Loads the settings object from chrome storage
    */
-  public loadSettings(): void {
-    chrome.storage.sync.get(
-      SettingsManager.settingsKey,
-      (items: { [key: string]: any }) => {
-        if (items[SettingsManager.settingsKey]) {
-          const serializedSettings: AppSettings = JSON.parse(
-            items[SettingsManager.settingsKey] as string
-          );
-          this.setSettingsFromOther(serializedSettings as AppSettings);
-        }
+  public loadSettings(failIfNotFound: boolean = false): void {
+    const settings = SettingsManager.storageGetKey(SettingsManager.settingsKey);
+    if (failIfNotFound && typeof settings !== 'string') {
+      throw new Error('SettingsManager: loadSettings: settings not found');
+    }
+    if (settings !== null) {
+      const serializedSettings: AppSettings = JSON.parse(settings as string);
+      if (serializedSettings !== null) {
+        this.setSettingsFromOther(serializedSettings as AppSettings);
       }
-    );
+    }
   }
 
   /**

@@ -1,4 +1,5 @@
 import AudioStorageOption from "./audioStorageOption";
+import MessageContext from "./messageContext";
 import MessageType from "./messageType";
 import PreferredVoiceGender from "./preferredVoiceGender";
 import SpeechSources from "./speechSources";
@@ -67,5 +68,6 @@ export interface ISettings {
 
 export interface IChromeMessage {
   type: MessageType;
+  context: MessageContext;
   data: any;
 }

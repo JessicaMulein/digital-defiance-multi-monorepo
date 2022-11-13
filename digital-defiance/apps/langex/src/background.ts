@@ -5,8 +5,9 @@ import MessageType from './app/shared/messageType';
 import { IChromeMessage} from './app/shared/interfaces';
 import { searchForWord } from './app/shared/lingvo';
 import { SettingsManager } from './app/shared/settingsManager';
+import MessageContext from './app/shared/messageContext';
 // TODO: get app settings from messaging with front end
-const settingsManager: SettingsManager = new SettingsManager();
+const settingsManager: SettingsManager = new SettingsManager(MessageContext.Background);
 settingsManager.loadSettings();
 console.log('SettingsComponent: settingsManager loaded in background', settingsManager.Settings);
 

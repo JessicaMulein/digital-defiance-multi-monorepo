@@ -36,14 +36,15 @@ export class SettingsComponent implements OnInit {
     }
     
     saveSetting(): void {
-      if (!SettingsComponent.settingsManager) {
+      if (SettingsComponent.settingsManager === null) {
         throw new Error('SettingsManager not initialized');
       }
-      SettingsComponent.settingsManager.saveSettings();
-      const message: IChromeMessage = {
+      const settingsManager = SettingsComponent.settingsManager;
+      settingsManager.saveSettings();
+      SettingsManager.sendMessage({
         type: MessageType.SettingsUpdate,
+        context: settingsManager.context,
         data: null
-      };
-      chrome.runtime.sendMessage(message);
+      });
     }
 }
