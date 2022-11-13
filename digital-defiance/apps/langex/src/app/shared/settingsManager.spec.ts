@@ -47,15 +47,5 @@ describe('AppComponent', () => {
     const expectedSettingsObject: { [key: string]: any }= {};
     expectedSettingsObject[SettingsManager.settingsKey] = JSON.stringify(expectedSettings as AppSettings);
     sinon.assert.calledWith(chrome.storage.sync.set, expectedSettingsObject);
-    // let records = 0;
-    // chrome.storage.sync.get([[SettingsManager.settingsKey]], (items: { [key: string]: any }) => {
-    //     records++;
-    //     expect(items[SettingsManager.settingsKey]).toBeTruthy();
-    //     const serializedSettings: Record<string, unknown> = JSON.parse(
-    //         items[SettingsManager.settingsKey] as string
-    //     );
-    //     expect(serializedSettings['forvoApiKey']).toBe('test');
-    // });
-    // expect(records).toBe(1);
   });
 });
