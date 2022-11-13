@@ -2,7 +2,7 @@
 /// <reference types="chrome"/>
 
 import MessageType from './app/shared/messageType';
-import { IChromeMessage} from './app/shared/interfaces.d';
+import { IChromeMessage} from './app/shared/interfaces';
 import { searchForWord } from './app/shared/lingvo';
 import { SettingsManager } from './app/shared/settingsManager';
 // TODO: get app settings from messaging with front end

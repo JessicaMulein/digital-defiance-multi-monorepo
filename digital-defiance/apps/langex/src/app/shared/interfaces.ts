@@ -8,7 +8,7 @@ export interface WordMasteryStatus {
   word: string;
   language: string;
   status: WordMastery;
-  color: CSSStyleDeclaration.color;
+  color: CSSStyleDeclaration['color'];
 }
 
 /**

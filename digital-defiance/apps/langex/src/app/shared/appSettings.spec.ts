@@ -2,7 +2,7 @@ import AppSettings from "./appSettings";
 import SpeechSources from "./speechSources";
 import PreferredVoiceGender from "./preferredVoiceGender";
 import AudioStorageOption from "./audioStorageOption";
-import { DefaultWordMasteryColors } from "./interfaces.d";
+import { DefaultWordMasteryColors } from "./interfaces";
 
 describe('AppSettings', () => {
     it('should create the app settings with the default parameters', () => {

@@ -1,7 +1,7 @@
 import {
   DefaultWordMasteryColors,
   ISettings,
-} from './interfaces.d';
+} from './interfaces';
 import AudioStorageOption from './audioStorageOption';
 import PreferredVoiceGender from './preferredVoiceGender';
 import SpeechSources from './speechSources';
@@ -14,6 +14,7 @@ export default class AppSettings implements ISettings {
   public forvoApiEnabled: boolean;
   public googleApiKey: string;
   public googleApiEnabled: boolean;
+  public preferredVoiceGender: PreferredVoiceGender;
   /**
    * The iso 639-2 language code of the primary langauge of the speaker, which studied words will be translated to and from.
    * e.g. 'uk' for Ukrainian
@@ -24,7 +25,6 @@ export default class AppSettings implements ISettings {
    * e.g. 'en-US' for American English
    */
   public primaryLocale: string;
-  public preferredVoiceGender: PreferredVoiceGender;
   public storeAudio: AudioStorageOption;
   /**
    * Languages being studied to use for translation, in order of preference/likelihood, not including your primary language.
@@ -49,9 +49,9 @@ export default class AppSettings implements ISettings {
     this.forvoApiEnabled = false;
     this.googleApiKey = '';
     this.googleApiEnabled = false;
+    this.preferredVoiceGender = PreferredVoiceGender.Either;
     this.primaryLanguage = primaryLanguage;
     this.primaryLocale = primaryLocale;
-    this.preferredVoiceGender = PreferredVoiceGender.Either;
     this.storeAudio = AudioStorageOption.None;
     this.studiedLanguages = defaultStudiedLanguages;
     this.speechSources = defaultSpeechSources;
