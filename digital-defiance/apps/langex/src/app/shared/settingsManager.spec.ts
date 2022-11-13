@@ -19,10 +19,11 @@ describe('AppComponent', () => {
     sinon.assert.calledOnce(chrome.storage.sync.get);
   });
   it('should be able to save the settings', () => {
+    const updatedForvoApiKey = 'updatedForvoApiKey';
     const settingsManager = new SettingsManager();
     expect(settingsManager).toBeTruthy();
     expect(settingsManager.Settings.forvoApiKey).toBe('');
-    settingsManager.updateSetting('forvoApiKey', 'test');
+    settingsManager.updateSetting('forvoApiKey', updatedForvoApiKey);
     settingsManager.saveSettings();
 
     sinon.assert.calledOnce(chrome.storage.sync.get);
@@ -31,7 +32,7 @@ describe('AppComponent', () => {
     const expectedSettings: ISettings = {
       lingvoApiKey: '',
       lingvoApiEnabled: false,
-      forvoApiKey: 'test',
+      forvoApiKey: updatedForvoApiKey,
       forvoApiEnabled: false,
       googleApiKey: '',
       googleApiEnabled: false,
