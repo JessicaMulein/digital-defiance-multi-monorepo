@@ -25,7 +25,7 @@ export class SettingsComponent implements OnInit {
       this.appSettingsService.getSettingsManager().subscribe({
         next(manager) {
           SettingsComponent.settingsManager = manager;
-          console.log('SettingsComponent: settingsManager loaded in app', manager.Settings);
+          console.log(`SettingsComponent: settingsManager loaded in context: ${manager.context}`, manager.Settings);
         },
         error(err) {
           console.error(err);
