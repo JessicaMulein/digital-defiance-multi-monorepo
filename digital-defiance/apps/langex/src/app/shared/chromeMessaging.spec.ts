@@ -26,4 +26,24 @@ describe('chromeMessaging', () => {
         sinon.assert.calledOnce(callback);
         sinon.assert.calledWith(callback, message);
     });
+    it("should not call callback when message is not an object", () => {
+        // arrange
+        const message = "test";
+        const callback = sinon.spy();
+        // act
+        receiveMessages(callback);
+        chrome.runtime.onMessage.trigger(message);
+        // assert
+        sinon.assert.notCalled(callback);
+    });
+    it("should not call callback when message is an object but does not have a type property", () => {
+        // arrange
+        const message = { test: "test" };
+        const callback = sinon.spy();
+        // act
+        receiveMessages(callback);
+        chrome.runtime.onMessage.trigger(message);
+        // assert
+        sinon.assert.notCalled(callback);
+    });
 });
