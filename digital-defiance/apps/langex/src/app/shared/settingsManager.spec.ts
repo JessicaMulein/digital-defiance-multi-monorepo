@@ -1,46 +1,9 @@
-import { TestBed } from '@angular/core/testing';
 import { SettingsManager } from './settingsManager';
 import * as sinon from 'sinon';
 import * as chrome from 'sinon-chrome';
-import { DefaultWordMasteryColors, ISettings } from './interfaces';
-import SpeechSources from './speechSources';
-import PreferredVoiceGender from './preferredVoiceGender';
-import AudioStorageOption from './audioStorageOption';
-import AppSettings from './appSettings';
 import MessageContext from './messageContext';
-
-function makeExpectedSettings(
-  changeKey?: string,
-  changeValue?: any
-): { [key: string]: any } {
-  const expectedSettings: ISettings = {
-    lingvoApiKey: '',
-    lingvoApiEnabled: false,
-    forvoApiKey: '',
-    forvoApiEnabled: false,
-    googleApiKey: '',
-    googleApiEnabled: false,
-    preferredVoiceGender: PreferredVoiceGender.Either,
-    primaryLanguage: 'en',
-    primaryLocale: 'en-US',
-    storeAudio: AudioStorageOption.None,
-    studiedLanguages: ['uk', 'ru'],
-    speechSources: [SpeechSources.WebSpeechAPI],
-    wordMasteryColors: DefaultWordMasteryColors,
-  };
-  if (changeKey !== undefined && changeValue !== undefined) {
-    // ensure settings has the changeKey
-    if (!(changeKey in expectedSettings)) {
-      throw new Error(`Invalid changeKey: ${changeKey}`);
-    }
-    (expectedSettings as any)[changeKey] = changeValue;
-  }
-  const expectedSettingsObject: { [key: string]: any } = {};
-  expectedSettingsObject[SettingsManager.settingsKey] = JSON.stringify(
-    expectedSettings as AppSettings
-  );
-  return expectedSettingsObject;
-}
+import { makeExpectedAppSettings, makeExpectedISettings } from './testUtils'
+import AppSettings from './appSettings';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
@@ -48,46 +11,49 @@ describe('AppComponent', () => {
   });
   it('should create the manager', () => {
     const settingsManager = new SettingsManager(MessageContext.Extension);
-    expect(settingsManager).toBeTruthy();
+    expect(settingsManager).toBeInstanceOf(SettingsManager);
+    expect(settingsManager.Settings).toEqual(makeExpectedISettings() as AppSettings);
     // creating a new instance loads the settings
     sinon.assert.calledOnce(chrome.storage.sync.get);
   });
   it('should load the correct settings from the storage', () => {
     // force chrome.storage.sync.get to return the correct value
+    // arrange
     const updatedForvoApiKey = 'forvoApiKeyTest';
-    const expectedSettings = makeExpectedSettings(
+    const expectedSettings = makeExpectedAppSettings(
       'forvoApiKey',
       updatedForvoApiKey
     );
     chrome.storage.sync.get.yields(expectedSettings);
-
+    /// act
     const settingsManager = new SettingsManager(MessageContext.Extension);
-    expect(settingsManager).toBeTruthy();
-    expect(settingsManager.Settings.forvoApiKey).toBe(updatedForvoApiKey);
+    // assert
+    expect(settingsManager).toBeInstanceOf(SettingsManager);
+    expect(settingsManager.Settings).toEqual(makeExpectedISettings(
+      'forvoApiKey',
+      updatedForvoApiKey
+    ));
   });
   it('should be able to save the settings', () => {
+    // arrange
     const updatedForvoApiKey = 'forvoApiKeyTest';
-    const expectedSettings = makeExpectedSettings(
+    const expectedSettings = makeExpectedAppSettings(
       'forvoApiKey',
       updatedForvoApiKey
     );
-
+    // act
     const settingsManager = new SettingsManager(MessageContext.Extension);
-    expect(settingsManager).toBeTruthy();
-    expect(settingsManager.Settings.forvoApiKey).toBe('');
-    settingsManager.updateSetting('forvoApiKey', updatedForvoApiKey);
-    settingsManager.saveSettings();
+    // assert
+    expect(settingsManager).toBeInstanceOf(SettingsManager);
+    expect(settingsManager.Settings).toEqual(makeExpectedISettings());
 
+    // arrange - update the settings
+    settingsManager.updateSetting('forvoApiKey', updatedForvoApiKey);
+    // act - save the settings
+    settingsManager.saveSettings();
+    // assert
     sinon.assert.calledOnce(chrome.storage.sync.get);
     sinon.assert.calledOnce(chrome.storage.sync.set);
-
     sinon.assert.calledWith(chrome.storage.sync.set, expectedSettings);
-  });
-  it('should be able to get from storage using the helper',  () => {
-    const expectedSettings = makeExpectedSettings();
-    chrome.storage.sync.get.yields(expectedSettings);
-    const result = SettingsManager.storageGetKey(SettingsManager.settingsKey);
-    const expected = expectedSettings[SettingsManager.settingsKey];
-    expect(result).toBe(expected);
   });
 });

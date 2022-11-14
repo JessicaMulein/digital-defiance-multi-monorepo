@@ -3,6 +3,7 @@ import { AppSettingsService } from './appSettings.service';
 import MessageType from './messageType';
 import { IChromeMessage } from './interfaces';
 import { SettingsManager } from './settingsManager';
+import { sendMessage } from './chromeStorage';
 
 @Component({
   selector: 'digital-defiance-settings',
@@ -41,7 +42,7 @@ export class SettingsComponent implements OnInit {
       }
       const settingsManager = SettingsComponent.settingsManager;
       settingsManager.saveSettings();
-      SettingsManager.sendMessage({
+      sendMessage({
         type: MessageType.SettingsUpdate,
         context: settingsManager.context,
         data: null

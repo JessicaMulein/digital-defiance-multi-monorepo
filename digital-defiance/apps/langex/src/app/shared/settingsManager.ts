@@ -1,4 +1,5 @@
 import AppSettings from './appSettings';
+import { sendMessage, storageGetKey, storageSetKey } from './chromeStorage';
 import { IChromeMessage } from './interfaces';
 import MessageContext from './messageContext';
 import MessageType from './messageType';
@@ -34,29 +35,6 @@ export class SettingsManager {
     this.loadSettings();
   }
 
-  public static sendMessage(message: IChromeMessage): void {
-    chrome.runtime.sendMessage(message);
-  }
-
-  public static storageSetKey(key: string, value: any): void {
-    chrome.storage.sync.set({ [key]: value });
-  }
-
-  public static storageGetKey(key: string): any {
-    let value: any = null;
-    let count = 0;
-    chrome.storage.sync.get(key, (items: { [key: string]: any }) => {
-      count++;
-      if (items[key] !== undefined) {
-        value = items[key];
-      }
-    });
-    if (count > 1) {
-      throw new Error('SettingsManager: storageGetKey: count > 1');
-    }
-    return value;
-  }
-
   public static getKeyIdentifier(key: string, ...args: string[]): string {
     // if no additional arguments, no trailing _ will be added
     const trailing = args.length > 0 ? `_${args.join('_')}` : '';
@@ -72,8 +50,8 @@ export class SettingsManager {
    * Saves only the settings object to chrome storage
    */
   public saveSettings(): void {
-    SettingsManager.storageSetKey(SettingsManager.settingsKey, JSON.stringify(this.settings));
-    SettingsManager.sendMessage({
+    storageSetKey(SettingsManager.settingsKey, JSON.stringify(this.settings));
+    sendMessage({
       type: MessageType.SettingsUpdate,
       context: this.context,
       data: this.settings,
@@ -94,7 +72,7 @@ export class SettingsManager {
    * Loads the settings object from chrome storage
    */
   public loadSettings(failIfNotFound: boolean = false): void {
-    const settings = SettingsManager.storageGetKey(SettingsManager.settingsKey);
+    const settings = storageGetKey(SettingsManager.settingsKey);
     if (failIfNotFound && typeof settings !== 'string') {
       throw new Error('SettingsManager: loadSettings: settings not found');
     }
