@@ -1,5 +1,6 @@
 import * as $ from 'jquery';
 
+// TODO this is based on outdated code
 let busy = false;
 
 function add_links() {
@@ -48,7 +49,4 @@ $(function () {
 
   observer.observe($('body')[0], { subtree: true, childList: true });
   $('<div id="forvo"/>').appendTo('body');
-});
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  return true;
 });

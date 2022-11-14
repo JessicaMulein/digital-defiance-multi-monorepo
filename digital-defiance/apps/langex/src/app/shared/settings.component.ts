@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AppSettingsService } from './appSettings.service';
 import MessageType from './messageType';
-import { IChromeMessage } from './interfaces';
 import { SettingsManager } from './settingsManager';
-import { sendMessage } from './chromeStorage';
+import { sendMessage } from './chromeMessaging';
 
 @Component({
   selector: 'digital-defiance-settings',

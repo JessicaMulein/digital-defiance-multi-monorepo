@@ -1,6 +1,6 @@
 import AppSettings from './appSettings';
-import { sendMessage, storageGetKey, storageSetKey } from './chromeStorage';
-import { IChromeMessage } from './interfaces';
+import { storageGetKey, storageSetKey } from './chromeStorage';
+import { sendMessage } from './chromeMessaging';
 import MessageContext from './messageContext';
 import MessageType from './messageType';
 import SpeechSources from './speechSources';
