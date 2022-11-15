@@ -96,4 +96,13 @@ describe('AppComponent', () => {
     // assert
     expect(() => deferredAction()).toThrow();
   });
+  it("should make sure save is called when updateSetting is called with save = true", () => {
+    // arrange
+    const settingsManager = new SettingsManager(MessageContext.Extension);
+    // act
+    settingsManager.updateSetting("forvoApiKey", "testValue", true);
+    // assert
+    sinon.assert.calledOnce(chrome.storage.sync.set);
+    sinon.assert.calledWith(chrome.storage.sync.set, makeExpectedAppSettings("forvoApiKey", "testValue"));
+  });
 });
