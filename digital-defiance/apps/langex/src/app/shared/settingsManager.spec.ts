@@ -64,4 +64,36 @@ describe('AppComponent', () => {
     // assert
     expect(key).toEqual(expectedKey);
   });
+  it("should verify hex colors", () => {
+    // arrange
+    const settingsManager = new SettingsManager(MessageContext.Extension);
+    // act
+    const isValid = settingsManager.verifyColor("#000000");
+    // assert
+    expect(isValid).toEqual(true);
+  });
+  it("should not verify invalid colors, no pound sign", () => {
+    // arrange
+    const settingsManager = new SettingsManager(MessageContext.Extension);
+    // act
+    const isValid = settingsManager.verifyColor("000000");
+    // assert
+    expect(isValid).toEqual(false);
+  });
+  it("should not verify invalid colors, non-hex/numeric", () => {
+    // arrange
+    const settingsManager = new SettingsManager(MessageContext.Extension);
+    // act
+    const isValid = settingsManager.verifyColor("#GGGGGG");
+    // assert
+    expect(isValid).toEqual(false);
+  });
+  it("should fail to update a setting not in the settings keys", () => {
+    // arrange
+    const settingsManager = new SettingsManager(MessageContext.Extension);
+    // act, deferred
+    const deferredAction = () => settingsManager.updateSetting("testKey", "testValue");
+    // assert
+    expect(() => deferredAction()).toThrow();
+  });
 });

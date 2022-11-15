@@ -41,7 +41,7 @@ export class SettingsManager {
     return `${SettingsManager.keyIdentifier}_${key}${trailing}`;
   }
 
-  private verifyColor(color: string): boolean {
+  public verifyColor(color: string): boolean {
     const colorRegex = /^#[0-9A-F]{6}$/i;
     return colorRegex.test(color);
   }
