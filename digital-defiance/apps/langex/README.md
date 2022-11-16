@@ -81,3 +81,14 @@ After doing a build as above:
 Currently not functional.
 In digital-defiance/apps/langex-e2e:
 ```% npx nx run langex:e2e```
+
+# References
+- https://web-highlights.com/blog/build-a-text-web-highlighter-as-a-chrome-extension/
+- https://stackoverflow.com/questions/20795142/highlight-all-words-in-chrome-extension
+- https://stackoverflow.com/questions/24100983/getting-pronunciation-of-a-word-using-google-translate-api
+- https://developer.chrome.com/blog/web-apps-that-talk-introduction-to-the-speech-synthesis-api/
+- https://wicg.github.io/speech-api/
+- https://developer.chrome.com/docs/extensions/reference/storage/
+- https://stackoverflow.com/questions/15052507/use-chrome-extension-getbackgroundpage-to-play-an-audio-file
+- https://www.tutsmake.com/calling-rest-api-from-javascript-jquery/
+- https://rxjs.dev/guide/observable
