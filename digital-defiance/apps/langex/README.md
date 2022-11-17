@@ -92,3 +92,4 @@ In digital-defiance/apps/langex-e2e:
 - https://stackoverflow.com/questions/15052507/use-chrome-extension-getbackgroundpage-to-play-an-audio-file
 - https://www.tutsmake.com/calling-rest-api-from-javascript-jquery/
 - https://rxjs.dev/guide/observable
+- https://github.com/ContentSquare/readapt
