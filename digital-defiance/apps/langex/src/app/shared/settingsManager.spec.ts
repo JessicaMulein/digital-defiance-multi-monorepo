@@ -15,6 +15,7 @@ describe('AppComponent', () => {
     expect(settingsManager.Settings).toEqual(makeExpectedISettings() as AppSettings);
     // creating a new instance loads the settings
     sinon.assert.calledOnce(chrome.storage.sync.get);
+    sinon.assert.calledOnce(chrome.i18n.getUILanguage);
   });
   it('should load the correct settings from the storage', () => {
     // force chrome.storage.sync.get to return the correct value

@@ -16,6 +16,7 @@ export class SettingsManager {
   public static readonly studiedLanguagesKey = 'studiedLanguages';
   public readonly context: MessageContext;
   private readonly settings: AppSettings;
+  private readonly uiLanguage: string;
 
   constructor(
     context: MessageContext,
@@ -24,6 +25,7 @@ export class SettingsManager {
     defaultStudiedLanguages: string[] = ['uk', 'ru'],
     defaultSpeechSources: SpeechSources[] = [SpeechSources.WebSpeechAPI]
   ) {
+    this.uiLanguage = chrome.i18n.getUILanguage();
     this.context = context;
     this.settings = new AppSettings(
       primaryLanguage,
