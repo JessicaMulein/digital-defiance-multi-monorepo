@@ -1,3 +1,9 @@
+/***
+ * This file is currently housing some possibly YAGNI code, I found from examples elsewhere,
+ * but I'm leaving it in for now and expect to use it.
+ */
+
+
 export function getBackgroundPage(): Window | null {
   return chrome.extension.getBackgroundPage();
 }
