@@ -49,9 +49,9 @@ describe('AppComponent', () => {
     expect(settingsManager.Settings).toEqual(makeExpectedISettings());
 
     // arrange - update the settings
-    settingsManager.updateSetting('forvoApiKey', updatedForvoApiKey);
+    settingsManager.updateGlobalSetting('forvoApiKey', updatedForvoApiKey);
     // act - save the settings
-    settingsManager.saveSettings();
+    settingsManager.saveGlobalSettings();
     // assert
     sinon.assert.calledOnce(chrome.storage.sync.get);
     sinon.assert.calledOnce(chrome.storage.sync.set);
@@ -69,7 +69,7 @@ describe('AppComponent', () => {
     // arrange
     const settingsManager = new SettingsManager(MessageContext.Extension);
     // act
-    const isValid = settingsManager.verifyColor("#000000");
+    const isValid = settingsManager.verifyHexColor("#000000");
     // assert
     expect(isValid).toEqual(true);
   });
@@ -77,7 +77,7 @@ describe('AppComponent', () => {
     // arrange
     const settingsManager = new SettingsManager(MessageContext.Extension);
     // act
-    const isValid = settingsManager.verifyColor("000000");
+    const isValid = settingsManager.verifyHexColor("000000");
     // assert
     expect(isValid).toEqual(false);
   });
@@ -85,7 +85,7 @@ describe('AppComponent', () => {
     // arrange
     const settingsManager = new SettingsManager(MessageContext.Extension);
     // act
-    const isValid = settingsManager.verifyColor("#GGGGGG");
+    const isValid = settingsManager.verifyHexColor("#GGGGGG");
     // assert
     expect(isValid).toEqual(false);
   });
@@ -93,7 +93,7 @@ describe('AppComponent', () => {
     // arrange
     const settingsManager = new SettingsManager(MessageContext.Extension);
     // act, deferred
-    const deferredAction = () => settingsManager.updateSetting("testKey", "testValue");
+    const deferredAction = () => settingsManager.updateGlobalSetting("testKey", "testValue");
     // assert
     expect(() => deferredAction()).toThrow();
   });
@@ -101,7 +101,7 @@ describe('AppComponent', () => {
     // arrange
     const settingsManager = new SettingsManager(MessageContext.Extension);
     // act
-    settingsManager.updateSetting("forvoApiKey", "testValue", true);
+    settingsManager.updateGlobalSetting("forvoApiKey", "testValue", true);
     // assert
     sinon.assert.calledOnce(chrome.storage.sync.set);
     sinon.assert.calledWith(chrome.storage.sync.set, makeExpectedAppSettings("forvoApiKey", "testValue"));

@@ -1,7 +1,7 @@
-export enum AudioStorageOption {
+export enum StorageOption {
     None = 'None',
     LocalStorage = 'Local Storage',
     SyncedStorage = 'Synced Storage',
   }
 
-export default AudioStorageOption;
+export default StorageOption;

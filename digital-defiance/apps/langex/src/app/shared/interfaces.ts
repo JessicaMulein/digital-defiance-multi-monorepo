@@ -1,4 +1,4 @@
-import AudioStorageOption from "./audioStorageOption";
+import StorageOption from "./storageOption";
 import MessageContext from "./messageContext";
 import MessageType from "./messageType";
 import PreferredVoiceGender from "./preferredVoiceGender";
@@ -57,7 +57,7 @@ export interface ISettings {
    */
   primaryLocale: string;
   preferredVoiceGender: PreferredVoiceGender;
-  storeAudio: AudioStorageOption;
+  storeAudio: StorageOption;
   /**
    * Languages being studied to use for translation, in order of preference/likelihood, not including your primary language.
    * iso369-2 codes

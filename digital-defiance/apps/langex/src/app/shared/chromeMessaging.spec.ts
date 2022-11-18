@@ -8,7 +8,7 @@ import * as sinon from "sinon";
 describe('chromeMessaging', () => {
     it("should call chrome.runtime.sendMessage", () => {
         // arrange
-        const message: IChromeMessage = { type: MessageType.SettingsUpdate, context: MessageContext.Extension, data: null};
+        const message: IChromeMessage = { type: MessageType.GlobalSettingsUpdate, context: MessageContext.Extension, data: null};
         // act
         sendMessage(message);
         // assert
@@ -17,7 +17,7 @@ describe('chromeMessaging', () => {
     });
     it("should receive a message using receiveMessages", () => {
         // arrange
-        const message: IChromeMessage = { type: MessageType.SettingsUpdate, context: MessageContext.Extension, data: null};
+        const message: IChromeMessage = { type: MessageType.GlobalSettingsUpdate, context: MessageContext.Extension, data: null};
         const callback = sinon.spy();
         // act
         receiveMessages(callback);

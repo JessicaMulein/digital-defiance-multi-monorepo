@@ -40,9 +40,9 @@ export class SettingsComponent implements OnInit {
         throw new Error('SettingsManager not initialized');
       }
       const settingsManager = SettingsComponent.settingsManager;
-      settingsManager.saveSettings();
+      settingsManager.saveGlobalSettings();
       sendMessage({
-        type: MessageType.SettingsUpdate,
+        type: MessageType.GlobalSettingsUpdate,
         context: settingsManager.context,
         data: null
       });

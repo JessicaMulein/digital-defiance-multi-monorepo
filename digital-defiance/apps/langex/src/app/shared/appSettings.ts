@@ -2,7 +2,7 @@ import {
   DefaultWordMasteryColors,
   ISettings,
 } from './interfaces';
-import AudioStorageOption from './audioStorageOption';
+import StorageOption from './storageOption';
 import PreferredVoiceGender from './preferredVoiceGender';
 import SpeechSources from './speechSources';
 import WordMastery from './wordMastery';
@@ -28,7 +28,7 @@ export default class AppSettings implements ISettings {
    * e.g. 'en-US' for American English
    */
   public primaryLocale: string;
-  public storeAudio: AudioStorageOption;
+  public storeAudio: StorageOption;
   /**
    * Languages being studied to use for translation, in order of preference/likelihood, not including your primary language.
    * iso369-2 codes
@@ -55,7 +55,7 @@ export default class AppSettings implements ISettings {
     this.preferredVoiceGender = PreferredVoiceGender.Either;
     this.primaryLanguage = primaryLanguage;
     this.primaryLocale = primaryLocale;
-    this.storeAudio = AudioStorageOption.None;
+    this.storeAudio = StorageOption.None;
     this.studiedLanguages = defaultStudiedLanguages;
     this.speechSources = defaultSpeechSources;
     this.wordMasteryColors = DefaultWordMasteryColors;

@@ -7,6 +7,7 @@ import SpeechSources from './speechSources';
 import WordMastery from './wordMastery';
 import { WordMasteryStatus } from './interfaces';
 import { LocalSettings } from './localSettings';
+import StorageOption from './storageOption';
 
 /**
  * Use browser/chrome storage to store settings
@@ -44,7 +45,7 @@ export class SettingsManager {
       extensionEnabled: true,
     };
 
-    this.loadSyncedSettings();
+    this.loadGlobalSettings();
     this.loadLocalSettings();
   }
 
@@ -54,45 +55,51 @@ export class SettingsManager {
     return `${SettingsManager.keyIdentifier}_${key}${trailing}`;
   }
 
-  public verifyColor(color: string): boolean {
+  public verifyHexColor(color: string): boolean {
     const colorRegex = /^#[0-9A-F]{6}$/i;
     return colorRegex.test(color);
+  }
+
+  public verifyColorName(color: string): boolean {
+      const s = new Option().style;
+      s.color = color;
+      return s.color !== '';
   }
 
   /**
    * Saves only the settings object to chrome storage
    */
-  public saveSettings(): void {
-    storageSetKey(SettingsManager.settingsKey, JSON.stringify(this.globalSettings));
+  public saveGlobalSettings(): void {
+    storageSetKey(SettingsManager.settingsKey, JSON.stringify(this.globalSettings), StorageOption.SyncedStorage);
     sendMessage({
-      type: MessageType.SettingsUpdate,
+      type: MessageType.GlobalSettingsUpdate,
       context: this.context,
       data: this.globalSettings,
     });
   }
 
-  public updateSetting(key: string, value: any, save = false): void {
+  public updateGlobalSetting(key: string, value: any, save = false): void {
     if (!Object.prototype.hasOwnProperty.call(this.globalSettings, key)) {
       throw new Error(`SettingsManager: updateSetting: key ${key} not found`);
     }
     (this.globalSettings as any)[key] = value;
     if (save) {
-      this.saveSettings();
+      this.saveGlobalSettings();
     }
   }
 
   /**
    * Loads the settings object from chrome storage
    */
-  public loadSyncedSettings(failIfNotFound: boolean = false): void {
-    const settings = storageGetKey(SettingsManager.settingsKey);
+  public loadGlobalSettings(failIfNotFound: boolean = false): void {
+    const settings = storageGetKey(SettingsManager.settingsKey, StorageOption.SyncedStorage);
     if (failIfNotFound && typeof settings !== 'string') {
       throw new Error('SettingsManager: loadSettings: settings not found');
     }
     if (settings !== null) {
       const serializedSettings: AppSettings = JSON.parse(settings as string);
       if (serializedSettings !== null) {
-        this.setSettingsFromOther(serializedSettings as AppSettings);
+        this.setGlobalSettingsFromOther(serializedSettings as AppSettings);
       }
     }
   }
@@ -101,10 +108,15 @@ export class SettingsManager {
    * 
    */
   public loadLocalSettings(): void {
-    throw new Error('Method not implemented.');
+    //throw new Error('Method not implemented.');
     // const storedSettings = localStorage.getItem(SettingsManager.settingsKey);
     // if (storedSettings !== null) {
     // }
+  }
+
+  public saveLocalSettings(): void {
+    throw new Error('Method not implemented.');
+    // localStorage.setItem(SettingsManager.settingsKey, JSON.stringify(this.localSettings));
   }
 
   /**
@@ -145,7 +157,7 @@ export class SettingsManager {
     chrome.storage.sync.remove(keyIdentifier);
   }
 
-  private setSettingsFromOther(value: AppSettings): void {
+  private setGlobalSettingsFromOther(value: AppSettings): void {
     this.globalSettings.forvoApiKey = value.forvoApiKey;
     this.globalSettings.forvoApiEnabled = value.forvoApiEnabled;
     this.globalSettings.googleApiKey = value.googleApiKey;
@@ -166,8 +178,8 @@ export class SettingsManager {
   }
 
   public set Settings(value: AppSettings) {
-    this.setSettingsFromOther(value);
-    this.saveSettings();
+    this.setGlobalSettingsFromOther(value);
+    this.saveGlobalSettings();
   }
 
   public get studiedLanguages(): string[] {

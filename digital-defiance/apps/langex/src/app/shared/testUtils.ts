@@ -2,7 +2,7 @@ import { SettingsManager } from './settingsManager';
 import { DefaultWordMasteryColors, ISettings } from './interfaces';
 import SpeechSources from './speechSources';
 import PreferredVoiceGender from './preferredVoiceGender';
-import AudioStorageOption from './audioStorageOption';
+import StorageOption from './storageOption';
 import AppSettings from './appSettings';
 
 
@@ -20,7 +20,7 @@ export function makeExpectedISettings(
       preferredVoiceGender: PreferredVoiceGender.Either,
       primaryLanguage: 'en',
       primaryLocale: 'en-US',
-      storeAudio: AudioStorageOption.None,
+      storeAudio: StorageOption.None,
       studiedLanguages: ['uk', 'ru'],
       speechSources: [SpeechSources.WebSpeechAPI],
       wordMasteryColors: DefaultWordMasteryColors,
