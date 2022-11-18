@@ -17,10 +17,10 @@ export interface WordMasteryStatus {
  * Ideally these will have an alpha transparency
  */
 export const DefaultWordMasteryColors: Record<WordMastery, string> = {
-  [WordMastery.Unrecognized]: '#FFFFFF', // white/page background
-  [WordMastery.Unfamiliar]: 'yellow',
-  [WordMastery.Practice]: 'orange',
-  [WordMastery.Familiar]: 'green',
+  [WordMastery.Unrecognized]: '#F08080', // red (light coral)
+  [WordMastery.Unfamiliar]: '#FFFACD', // yellow (lemonchiffon)
+  [WordMastery.Practice]: '#FFA500', // orange
+  [WordMastery.Familiar]: '#90EE90', // light green
   [WordMastery.Mastered]: '#FFFFFF', // white/page background
 };
 
@@ -35,6 +35,9 @@ export interface PageLanguageDetectionResult {
   selection: WordMasteryStatus;
 }
 
+/**
+ * Settings stored in synced storage for the application
+ */
 export interface ISettings {
   wordMasteryColors: Record<WordMastery, string>;
   lingvoApiKey: string;

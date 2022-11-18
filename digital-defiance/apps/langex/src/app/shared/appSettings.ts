@@ -7,6 +7,9 @@ import PreferredVoiceGender from './preferredVoiceGender';
 import SpeechSources from './speechSources';
 import WordMastery from './wordMastery';
 
+/**
+ * Settings stored in synced storage for the application
+ */
 export default class AppSettings implements ISettings {
   public lingvoApiKey: string;
   public lingvoApiEnabled: boolean;

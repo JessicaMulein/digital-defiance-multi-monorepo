@@ -14,11 +14,7 @@ export function reloadExtension(win: Window) {
   }
 }
 
-export function connectNative(application: string): chrome.runtime.Port {
-  return chrome.runtime.connectNative(application);
-}
-
-export function requestPermission(permission: any) {
+export async function requestPermission(permission: any): Promise<any> {
   return new Promise((resolve, reject) => {
     chrome.permissions.request(permission, resolve);
   });

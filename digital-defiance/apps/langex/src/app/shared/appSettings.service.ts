@@ -4,7 +4,7 @@ import MessageContext from './messageContext';
 import { SettingsManager } from './settingsManager';
 
 const settingsManager: SettingsManager = new SettingsManager(MessageContext.Extension);
-settingsManager.loadSettings();
+settingsManager.loadSyncedSettings();
 
 @Injectable()
 export class AppSettingsService {

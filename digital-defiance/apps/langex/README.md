@@ -93,3 +93,4 @@ In digital-defiance/apps/langex-e2e:
 - https://www.tutsmake.com/calling-rest-api-from-javascript-jquery/
 - https://rxjs.dev/guide/observable
 - https://github.com/ContentSquare/readapt
+  - https://github.com/ContentSquare/readapt/blob/860c95384b2d753a7bd2e379ff856cab1ac3c738/apps/chrome-extension/src-extension/readapt.ts#L204

@@ -1,8 +1,9 @@
 {
-  "name": "LangEx- Language Extension",
+  "name": "LangEx: Language Extension",
   "version": "1.0",
   "description": "Learn to read the words on your screen",
   "manifest_version": 3,
+  "default_locale": "en",
   "action": {
     "default_popup": "index.html",
     "default_icon": {

@@ -1,6 +1,6 @@
 import { GoogleTranslate } from './googleTranslate';
 import { isValid } from 'all-iso-language-codes';
-import { WordMasteryStatus } from './interfaces';
+import { GoogleDetectionResult, WordMasteryStatus } from './interfaces';
 
 export function languageSupported(language: string): boolean {
   const result = isValid(language);
@@ -61,3 +61,16 @@ export async function detectLanguage(
   //   }
   // return detections;
 }
+
+export function detectLanguage2(inputText: string): chrome.i18n.DetectedLanguage[] {
+  const langList: chrome.i18n.DetectedLanguage[] = [];
+  chrome.i18n.detectLanguage(inputText, function(result) {
+    for(let i = 0; i < result.languages.length; i++) {
+      langList.push(result.languages[i])
+    }
+  });
+  return langList;
+}
+
+// detect by div, span, p, etc?
+// break page into hunks, detect language of each hunk, then determine language of page by majority vote?

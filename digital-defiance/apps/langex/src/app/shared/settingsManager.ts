@@ -5,6 +5,8 @@ import MessageContext from './messageContext';
 import MessageType from './messageType';
 import SpeechSources from './speechSources';
 import WordMastery from './wordMastery';
+import { WordMasteryStatus } from './interfaces';
+import { LocalSettings } from './localSettings';
 
 /**
  * Use browser/chrome storage to store settings
@@ -15,7 +17,8 @@ export class SettingsManager {
   public static readonly learnedWordKey = 'learnedWords';
   public static readonly studiedLanguagesKey = 'studiedLanguages';
   public readonly context: MessageContext;
-  private readonly settings: AppSettings;
+  private readonly globalSettings: AppSettings;
+  private readonly localSettings: LocalSettings;
   private readonly uiLanguage: string;
 
   constructor(
@@ -26,15 +29,23 @@ export class SettingsManager {
     defaultSpeechSources: SpeechSources[] = [SpeechSources.WebSpeechAPI]
   ) {
     this.uiLanguage = chrome.i18n.getUILanguage();
+    //this.browserAcceptLanguages = chrome.i18n.getAcceptLanguages();
     this.context = context;
-    this.settings = new AppSettings(
+    this.globalSettings = new AppSettings(
       primaryLanguage,
       primaryLocale,
       defaultStudiedLanguages,
       defaultSpeechSources
     );
+    this.localSettings = {
+      includedSites: [],
+      excludedSites: [],
+      onByDefault: true,
+      extensionEnabled: true,
+    };
 
-    this.loadSettings();
+    this.loadSyncedSettings();
+    this.loadLocalSettings();
   }
 
   public static getKeyIdentifier(key: string, ...args: string[]): string {
@@ -52,19 +63,19 @@ export class SettingsManager {
    * Saves only the settings object to chrome storage
    */
   public saveSettings(): void {
-    storageSetKey(SettingsManager.settingsKey, JSON.stringify(this.settings));
+    storageSetKey(SettingsManager.settingsKey, JSON.stringify(this.globalSettings));
     sendMessage({
       type: MessageType.SettingsUpdate,
       context: this.context,
-      data: this.settings,
+      data: this.globalSettings,
     });
   }
 
   public updateSetting(key: string, value: any, save = false): void {
-    if (!Object.prototype.hasOwnProperty.call(this.settings, key)) {
+    if (!Object.prototype.hasOwnProperty.call(this.globalSettings, key)) {
       throw new Error(`SettingsManager: updateSetting: key ${key} not found`);
     }
-    (this.settings as any)[key] = value;
+    (this.globalSettings as any)[key] = value;
     if (save) {
       this.saveSettings();
     }
@@ -73,7 +84,7 @@ export class SettingsManager {
   /**
    * Loads the settings object from chrome storage
    */
-  public loadSettings(failIfNotFound: boolean = false): void {
+  public loadSyncedSettings(failIfNotFound: boolean = false): void {
     const settings = storageGetKey(SettingsManager.settingsKey);
     if (failIfNotFound && typeof settings !== 'string') {
       throw new Error('SettingsManager: loadSettings: settings not found');
@@ -84,6 +95,16 @@ export class SettingsManager {
         this.setSettingsFromOther(serializedSettings as AppSettings);
       }
     }
+  }
+
+  /**
+   * 
+   */
+  public loadLocalSettings(): void {
+    throw new Error('Method not implemented.');
+    // const storedSettings = localStorage.getItem(SettingsManager.settingsKey);
+    // if (storedSettings !== null) {
+    // }
   }
 
   /**
@@ -125,23 +146,23 @@ export class SettingsManager {
   }
 
   private setSettingsFromOther(value: AppSettings): void {
-    this.settings.forvoApiKey = value.forvoApiKey;
-    this.settings.forvoApiEnabled = value.forvoApiEnabled;
-    this.settings.googleApiKey = value.googleApiKey;
-    this.settings.googleApiEnabled = value.googleApiEnabled;
-    this.settings.lingvoApiKey = value.lingvoApiKey;
-    this.settings.lingvoApiEnabled = value.lingvoApiEnabled;
-    this.settings.preferredVoiceGender = value.preferredVoiceGender;
-    this.settings.primaryLanguage = value.primaryLanguage;
-    this.settings.primaryLocale = value.primaryLocale;
-    this.settings.studiedLanguages = value.studiedLanguages;
-    this.settings.speechSources = value.speechSources;
-    this.settings.storeAudio = value.storeAudio;
-    this.settings.wordMasteryColors = value.wordMasteryColors;
+    this.globalSettings.forvoApiKey = value.forvoApiKey;
+    this.globalSettings.forvoApiEnabled = value.forvoApiEnabled;
+    this.globalSettings.googleApiKey = value.googleApiKey;
+    this.globalSettings.googleApiEnabled = value.googleApiEnabled;
+    this.globalSettings.lingvoApiKey = value.lingvoApiKey;
+    this.globalSettings.lingvoApiEnabled = value.lingvoApiEnabled;
+    this.globalSettings.preferredVoiceGender = value.preferredVoiceGender;
+    this.globalSettings.primaryLanguage = value.primaryLanguage;
+    this.globalSettings.primaryLocale = value.primaryLocale;
+    this.globalSettings.studiedLanguages = value.studiedLanguages;
+    this.globalSettings.speechSources = value.speechSources;
+    this.globalSettings.storeAudio = value.storeAudio;
+    this.globalSettings.wordMasteryColors = value.wordMasteryColors;
   }
 
   public get Settings(): AppSettings {
-    return this.settings;
+    return this.globalSettings;
   }
 
   public set Settings(value: AppSettings) {
@@ -192,6 +213,30 @@ export class SettingsManager {
       return learnedWord;
     }
     return WordMastery.Unrecognized;
+  }
+
+  public lookupWordMasteryForWords(language: string, words: string[]): WordMastery[] {
+    const masteredWords: WordMastery[] = [];
+    words.forEach((word) => {
+      masteredWords.push(this.lookupWordMastery(language, word));
+    });
+    return masteredWords;
+  }
+
+  public makeWordMasteryStatusMap(language: string, words: string[]): Map<string, WordMasteryStatus> {
+    // ensure word list is unique
+    const uniqueWords = [...new Set(words)];
+    const masteredWordMap = new Map<string, WordMasteryStatus>();
+    uniqueWords.forEach((word, index) => {
+      const mastery = this.lookupWordMastery(language, word);
+      masteredWordMap.set(word, {
+        word: word,
+        language: language,
+        status: mastery,
+        color: this.globalSettings.wordMasteryColors[mastery],
+      });
+    });
+    return masteredWordMap;
   }
 
   // async analyzePage(title: string, text: string): Promise<Record<string, WordLanguageAndStatus>> {
