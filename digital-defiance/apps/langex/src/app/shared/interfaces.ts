@@ -24,12 +24,6 @@ export const DefaultWordMasteryColors: Record<WordMastery, string> = {
   [WordMastery.Mastered]: '#FFFFFF', // white/page background
 };
 
-export interface GoogleDetectionResult {
-  confidence: number;
-  isReliable: boolean;
-  language: string;
-}
-
 export interface PageLanguageDetectionResult {
   page: string;
   selection: WordMasteryStatus;
@@ -67,6 +61,16 @@ export interface ISettings {
    * Supported speech sources, in order of preference.
    */
   speechSources: SpeechSources[];
+}
+
+/**
+ * Settings stored in browser local storage only (not global sync)
+ */
+ export interface ILocalSettings {
+  readonly includedSites: string[];
+  readonly excludedSites: string[];
+  readonly onByDefault: boolean;
+  readonly extensionEnabled: boolean;
 }
 
 export interface IChromeMessage {

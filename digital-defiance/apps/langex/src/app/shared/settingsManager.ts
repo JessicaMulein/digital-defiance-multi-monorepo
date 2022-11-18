@@ -38,12 +38,12 @@ export class SettingsManager {
       defaultStudiedLanguages,
       defaultSpeechSources
     );
-    this.localSettings = {
-      includedSites: [],
-      excludedSites: [],
-      onByDefault: true,
-      extensionEnabled: true,
-    };
+    this.localSettings = new LocalSettings(
+      [],
+      [],
+      true,
+      true,
+    );
 
     this.loadGlobalSettings();
     this.loadLocalSettings();

@@ -1,6 +1,5 @@
-import { GoogleTranslate } from './googleTranslate';
 import { isValid } from 'all-iso-language-codes';
-import { GoogleDetectionResult, WordMasteryStatus } from './interfaces';
+import { WordMasteryStatus } from './interfaces';
 
 export function languageSupported(language: string): boolean {
   const result = isValid(language);
