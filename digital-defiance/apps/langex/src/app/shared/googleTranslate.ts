@@ -1,5 +1,5 @@
 import * as $ from 'jquery';
-import { GoogleDetectionResult, WordMasteryStatus } from './interfaces';
+import { WordMasteryStatus } from './interfaces';
 
 export class GoogleTranslate {
   private authenticated: boolean;
@@ -15,7 +15,7 @@ export class GoogleTranslate {
     return this.authenticated;
   }
 
-  public async postLanguageDetection(text: string | string[]): Promise<GoogleDetectionResult[]> {
+  public async postLanguageDetection(text: string | string[]): Promise<chrome.i18n.LanguageDetectionResult[]> {
     if (!this.authenticated) {
       this.authenticate();
       if (!this.authenticated) {
@@ -25,7 +25,7 @@ export class GoogleTranslate {
     throw new Error('Method not implemented.');
     const url = 'https://translation.googleapis.com/language/translate/v2/detect';
     // post to the url
-    const results: GoogleDetectionResult[] = [];
+    const results: chrome.i18n.LanguageDetectionResult[] = [];
     // await $.ajax({
     //   method: 'POST',
     //   url: url,

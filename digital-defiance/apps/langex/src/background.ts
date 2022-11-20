@@ -9,7 +9,6 @@ import MessageContext from './app/shared/messageContext';
 import { receiveMessages } from './app/shared/chromeMessaging';
 // TODO: get app settings from messaging with front end
 const settingsManager: SettingsManager = new SettingsManager(MessageContext.Background);
-settingsManager.loadGlobalSettings();
 console.log('SettingsComponent: settingsManager loaded in background', settingsManager.Settings);
 
 receiveMessages((message: IChromeMessage, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) => {
@@ -20,6 +19,9 @@ receiveMessages((message: IChromeMessage, sender: chrome.runtime.MessageSender, 
     if (message.type === MessageType.GlobalSettingsUpdate) {
       console.log('background.ts: loading updates settings from extension', message.data);
       settingsManager.loadGlobalSettings();
+    } else if (message.type === MessageType.LocalSettingsUpdate) {
+      console.log('background.ts: loading updates settings from tab', message.data);
+      settingsManager.loadLocalSettings();
     }
 });
 
@@ -41,5 +43,6 @@ chrome.contextMenus.onClicked.addListener(searchForWord);
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === 'complete') {
     // process the text of the page
+    console.log('tab updated', tabId, changeInfo, tab);
   }
 });
