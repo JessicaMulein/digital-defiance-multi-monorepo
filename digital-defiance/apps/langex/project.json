@@ -20,7 +20,8 @@
         "assets": [
           "apps/langex/src/favicon.ico",
           "apps/langex/src/assets",
-          "apps/langex/src/manifest.json"
+          "apps/langex/src/manifest.json",
+          "apps/langex/src/_locales/en/messages.json"
         ],
         "styles": ["apps/langex/src/styles.scss"],
         "scripts": []

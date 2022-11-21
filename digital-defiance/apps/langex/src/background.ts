@@ -28,10 +28,16 @@ receiveMessages((message: IChromeMessage, sender: chrome.runtime.MessageSender, 
 chrome.runtime.onInstalled.addListener(
   (details: chrome.runtime.InstalledDetails) => {
     // create new menu
+    const topId = chrome.contextMenus.create({
+      id: 'langex_context_menu',
+      title: 'Language Extension',
+      contexts: ['selection','editable'],
+    });
     chrome.contextMenus.create({
       id: 'searchForWord',
       title: 'Translate: %s',
       contexts: ['selection'],
+      parentId: topId,
     });
   }
 );

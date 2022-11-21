@@ -23,11 +23,14 @@
     "service_worker": "background.js"
   },
   "permissions": [
-    "storage",
     "activeTab",
-    "scripting",
     "contextMenus",
-    "nativeMessaging",
+    "fontSettings",
+    "scripting",
+    "storage",
+    "tts",
+    "ttsEngine",
+    "unlimitedStorage",
     "https://forvo.com/",
     "https://audio00.forvo.com/"
   ]

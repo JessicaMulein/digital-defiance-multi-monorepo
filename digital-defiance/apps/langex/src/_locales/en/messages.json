@@ -1,0 +1,6 @@
+{
+    "lookup_string": {
+        "message": "Lookup word",
+        "description": "The word to lookup, TODO CHANGEME"
+    }
+}
