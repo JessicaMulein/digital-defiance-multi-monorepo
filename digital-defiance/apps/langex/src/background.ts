@@ -8,23 +8,10 @@ import { SettingsManager } from './app/shared/settingsManager';
 import MessageContext from './app/shared/messageContext';
 import { receiveMessages } from './app/shared/chromeMessaging';
 import { googleTranslateLookup } from './app/shared/googleTranslate';
+
 // TODO: get app settings from messaging with front end
 const settingsManager: SettingsManager = new SettingsManager(MessageContext.Background);
 console.log('SettingsComponent: settingsManager loaded in background', settingsManager.Settings);
-
-receiveMessages((message: IChromeMessage, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) => {
-  console.log('background.ts: received message', message);
-  console.log(sender.tab ?
-    "from a content script:" + sender.tab.url :
-    "from the extension");
-    if (message.type === MessageType.GlobalSettingsUpdate) {
-      console.log('background.ts: loading updates settings from extension', message.data);
-      settingsManager.loadGlobalSettings();
-    } else if (message.type === MessageType.LocalSettingsUpdate) {
-      console.log('background.ts: loading updates settings from tab', message.data);
-      settingsManager.loadLocalSettings();
-    }
-});
 
 chrome.runtime.onInstalled.addListener(
   (details: chrome.runtime.InstalledDetails) => {
@@ -60,10 +47,24 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   switch(info.menuItemId) {
     case 'lingvoLookup':
-      lingvoLookup(info, tab);
+      lingvoLookup(settingsManager.Settings.primaryLanguage, settingsManager.studiedLanguages, info, tab);
       break;
     case 'googleTranslate':
-      googleTranslateLookup(info, tab);
+      googleTranslateLookup(settingsManager.Settings.primaryLanguage, settingsManager.studiedLanguages, info, tab);
       break;
   }
+});
+
+receiveMessages((message: IChromeMessage, sender: chrome.runtime.MessageSender, sendResponse: (response?: any) => void) => {
+  console.log('background.ts: received message', message);
+  console.log(sender.tab ?
+    "from a content script:" + sender.tab.url :
+    "from the extension");
+    if (message.type === MessageType.GlobalSettingsUpdate) {
+      console.log('background.ts: loading updates settings from extension', message.data);
+      settingsManager.loadGlobalSettings();
+    } else if (message.type === MessageType.LocalSettingsUpdate) {
+      console.log('background.ts: loading updates settings from tab', message.data);
+      settingsManager.loadLocalSettings();
+    }
 });

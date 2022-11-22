@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AppSettingsService } from './appSettings.service';
 import MessageType from './messageType';
 import { SettingsManager } from './settingsManager';
-import { sendMessage } from './chromeMessaging';
+import { sendMessageFromBackground } from './chromeMessaging';
 
 @Component({
   selector: 'digital-defiance-settings',
@@ -41,7 +41,7 @@ export class SettingsComponent implements OnInit {
       }
       const settingsManager = SettingsComponent.settingsManager;
       settingsManager.saveGlobalSettings();
-      sendMessage({
+      sendMessageFromBackground({
         type: MessageType.GlobalSettingsUpdate,
         context: settingsManager.context,
         data: null

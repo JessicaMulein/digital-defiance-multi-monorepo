@@ -1,5 +1,6 @@
-import * as $ from 'jquery';
+//import * as $ from 'jquery';
 import { WordMasteryStatus } from './interfaces';
+import { bestGuessSourceLanguage } from './languages';
 
 
 export function makeTranslateLink(text: string, source: string, target: string): string {
@@ -13,12 +14,14 @@ export function makeTranslateLink(text: string, source: string, target: string):
  * @param tab 
  */
 export function googleTranslateLookup(
+  currentLanguage: string,
+  studiedLanguages: string[],
   info: chrome.contextMenus.OnClickData,
   tab: chrome.tabs.Tab | undefined
 ) {
   console.log(info, tab);
-  const source = 'uk';
-  const target = 'en';
+  const source = bestGuessSourceLanguage(currentLanguage, studiedLanguages, info.selectionText || '');
+  const target = currentLanguage;
   chrome.tabs.create({
     url: makeTranslateLink(info.selectionText || '', source, target),
   });
@@ -36,32 +39,6 @@ export class GoogleTranslate {
     throw new Error('Method not implemented.');
     this.authenticated = true;
     return this.authenticated;
-  }
-
-  public async postLanguageDetection(text: string | string[]): Promise<chrome.i18n.LanguageDetectionResult[]> {
-    if (!this.authenticated) {
-      this.authenticate();
-      if (!this.authenticated) {
-        throw new Error('Authentication failed');
-      }
-    }
-    throw new Error('Method not implemented.');
-    const url = 'https://translation.googleapis.com/language/translate/v2/detect';
-    // post to the url
-    const results: chrome.i18n.LanguageDetectionResult[] = [];
-    // await $.ajax({
-    //   method: 'POST',
-    //   url: url,
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${this.apiKey}`
-    //   }
-    // }, { q: text }, (data) => {
-    //   data.data.detections.forEach((detection: GoogleDetectionResult) => {
-    //     results.push(detection);
-    //   });
-    // });
-    return results;
   }
 
   /**

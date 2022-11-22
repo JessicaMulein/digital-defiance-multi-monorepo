@@ -1,6 +1,6 @@
 import AppSettings from './appSettings';
 import { storageGetKey, storageSetKey } from './chromeStorage';
-import { sendMessage } from './chromeMessaging';
+import { sendMessageFromBackground } from './chromeMessaging';
 import MessageContext from './messageContext';
 import MessageType from './messageType';
 import SpeechSources from './speechSources';
@@ -18,9 +18,9 @@ export class SettingsManager {
   public static readonly learnedWordKey = 'learnedWords';
   public static readonly studiedLanguagesKey = 'studiedLanguages';
   public readonly context: MessageContext;
-  private readonly globalSettings: AppSettings;
-  private readonly localSettings: LocalSettings;
-  private readonly uiLanguage: string;
+  private readonly _globalSettings: AppSettings;
+  private readonly _localSettings: LocalSettings;
+  private readonly _uiLanguage: string;
 
   constructor(
     context: MessageContext,
@@ -29,16 +29,16 @@ export class SettingsManager {
     defaultStudiedLanguages: string[] = ['uk', 'ru'],
     defaultSpeechSources: SpeechSources[] = [SpeechSources.WebSpeechAPI]
   ) {
-    this.uiLanguage = chrome.i18n.getUILanguage();
+    this._uiLanguage = chrome.i18n.getUILanguage();
     //this.browserAcceptLanguages = chrome.i18n.getAcceptLanguages();
     this.context = context;
-    this.globalSettings = new AppSettings(
+    this._globalSettings = new AppSettings(
       primaryLanguage,
       primaryLocale,
       defaultStudiedLanguages,
       defaultSpeechSources
     );
-    this.localSettings = new LocalSettings(
+    this._localSettings = new LocalSettings(
       [],
       [],
       true,
@@ -70,19 +70,19 @@ export class SettingsManager {
    * Saves only the settings object to chrome storage
    */
   public saveGlobalSettings(): void {
-    storageSetKey(SettingsManager.settingsKey, JSON.stringify(this.globalSettings), StorageOption.SyncedStorage);
-    sendMessage({
+    storageSetKey(SettingsManager.settingsKey, JSON.stringify(this._globalSettings), StorageOption.SyncedStorage);
+    sendMessageFromBackground({
       type: MessageType.GlobalSettingsUpdate,
       context: this.context,
-      data: this.globalSettings,
+      data: this._globalSettings,
     });
   }
 
   public updateGlobalSetting(key: string, value: any, save = false): void {
-    if (!Object.prototype.hasOwnProperty.call(this.globalSettings, key)) {
+    if (!Object.prototype.hasOwnProperty.call(this._globalSettings, key)) {
       throw new Error(`SettingsManager: updateSetting: key ${key} not found`);
     }
-    (this.globalSettings as any)[key] = value;
+    (this._globalSettings as any)[key] = value;
     if (save) {
       this.saveGlobalSettings();
     }
@@ -158,28 +158,32 @@ export class SettingsManager {
   }
 
   private setGlobalSettingsFromOther(value: AppSettings): void {
-    this.globalSettings.forvoApiKey = value.forvoApiKey;
-    this.globalSettings.forvoApiEnabled = value.forvoApiEnabled;
-    this.globalSettings.googleApiKey = value.googleApiKey;
-    this.globalSettings.googleApiEnabled = value.googleApiEnabled;
-    this.globalSettings.lingvoApiKey = value.lingvoApiKey;
-    this.globalSettings.lingvoApiEnabled = value.lingvoApiEnabled;
-    this.globalSettings.preferredVoiceGender = value.preferredVoiceGender;
-    this.globalSettings.primaryLanguage = value.primaryLanguage;
-    this.globalSettings.primaryLocale = value.primaryLocale;
-    this.globalSettings.studiedLanguages = value.studiedLanguages;
-    this.globalSettings.speechSources = value.speechSources;
-    this.globalSettings.storeAudio = value.storeAudio;
-    this.globalSettings.wordMasteryColors = value.wordMasteryColors;
+    this._globalSettings.forvoApiKey = value.forvoApiKey;
+    this._globalSettings.forvoApiEnabled = value.forvoApiEnabled;
+    this._globalSettings.googleApiKey = value.googleApiKey;
+    this._globalSettings.googleApiEnabled = value.googleApiEnabled;
+    this._globalSettings.lingvoApiKey = value.lingvoApiKey;
+    this._globalSettings.lingvoApiEnabled = value.lingvoApiEnabled;
+    this._globalSettings.preferredVoiceGender = value.preferredVoiceGender;
+    this._globalSettings.primaryLanguage = value.primaryLanguage;
+    this._globalSettings.primaryLocale = value.primaryLocale;
+    this._globalSettings.studiedLanguages = value.studiedLanguages;
+    this._globalSettings.speechSources = value.speechSources;
+    this._globalSettings.storeAudio = value.storeAudio;
+    this._globalSettings.wordMasteryColors = value.wordMasteryColors;
   }
 
   public get Settings(): AppSettings {
-    return this.globalSettings;
+    return this._globalSettings;
   }
 
   public set Settings(value: AppSettings) {
     this.setGlobalSettingsFromOther(value);
     this.saveGlobalSettings();
+  }
+
+  public get uiLanguage(): string {
+    return this._uiLanguage;
   }
 
   public get studiedLanguages(): string[] {
@@ -245,7 +249,7 @@ export class SettingsManager {
         word: word,
         language: language,
         status: mastery,
-        color: this.globalSettings.wordMasteryColors[mastery],
+        color: this._globalSettings.wordMasteryColors[mastery],
       });
     });
     return masteredWordMap;

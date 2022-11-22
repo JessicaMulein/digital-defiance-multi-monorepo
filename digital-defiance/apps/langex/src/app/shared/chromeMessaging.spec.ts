@@ -1,4 +1,4 @@
-import { receiveMessages, sendMessage } from "./chromeMessaging";
+import { receiveMessages, sendMessageFromBackground } from "./chromeMessaging";
 import { IChromeMessage } from "./interfaces";
 import MessageContext from "./messageContext";
 import MessageType from "./messageType";
@@ -10,7 +10,7 @@ describe('chromeMessaging', () => {
         // arrange
         const message: IChromeMessage = { type: MessageType.GlobalSettingsUpdate, context: MessageContext.Extension, data: null};
         // act
-        sendMessage(message);
+        sendMessageFromBackground(message);
         // assert
         sinon.assert.calledOnce(chrome.runtime.sendMessage);
         sinon.assert.calledWith(chrome.runtime.sendMessage, message);
