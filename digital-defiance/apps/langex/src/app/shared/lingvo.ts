@@ -1,5 +1,6 @@
 export function makeLingvoLink(text: string, source: string, target: string): string {
-  const word = encodeURIComponent(text || '');
+  // take only the first word from text
+  const word = encodeURIComponent((text || '').split(' ')[0]);
   return `https://www.lingvolive.com/en-us/translate/${source}-${target}/${word}`;
 }
 
