@@ -1,6 +1,29 @@
 import * as $ from 'jquery';
 import { WordMasteryStatus } from './interfaces';
 
+
+export function makeTranslateLink(text: string, source: string, target: string): string {
+  const encoded = encodeURIComponent(text);
+  return `https://translate.google.com/?op=translate&sl=${source}&tl=${target}&text=${encoded}`;
+}
+
+/**
+// function that handles selection search
+ * @param info 
+ * @param tab 
+ */
+export function googleTranslateLookup(
+  info: chrome.contextMenus.OnClickData,
+  tab: chrome.tabs.Tab | undefined
+) {
+  console.log(info, tab);
+  const source = 'uk';
+  const target = 'en';
+  chrome.tabs.create({
+    url: makeTranslateLink(info.selectionText || '', source, target),
+  });
+}
+
 export class GoogleTranslate {
   private authenticated: boolean;
   private apiKey: string;

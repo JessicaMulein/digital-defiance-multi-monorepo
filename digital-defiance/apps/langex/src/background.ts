@@ -3,10 +3,11 @@
 
 import MessageType from './app/shared/messageType';
 import { IChromeMessage} from './app/shared/interfaces';
-import { searchForWord } from './app/shared/lingvo';
+import { lingvoLookup } from './app/shared/lingvo';
 import { SettingsManager } from './app/shared/settingsManager';
 import MessageContext from './app/shared/messageContext';
 import { receiveMessages } from './app/shared/chromeMessaging';
+import { googleTranslateLookup } from './app/shared/googleTranslate';
 // TODO: get app settings from messaging with front end
 const settingsManager: SettingsManager = new SettingsManager(MessageContext.Background);
 console.log('SettingsComponent: settingsManager loaded in background', settingsManager.Settings);
@@ -34,16 +35,21 @@ chrome.runtime.onInstalled.addListener(
       contexts: ['selection','editable'],
     });
     chrome.contextMenus.create({
-      id: 'searchForWord',
-      title: 'Translate: %s',
+      id: 'lingvoLookup',
+      title: 'Look up word with Lingvo: %s',
       contexts: ['selection'],
       parentId: topId,
+      onclick: lingvoLookup,
+    });
+    chrome.contextMenus.create({
+      id: 'googleTranslate',
+      title: 'Translate text with Google: %s',
+      contexts: ['selection'],
+      parentId: topId,
+      onclick: googleTranslateLookup,
     });
   }
 );
-
-// event handling for menu
-chrome.contextMenus.onClicked.addListener(searchForWord);
 
 // listen for page load
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
