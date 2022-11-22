@@ -31,7 +31,6 @@
     "tts",
     "ttsEngine",
     "unlimitedStorage",
-    "https://forvo.com/",
-    "https://audio00.forvo.com/"
+    "*://*.forvo.com/*"
   ]
 }
