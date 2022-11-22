@@ -39,14 +39,12 @@ chrome.runtime.onInstalled.addListener(
       title: 'Look up word with Lingvo: %s',
       contexts: ['selection'],
       parentId: topId,
-      onclick: lingvoLookup,
     });
     chrome.contextMenus.create({
       id: 'googleTranslate',
       title: 'Translate text with Google: %s',
       contexts: ['selection'],
       parentId: topId,
-      onclick: googleTranslateLookup,
     });
   }
 );
@@ -56,5 +54,16 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === 'complete') {
     // process the text of the page
     console.log('tab updated', tabId, changeInfo, tab);
+  }
+});
+
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  switch(info.menuItemId) {
+    case 'lingvoLookup':
+      lingvoLookup(info, tab);
+      break;
+    case 'googleTranslate':
+      googleTranslateLookup(info, tab);
+      break;
   }
 });
