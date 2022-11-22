@@ -21,6 +21,7 @@
       "@digital-defiance/brightchain-quorum": [
         "libs/brightchain-quorum/src/index.ts"
       ],
+      "@digital-defiance/langex-core": ["libs/langex-core/src/index.ts"],
       "@digital-defiance/stargate-256-core": [
         "libs/stargate-256-core/src/index.ts"
       ],

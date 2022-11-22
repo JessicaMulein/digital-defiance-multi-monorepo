@@ -1,6 +1,10 @@
 {
+    "app_name": {
+        "message": "Language Extension",
+        "description": "LangEx: Language Extension"
+    },
     "lookup_string": {
         "message": "Lookup word",
-        "description": "The word to lookup, TODO CHANGEME"
+        "description": "The word to lookup"
     }
 }

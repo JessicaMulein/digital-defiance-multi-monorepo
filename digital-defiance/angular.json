@@ -5,6 +5,7 @@
     "brightchain": "libs/brightchain",
     "brightchain-quorum": "libs/brightchain-quorum",
     "langex": "apps/langex",
+    "langex-core": "libs/langex-core",
     "langex-e2e": "apps/langex-e2e",
     "stargate-256": "apps/stargate-256",
     "stargate-256-core": "libs/stargate-256-core",
