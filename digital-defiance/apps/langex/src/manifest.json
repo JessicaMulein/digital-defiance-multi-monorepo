@@ -31,6 +31,9 @@
     "tts",
     "ttsEngine",
     "unlimitedStorage",
+    "webRequest"
+  ],
+  "host_permissions": [
     "*://*.forvo.com/*"
   ]
 }
