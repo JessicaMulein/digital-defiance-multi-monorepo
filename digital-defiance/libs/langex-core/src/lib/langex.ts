@@ -314,7 +314,7 @@ document.addEventListener('visibilitychange', () => {
 
 const enableReadapt = async (): Promise<void> => {
   await enableAdaptSelection()
-  await loadVisualEngine()
+  //await loadVisualEngine()
   const { ruleSettings } = await chrome.storage.sync.get('ruleSettings')
   await updateRulerSettings(ruleSettings)
   const { maskSettings } = await chrome.storage.sync.get('maskSettings')
