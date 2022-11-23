@@ -13,8 +13,7 @@ import StorageOption from './storageOption';
  * Use browser/chrome storage to store settings
  */
 export class SettingsManager {
-  public static readonly settingsKey = '__langex_settings';
-  public static readonly keyIdentifier = '__langex';
+  public static readonly settingsKey = 'settings';
   public static readonly learnedWordKey = 'learnedWords';
   public static readonly studiedLanguagesKey = 'studiedLanguages';
   public readonly context: MessageContext;
@@ -52,7 +51,7 @@ export class SettingsManager {
   public static getKeyIdentifier(key: string, ...args: string[]): string {
     // if no additional arguments, no trailing _ will be added
     const trailing = args.length > 0 ? `_${args.join('_')}` : '';
-    return `${SettingsManager.keyIdentifier}_${key}${trailing}`;
+    return `${key}${trailing}`;
   }
 
   public verifyHexColor(color: string): boolean {

@@ -1,16 +1,23 @@
 import { IChromeMessage } from './interfaces';
 
 export function sendMessageFromBackground(message: IChromeMessage): void {
+  let sent = false;
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
     if (tabs && tabs.length > 0) {
       const tab: chrome.tabs.Tab = tabs[0];
       if (tab && tab.id) {
         chrome.tabs.sendMessage(tab.id, message);
-      } else {
-        chrome.tabs.sendMessage(chrome.tabs.TAB_ID_NONE, message);
+        sent = true;
       }
     }
   });
+  if (!sent) {
+    chrome.tabs.sendMessage(chrome.tabs.TAB_ID_NONE, message);
+  }
+}
+
+export function sendMessage(message: IChromeMessage): void {
+  chrome.runtime.sendMessage(message);
 }
 
 export function receiveMessages(

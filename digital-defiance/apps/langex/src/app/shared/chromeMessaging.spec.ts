@@ -1,4 +1,4 @@
-import { receiveMessages, sendMessageFromBackground } from "./chromeMessaging";
+import { receiveMessages, sendMessage, sendMessageFromBackground } from "./chromeMessaging";
 import { IChromeMessage } from "./interfaces";
 import MessageContext from "./messageContext";
 import MessageType from "./messageType";
@@ -10,10 +10,19 @@ describe('chromeMessaging', () => {
         // arrange
         const message: IChromeMessage = { type: MessageType.GlobalSettingsUpdate, context: MessageContext.Extension, data: null};
         // act
-        sendMessageFromBackground(message);
+        sendMessage(message);
         // assert
         sinon.assert.calledOnce(chrome.runtime.sendMessage);
         sinon.assert.calledWith(chrome.runtime.sendMessage, message);
+    });
+    it("should call chrome.tabs.sendMessageFromBackground", () => {
+        // arrange
+        const message: IChromeMessage = { type: MessageType.GlobalSettingsUpdate, context: MessageContext.Extension, data: null};
+        // act
+        sendMessageFromBackground(message);
+        // assert
+        sinon.assert.calledOnce(chrome.tabs.sendMessage);
+        sinon.assert.calledWith(chrome.tabs.sendMessage, -1, message);
     });
     it("should receive a message using receiveMessages", () => {
         // arrange

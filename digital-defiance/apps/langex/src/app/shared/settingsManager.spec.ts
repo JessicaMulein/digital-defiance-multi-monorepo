@@ -59,7 +59,7 @@ describe('AppComponent', () => {
   });
   it("should create the correctly formatted key when getKeyIdentifier is given extra arguments", () => {
     // arrange
-    const expectedKey = `${SettingsManager.keyIdentifier}_testKey1_testKey2_testKey3`;
+    const expectedKey = `testKey1_testKey2_testKey3`;
     // act
     const key = SettingsManager.getKeyIdentifier("testKey1", "testKey2", "testKey3");
     // assert
