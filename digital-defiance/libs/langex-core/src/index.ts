@@ -1,1 +1,1 @@
-export * from './lib/langex-core';
+export * from './lib/langex';
