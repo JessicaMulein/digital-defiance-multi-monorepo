@@ -29,79 +29,64 @@ document.addEventListener('mousemove', (event) => {
   mousePos.y = event.clientY
 })
 
-chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-  const iMessage = message as IChromeMessage;
-  if (iMessage.type === MessageType.Extend) {
-    const enabled = await getExtensionEnabled()
-    if (!enabled) {
-      return
-    }
-
-    cacheBody()
-    document.body.innerHTML = originalElemsMap.get('body')
-    await adaptHtmlElement(document.body)
-
-    // reading tools
-    if (maskState.enabled) {
-      addMask()
-    }
-    if (rulerState.enabled) {
-      addRuler()
-    }
+async function extend() {
+  const enabled = await getExtensionEnabled()
+  if (!enabled) {
+    return
   }
-  sendResponse()
-})
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  const iMessage = message as IChromeMessage;
-  if (iMessage.type ===  MessageType.Disable) {
-    const elements = Array.from(document.getElementsByClassName('langex-chrome'))
-    elements.forEach((element) => {
-      element.classList.replace('langex-chrome', 'langex-disabled')
-    })
+  cacheBody()
+  document.body.innerHTML = originalElemsMap.get('body')
+  await adaptHtmlElement(document.body)
 
-    disableAdaptSelection()
-    removeMask()
-    removeRuler()
+  // reading tools
+  if (maskState.enabled) {
+    addMask()
   }
-  sendResponse()
-})
+  if (rulerState.enabled) {
+    addRuler()
+  }
+}
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  const iMessage = message as IChromeMessage;
-  if (iMessage.type === MessageType.Enable) {
-    const elements = Array.from(document.getElementsByClassName('langex-disabled'))
+function disable() {
+  const elements = Array.from(document.getElementsByClassName('langex-chrome'))
+  elements.forEach((element) => {
+    element.classList.replace('langex-chrome', 'langex-disabled')
+  })
+
+  disableAdaptSelection()
+  removeMask()
+  removeRuler()
+}
+
+function enable() {
+  const elements = Array.from(document.getElementsByClassName('langex-disabled'))
     elements.forEach((element) => {
       element.classList.replace('langex-disabled', 'langex-chrome')
     })
 
     enablelangex().catch(console.error)
+}
+
+function reset() {
+  document.body.classList.remove('langex-chrome')
+
+  const originalBody = originalElemsMap.get('body')
+  if (originalBody) {
+    document.body.innerHTML = originalBody
   }
-  sendResponse()
-})
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  const iMessage = message as IChromeMessage;
-  if (iMessage.type === MessageType.Reset) {
-    document.body.classList.remove('langex-chrome')
-
-    const originalBody = originalElemsMap.get('body')
-    if (originalBody) {
-      document.body.innerHTML = originalBody
-    }
-
-    const styleElement = document.head.querySelector(`[data-langex-style=chrome]`)
-    if (styleElement) {
-      styleElement.remove()
-    }
+  const styleElement = document.head.querySelector(`[data-langex-style=chrome]`)
+  if (styleElement) {
+    styleElement.remove()
   }
-  sendResponse()
-})
 
-chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-  const iMessage = message as IChromeMessage;
-  if (iMessage.type === MessageType.Refresh) {
-    const enabled = await getExtensionEnabled()
+  removeMask()
+  removeRuler()
+}
+
+async function refresh() {
+  const enabled = await getExtensionEnabled()
     if (!enabled) {
       return
     }
@@ -120,6 +105,62 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
       const elemId = element.getAttribute('data-langex-id')
       originalElemsMap.set(elemId, originalHTML)
     }
+}
+
+function _addMask() {
+  if (maskState.enabled) {
+    return
+  }
+  if (rulerState.enabled) {
+    removeRuler()
+  }
+  addMask()
+}
+
+function _addRuler() {
+  if (rulerState.enabled) {
+    return
+  }
+  if (maskState.enabled) {
+    removeMask()
+  }
+  addRuler()
+}
+
+async function _updateRuler() {
+  const { ruleSettings } = await chrome.storage.sync.get('ruleSettings')
+  updateRulerSettings(ruleSettings)
+}
+
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+  const iMessage = message as IChromeMessage;
+  switch (iMessage.type) {
+    case MessageType.Extend:
+      await extend();
+      break;
+    case MessageType.Disable:
+      disable();
+      break;
+    case MessageType.Enable:
+      enable();
+      break;
+    case MessageType.Reset:
+      reset();
+      break;
+    case MessageType.Refresh:
+      await refresh();
+      break;
+    case MessageType.AddMask:
+      _addMask();
+      break;
+    case MessageType.AddRuler:
+      _addRuler();
+      break;
+    case MessageType.UpdateRuler:
+      _updateRuler();
+      break;
+    default:
+      throw new Error(`Unknown message type: ${iMessage.type}`);
   }
   sendResponse()
 })
@@ -252,51 +293,12 @@ const deactivateHighlightElement = () => {
 }
 
 // READING TOOLS
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  const iMessage = message as IChromeMessage;
-  if (iMessage.type === MessageType.AddMask && !maskState.enabled) {
-    if (rulerState.enabled) {
-      removeRuler()
-    }
-    addMask()
-  }
-  sendResponse()
-})
-
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  const iMessage = message as IChromeMessage;
-  if (iMessage.type === MessageType.AddRuler && !rulerState.enabled) {
-    if (maskState.enabled) {
-      removeMask()
-    }
-    addRuler()
-  }
-  sendResponse()
-})
-
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  const iMessage = message as IChromeMessage;
-  if (iMessage.type === MessageType.Reset) {
-    removeMask()
-    removeRuler()
-  }
-  sendResponse()
-})
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   const iMessage = message as IChromeMessage;
   if (iMessage.type === MessageType.UpdateMask) {
     const { maskSettings } = await chrome.storage.sync.get('maskSettings')
     updateMaskSettings(mousePos.y, maskSettings)
-  }
-  sendResponse()
-})
-
-chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-  const iMessage = message as IChromeMessage;
-  if (iMessage.type === MessageType.UpdateRuler) {
-    const { ruleSettings } = await chrome.storage.sync.get('ruleSettings')
-    updateRulerSettings(ruleSettings)
   }
   sendResponse()
 })
