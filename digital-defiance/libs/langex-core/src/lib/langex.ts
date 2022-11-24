@@ -50,9 +50,9 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message === 'DISABLE') {
-    const elements = Array.from(document.getElementsByClassName('readapt-chrome'))
+    const elements = Array.from(document.getElementsByClassName('langex-chrome'))
     elements.forEach((element) => {
-      element.classList.replace('readapt-chrome', 'readapt-disabled')
+      element.classList.replace('langex-chrome', 'langex-disabled')
     })
 
     disableAdaptSelection()
@@ -64,26 +64,26 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message === 'ENABLE') {
-    const elements = Array.from(document.getElementsByClassName('readapt-disabled'))
+    const elements = Array.from(document.getElementsByClassName('langex-disabled'))
     elements.forEach((element) => {
-      element.classList.replace('readapt-disabled', 'readapt-chrome')
+      element.classList.replace('langex-disabled', 'langex-chrome')
     })
 
-    enableReadapt().catch(console.error)
+    enablelangex().catch(console.error)
   }
   sendResponse()
 })
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message === 'RESET') {
-    document.body.classList.remove('readapt-chrome')
+    document.body.classList.remove('langex-chrome')
 
     const originalBody = originalElemsMap.get('body')
     if (originalBody) {
       document.body.innerHTML = originalBody
     }
 
-    const styleElement = document.head.querySelector(`[data-readapt-style=chrome]`)
+    const styleElement = document.head.querySelector(`[data-langex-style=chrome]`)
     if (styleElement) {
       styleElement.remove()
     }
@@ -99,17 +99,17 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     }
 
     // refresh current adaptation
-    const adaptedElements: HTMLElement[] = Array.from(document.body.querySelectorAll('[data-readapt-id]'))
+    const adaptedElements: HTMLElement[] = Array.from(document.body.querySelectorAll('[data-langex-id]'))
     for (const element of adaptedElements) {
       // if has already adapted then revert before adapt
-      const oldElemId = element.getAttribute('data-readapt-id') as string
+      const oldElemId = element.getAttribute('data-langex-id') as string
       element.innerHTML = originalElemsMap.get(oldElemId)
       originalElemsMap.delete(oldElemId)
       const originalHTML = element.innerHTML
 
       await adaptHtmlElement(element)
 
-      const elemId = element.getAttribute('data-readapt-id')
+      const elemId = element.getAttribute('data-langex-id')
       originalElemsMap.set(elemId, originalHTML)
     }
   }
@@ -151,28 +151,28 @@ const disableAdaptSelection = () => {
 
 const adaptElementEvent = async (event: Event) => {
   const element = event.target as HTMLElement
-  element.classList.remove('readapt-highlight')
+  element.classList.remove('langex-highlight')
 
   cacheBody()
-  document.body.classList.add('readapt-chrome')
+  document.body.classList.add('langex-chrome')
 
   // revert child elems
-  const childElemsAdapted = element.querySelectorAll('[data-readapt-id]')
+  const childElemsAdapted = element.querySelectorAll('[data-langex-id]')
   childElemsAdapted.forEach((childElem) => {
-    const childId = childElem.getAttribute('data-readapt-id')
+    const childId = childElem.getAttribute('data-langex-id')
     childElem.innerHTML = originalElemsMap.get(childId)
-    childElem.removeAttribute('data-readapt-id')
+    childElem.removeAttribute('data-langex-id')
     originalElemsMap.delete(childId)
   })
 
   // if is adapted by their parent do nothing
-  if (element.getElementsByClassName('readapt-content').length > 0 && !element.hasAttribute('data-readapt-id')) {
+  if (element.getElementsByClassName('langex-content').length > 0 && !element.hasAttribute('data-langex-id')) {
     return
   }
 
   // if has already adapted then revert before adapt
-  if (element.hasAttribute('data-readapt-id')) {
-    const elemId = element.getAttribute('data-readapt-id')
+  if (element.hasAttribute('data-langex-id')) {
+    const elemId = element.getAttribute('data-langex-id')
     element.innerHTML = originalElemsMap.get(elemId)
   }
 
@@ -180,12 +180,12 @@ const adaptElementEvent = async (event: Event) => {
 
   await adaptHtmlElement(element)
 
-  const elemId = element.getAttribute('data-readapt-id')
+  const elemId = element.getAttribute('data-langex-id')
   originalElemsMap.set(elemId, originalHTML)
 }
 
 const adaptHtmlElement = async (element: HTMLElement): Promise<void> => {
-  document.body.classList.add('readapt-loading')
+  document.body.classList.add('langex-loading')
   try {
     const settings = await requestSettings()
     if (settings) {
@@ -198,7 +198,7 @@ const adaptHtmlElement = async (element: HTMLElement): Promise<void> => {
   }
   chrome.storage.local.set({ event: `adapt:${new Date().toISOString()}` }).catch(console.error)
 
-  document.body.classList.remove('readapt-loading')
+  document.body.classList.remove('langex-loading')
 }
 
 const highlightElement = (event: MouseEvent) => {
@@ -209,17 +209,17 @@ const highlightElement = (event: MouseEvent) => {
 
   // prevent the child elements to be adapted twice
   const classList = Array.from(target.classList)
-  if (classList.some((item) => item.includes('readapt'))) {
+  if (classList.some((item) => item.includes('langex'))) {
     return
   }
 
-  target.classList.add('readapt-highlight')
-  target.addEventListener('mouseout', removeReadaptHighlightClass(target), { once: true })
+  target.classList.add('langex-highlight')
+  target.addEventListener('mouseout', removelangexHighlightClass(target), { once: true })
   target.addEventListener('click', adaptElementEvent, { once: true })
 }
 
-const removeReadaptHighlightClass = (target: Element) => () => {
-  target.classList.remove('readapt-highlight')
+const removelangexHighlightClass = (target: Element) => () => {
+  target.classList.remove('langex-highlight')
   if (target.classList.length === 0) {
     target.removeAttribute('class')
   }
@@ -239,7 +239,7 @@ const deactivateHighlightElement = () => {
   document.removeEventListener('mouseover', highlightElement)
   const target = document.elementFromPoint(mousePos.x, mousePos.y)
   if (target) {
-    removeReadaptHighlightClass(target)()
+    removelangexHighlightClass(target)()
   }
 }
 
@@ -300,7 +300,7 @@ document.addEventListener('keydown', (event) => {
 getExtensionEnabled()
   .then(async (enabled) => {
     if (enabled) {
-      await enableReadapt()
+      await enablelangex()
     }
   })
   .catch(console.error)
@@ -312,7 +312,7 @@ document.addEventListener('visibilitychange', () => {
   }
 })
 
-const enableReadapt = async (): Promise<void> => {
+const enablelangex = async (): Promise<void> => {
   await enableAdaptSelection()
   //await loadVisualEngine()
   const { ruleSettings } = await chrome.storage.sync.get('ruleSettings')
