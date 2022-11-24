@@ -1,4 +1,6 @@
 /* global chrome */
+import { IChromeMessage } from './interfaces'
+import MessageType from './messageType'
 import { maskState, rulerState, addMask, addRuler, updateRulerSettings, removeRuler, removeMask, updateMaskSettings } from './reading-tools'
 //import { loadVisualEngine } from './load-visual-engine'
 
@@ -27,7 +29,8 @@ document.addEventListener('mousemove', (event) => {
 })
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-  if (message === 'ADAPT') {
+  const iMessage = message as IChromeMessage;
+  if (iMessage.type === MessageType.Extend) {
     const enabled = await getExtensionEnabled()
     if (!enabled) {
       return
@@ -49,7 +52,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 })
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message === 'DISABLE') {
+  const iMessage = message as IChromeMessage;
+  if (iMessage.type ===  MessageType.Disable) {
     const elements = Array.from(document.getElementsByClassName('langex-chrome'))
     elements.forEach((element) => {
       element.classList.replace('langex-chrome', 'langex-disabled')
@@ -63,7 +67,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 })
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message === 'ENABLE') {
+  const iMessage = message as IChromeMessage;
+  if (iMessage.type === MessageType.Enable) {
     const elements = Array.from(document.getElementsByClassName('langex-disabled'))
     elements.forEach((element) => {
       element.classList.replace('langex-disabled', 'langex-chrome')
@@ -75,7 +80,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 })
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message === 'RESET') {
+  const iMessage = message as IChromeMessage;
+  if (iMessage.type === MessageType.Reset) {
     document.body.classList.remove('langex-chrome')
 
     const originalBody = originalElemsMap.get('body')
@@ -92,7 +98,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 })
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-  if (message === 'REFRESH') {
+  const iMessage = message as IChromeMessage;
+  if (iMessage.type === MessageType.Refresh) {
     const enabled = await getExtensionEnabled()
     if (!enabled) {
       return
