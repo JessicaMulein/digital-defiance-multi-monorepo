@@ -2,6 +2,9 @@
   "name": "@digital-defiance/langex-core",
   "version": "0.0.1",
   "type": "commonjs",
+  "scripts": {
+    "test": "npx nx test"
+  },
   "private": true,
   "dependencies": {
     "rxjs": "^7.5.7"

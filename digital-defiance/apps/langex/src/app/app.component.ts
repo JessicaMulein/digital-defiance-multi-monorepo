@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { receiveMessages } from './shared/chromeMessaging';
-import { IChromeMessage } from './shared/interfaces';
+import { receiveMessages } from 'libs/langex-core/src/lib/chromeMessaging';
+import { IChromeMessage } from 'libs/langex-core/src/lib/interfaces';
 
 @Component({
   selector: 'digital-defiance-root',

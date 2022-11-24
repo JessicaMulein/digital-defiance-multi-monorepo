@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AppSettingsService } from './appSettings.service';
-import MessageType from './messageType';
-import { SettingsManager } from './settingsManager';
-import { sendMessageFromBackground } from './chromeMessaging';
+import MessageType from 'libs/langex-core/src/lib/messageType';
+import { SettingsManager } from 'libs/langex-core/src/lib/settingsManager';
+import { sendMessageFromBackground } from 'libs/langex-core/src/lib/chromeMessaging';
 
 @Component({
   selector: 'digital-defiance-settings',

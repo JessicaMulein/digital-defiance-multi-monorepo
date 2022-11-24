@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { SettingsComponent } from './settings.component';
 import { AppSettingsService } from './appSettings.service';
-import { SettingsManager } from './settingsManager';
+import { SettingsManager } from 'libs/langex-core/src/lib/settingsManager';
 
 describe('AppComponent', () => {
   beforeEach(async () => {

@@ -41,8 +41,8 @@ export default class AppSettings implements ISettings {
   public wordMasteryColors: Record<WordMastery, string>;
 
   constructor(
-    primaryLanguage: string = 'en',
-    primaryLocale: string = 'en-US',
+    primaryLanguage = 'en',
+    primaryLocale = 'en-US',
     defaultStudiedLanguages: string[] = ['uk', 'ru'],
     defaultSpeechSources: SpeechSources[] = [SpeechSources.WebSpeechAPI]
   ) {

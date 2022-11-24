@@ -23,8 +23,8 @@ export class SettingsManager {
 
   constructor(
     context: MessageContext,
-    primaryLanguage: string = 'en',
-    primaryLocale: string = 'en-US',
+    primaryLanguage = 'en',
+    primaryLocale = 'en-US',
     defaultStudiedLanguages: string[] = ['uk', 'ru'],
     defaultSpeechSources: SpeechSources[] = [SpeechSources.WebSpeechAPI]
   ) {
@@ -90,7 +90,7 @@ export class SettingsManager {
   /**
    * Loads the settings object from chrome storage
    */
-  public loadGlobalSettings(failIfNotFound: boolean = false): void {
+  public loadGlobalSettings(failIfNotFound = false): void {
     const settings = storageGetKey(SettingsManager.settingsKey, StorageOption.SyncedStorage);
     if (failIfNotFound && typeof settings !== 'string') {
       throw new Error('SettingsManager: loadSettings: settings not found');

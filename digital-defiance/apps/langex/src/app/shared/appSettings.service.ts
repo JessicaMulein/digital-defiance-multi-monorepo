@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import MessageContext from './messageContext';
-import { SettingsManager } from './settingsManager';
+import MessageContext from 'libs/langex-core/src/lib/messageContext';
+import { SettingsManager } from 'libs/langex-core/src/lib/settingsManager';
 
 const settingsManager: SettingsManager = new SettingsManager(MessageContext.Extension);
 settingsManager.loadGlobalSettings();

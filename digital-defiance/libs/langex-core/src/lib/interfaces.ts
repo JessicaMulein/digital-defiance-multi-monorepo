@@ -1,6 +1,6 @@
 import StorageOption from "./storageOption";
 import MessageContext from "./messageContext";
-import MessageType from "./messageType";
+import MessageType from './messageType';
 import PreferredVoiceGender from "./preferredVoiceGender";
 import SpeechSources from "./speechSources";
 import WordMastery from "./wordMastery";

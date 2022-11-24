@@ -1,5 +1,5 @@
 //import * as $ from 'jquery';
-import { WordMasteryStatus } from './interfaces';
+import { WordMasteryStatus } from 'libs/langex-core/src/lib/interfaces';
 import { bestGuessSourceLanguage } from './languages';
 
 

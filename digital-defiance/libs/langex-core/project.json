@@ -1,25 +1,9 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/langex-core/src",
   "projectType": "library",
+  "sourceRoot": "libs/langex-core/src",
+  "prefix": "digital-defiance",
   "targets": {
-    "build": {
-      "executor": "@nrwl/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/langex-core",
-        "main": "libs/langex-core/src/index.ts",
-        "tsConfig": "libs/langex-core/tsconfig.lib.json",
-        "assets": ["libs/langex-core/*.md"]
-      }
-    },
-    "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["libs/langex-core/**/*.ts"]
-      }
-    },
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
@@ -27,7 +11,16 @@
         "jestConfig": "libs/langex-core/jest.config.ts",
         "passWithNoTests": true
       }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/langex-core/**/*.ts",
+          "libs/langex-core/**/*.html"
+        ]
+      }
     }
   },
-  "tags": []
+  "tags": ["ui"]
 }

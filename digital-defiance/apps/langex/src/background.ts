@@ -1,12 +1,12 @@
 // src/background.ts
 /// <reference types="chrome"/>
 
-import MessageType from './app/shared/messageType';
-import { IChromeMessage} from './app/shared/interfaces';
+import MessageType from 'libs/langex-core/src/lib/messageType';
+import { IChromeMessage} from 'libs/langex-core/src/lib/interfaces';
 import { lingvoLookup } from './app/shared/lingvo';
-import { SettingsManager } from './app/shared/settingsManager';
-import MessageContext from './app/shared/messageContext';
-import { receiveMessages } from './app/shared/chromeMessaging';
+import { SettingsManager } from 'libs/langex-core/src/lib/settingsManager';
+import MessageContext from 'libs/langex-core/src/lib/messageContext';
+import { receiveMessages } from 'libs/langex-core/src/lib/chromeMessaging';
 import { googleTranslateLookup } from './app/shared/googleTranslate';
 
 // TODO: get app settings from messaging with front end

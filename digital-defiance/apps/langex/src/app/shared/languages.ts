@@ -1,5 +1,5 @@
 import { isValid } from 'all-iso-language-codes';
-import { WordMasteryStatus } from './interfaces';
+import { WordMasteryStatus } from 'libs/langex-core/src/lib/interfaces';
 
 export function languageSupported(language: string): boolean {
   const result = isValid(language);

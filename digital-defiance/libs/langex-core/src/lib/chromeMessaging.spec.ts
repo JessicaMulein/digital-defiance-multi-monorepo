@@ -1,7 +1,7 @@
 import { receiveMessages, sendMessage, sendMessageFromBackground } from "./chromeMessaging";
 import { IChromeMessage } from "./interfaces";
 import MessageContext from "./messageContext";
-import MessageType from "./messageType";
+import MessageType from './messageType';
 import * as chrome from "sinon-chrome";
 import * as sinon from "sinon";
 
