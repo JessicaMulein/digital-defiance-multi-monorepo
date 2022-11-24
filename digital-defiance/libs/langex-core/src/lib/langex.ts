@@ -3,6 +3,7 @@ import { IChromeMessage } from './interfaces'
 import MessageType from './messageType'
 import { maskState, rulerState, addMask, addRuler, updateRulerSettings, removeRuler, removeMask, updateMaskSettings } from './reading-tools'
 //import { loadVisualEngine } from './load-visual-engine'
+import { Key } from 'ts-key-enum'
 
 const mousePos = {
   x: 0,
@@ -129,19 +130,19 @@ const requestSettings = async () => {
 }
 
 const listenKeyDown = (event: KeyboardEvent) => {
-  if (event.key === 'Control' || event.key === 'Meta') {
+  if (event.key === Key.Control || event.key === Key.Meta) {
     activateHighlightElement()
   } else if (event.composed && (event.ctrlKey || event.metaKey)) {
     // deactivate because is not a selection activation but a key composition (ex. Ctrl + F)
     deactivateHighlightElement()
   }
-  if (event.key === 'ESC' || event.key === 'Escape') {
+  if (event.key === Key.Escape) {
     deactivateHighlightElement()
   }
 }
 
 const listenKeyUp = (event: KeyboardEvent) => {
-  if (event.key === 'Control' || event.key === 'Meta') {
+  if (event.key === Key.Control || event.key === Key.Meta) {
     deactivateHighlightElement()
   }
 }
@@ -252,7 +253,8 @@ const deactivateHighlightElement = () => {
 
 // READING TOOLS
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message === 'ADD_MASK' && !maskState.enabled) {
+  const iMessage = message as IChromeMessage;
+  if (iMessage.type === MessageType.AddMask && !maskState.enabled) {
     if (rulerState.enabled) {
       removeRuler()
     }
@@ -262,7 +264,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 })
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message === 'ADD_RULER' && !rulerState.enabled) {
+  const iMessage = message as IChromeMessage;
+  if (iMessage.type === MessageType.AddRuler && !rulerState.enabled) {
     if (maskState.enabled) {
       removeMask()
     }
@@ -272,7 +275,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 })
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message === 'RESET') {
+  const iMessage = message as IChromeMessage;
+  if (iMessage.type === MessageType.Reset) {
     removeMask()
     removeRuler()
   }
@@ -280,7 +284,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 })
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-  if (message === 'UPDATE_MASK') {
+  const iMessage = message as IChromeMessage;
+  if (iMessage.type === MessageType.UpdateMask) {
     const { maskSettings } = await chrome.storage.sync.get('maskSettings')
     updateMaskSettings(mousePos.y, maskSettings)
   }
@@ -288,7 +293,8 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 })
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-  if (message === 'UPDATE_RULER') {
+  const iMessage = message as IChromeMessage;
+  if (iMessage.type === MessageType.UpdateRuler) {
     const { ruleSettings } = await chrome.storage.sync.get('ruleSettings')
     updateRulerSettings(ruleSettings)
   }
@@ -296,7 +302,7 @@ chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
 })
 
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'ESC' || event.key === 'Escape') {
+  if (event.key === Key.Escape) {
     removeRuler()
     removeMask()
   }
