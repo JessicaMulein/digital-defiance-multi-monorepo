@@ -3,11 +3,11 @@
 
 import MessageType from 'libs/langex-core/src/lib/messageType';
 import { IChromeMessage} from 'libs/langex-core/src/lib/interfaces';
-import { lingvoLookup } from './app/shared/lingvo';
+import { lingvoLookup } from 'libs/langex-core/src/lib/lingvo';
 import { SettingsManager } from 'libs/langex-core/src/lib/settingsManager';
 import MessageContext from 'libs/langex-core/src/lib/messageContext';
 import { receiveMessages } from 'libs/langex-core/src/lib/chromeMessaging';
-import { googleTranslateLookup } from './app/shared/googleTranslate';
+import { googleTranslateLookup } from 'libs/langex-core/src/lib/googleTranslate';
 
 // TODO: get app settings from messaging with front end
 const settingsManager: SettingsManager = new SettingsManager(MessageContext.Background);
