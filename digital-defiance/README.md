@@ -80,6 +80,7 @@ LangEx- LanguageExtension. Learn new languages in your browser while reading any
 link: https://github.com/Digital-Defiance/nx-monorepo/tree/main/digital-defiance/apps/langex#readme
 
 # Linting/Formatting
+
 - From the root of the project run `npx nx format:write  --all` to format all files
 
 <hr>
