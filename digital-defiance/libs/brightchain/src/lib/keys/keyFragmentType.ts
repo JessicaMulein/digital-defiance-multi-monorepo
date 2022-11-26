@@ -1,7 +1,6 @@
-
 export enum KeyFragmentType {
-    Public,
-    Private
+  Public,
+  Private,
 }
 
 export default KeyFragmentType;

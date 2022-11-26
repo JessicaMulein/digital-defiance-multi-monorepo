@@ -3,7 +3,6 @@
  * but I'm leaving it in for now and expect to use it.
  */
 
-
 export function getBackgroundPage(): Window | null {
   return chrome.extension.getBackgroundPage();
 }

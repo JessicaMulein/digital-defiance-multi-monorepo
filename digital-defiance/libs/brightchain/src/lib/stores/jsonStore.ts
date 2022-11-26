@@ -23,15 +23,15 @@ export default class JsonStore<K> implements IJsonStore<K> {
   }
   /**
    * Whether the store has the given key, without respect to its type
-   * @param key 
-   * @returns 
+   * @param key
+   * @returns
    */
   public has(key: K): boolean {
     return this._data.has(key);
   }
   /**
    * Gets the value from the store the key is present or throws an error
-   * @param key 
+   * @param key
    */
   public get<V>(key: K): V {
     const value = this._data.get(key);
@@ -42,11 +42,15 @@ export default class JsonStore<K> implements IJsonStore<K> {
   }
   /**
    * Adds the key and value to the store
-   * @param key 
-   * @param value 
+   * @param key
+   * @param value
    */
   public set<V>(key: K, value: V): void {
-    const hasToJSON = value && typeof value === 'object' && (value as any).toJSON;
-    this._data.set(key, hasToJSON ? (value as any).toJSON() : JSON.stringify(value));
+    const hasToJSON =
+      value && typeof value === 'object' && (value as any).toJSON;
+    this._data.set(
+      key,
+      hasToJSON ? (value as any).toJSON() : JSON.stringify(value)
+    );
   }
 }

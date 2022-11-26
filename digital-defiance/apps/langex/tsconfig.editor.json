@@ -1,6 +1,11 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["**/*.ts", "../../libs/langex-core/src/lib/settingsManager.ts", "../../libs/langex-core/src/lib/testUtils.ts", "../../libs/langex-core/src/lib/wordMastery.ts"],
+  "include": [
+    "**/*.ts",
+    "../../libs/langex-core/src/lib/settingsManager.ts",
+    "../../libs/langex-core/src/lib/testUtils.ts",
+    "../../libs/langex-core/src/lib/wordMastery.ts"
+  ],
   "compilerOptions": {
     "types": ["jest", "node"]
   }

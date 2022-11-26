@@ -20,15 +20,15 @@ export default class SimpleStore<K, V> implements ISimpleStore<K, V> {
   }
   /**
    * Whether the store has the given key, without respect to its type
-   * @param key 
-   * @returns 
+   * @param key
+   * @returns
    */
   public has(key: K): boolean {
     return this._data.has(key);
   }
   /**
    * Gets the value from the store the key is present or throws an error
-   * @param key 
+   * @param key
    */
   public get(key: K): V {
     const value = this._data.get(key);
@@ -39,8 +39,8 @@ export default class SimpleStore<K, V> implements ISimpleStore<K, V> {
   }
   /**
    * Adds the key and value to the store
-   * @param key 
-   * @param value 
+   * @param key
+   * @param value
    */
   public set(key: K, value: V): void {
     this._data.set(key, value);

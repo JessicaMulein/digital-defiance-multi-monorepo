@@ -77,7 +77,12 @@ describe('block', () => {
               Buffer.from(data)
             );
             const dateCreated = new Date();
-            const block = new Block(alice, data, dateCreated, checksum.toString('hex'));
+            const block = new Block(
+              alice,
+              data,
+              dateCreated,
+              checksum.toString('hex')
+            );
             result.addCrumb('block created');
             const json = block.toJSON();
             result.addCrumb('block converted to json');
@@ -107,7 +112,12 @@ describe('block', () => {
               Buffer.from(data)
             );
             const dateCreated = new Date();
-            const block = new Block(alice, data, dateCreated, checksum.toString('hex'));
+            const block = new Block(
+              alice,
+              data,
+              dateCreated,
+              checksum.toString('hex')
+            );
             result.addCrumb('block created');
             const json = block.toJSON();
             result.addCrumb('block converted to json');
@@ -134,7 +144,8 @@ describe('block', () => {
               'block data generated, creating block with checksum mismatch'
             );
             expect(
-              () => new Block(alice, data, dateCreated, badChecksum.toString('hex'))
+              () =>
+                new Block(alice, data, dateCreated, badChecksum.toString('hex'))
             ).toThrow('Checksum mismatch');
           });
           return result.addCrumb('returning from test');
@@ -177,7 +188,12 @@ describe('block', () => {
               Buffer.from(data)
             );
             const dateCreated = new Date();
-            const block = new Block(alice, data, undefined, checksum.toString('hex'));
+            const block = new Block(
+              alice,
+              data,
+              undefined,
+              checksum.toString('hex')
+            );
             result.addCrumb('block created');
             expect(block.dateCreated).toBeTruthy();
             expect(block.dateCreated).toBeInstanceOf(Date);
@@ -240,7 +256,9 @@ describe('block', () => {
             expect(blockC.data).toEqual(expectedData);
             expect(blockC.createdBy).toEqual(alice.id);
             expect(blockC.id).toEqual(
-              Buffer.from(StaticHelpersChecksum.calculateChecksum(expectedData)).toString('hex')
+              Buffer.from(
+                StaticHelpersChecksum.calculateChecksum(expectedData)
+              ).toString('hex')
             );
           });
           return result.addCrumb('returning from test');

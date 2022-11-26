@@ -1,4 +1,4 @@
-import RotorConfiguration from "./rotor/rotorConfiguration";
+import RotorConfiguration from './rotor/rotorConfiguration';
 
 /**
  * @description This is the overall configuration for the stargate machine.
@@ -6,8 +6,8 @@ import RotorConfiguration from "./rotor/rotorConfiguration";
  * It should be contained in the redux store.
  */
 export default class StargateConfiguration {
-    public readonly rotorConfigurations: Array<RotorConfiguration>;
-    public constructor(rotorConfigurations: Array<RotorConfiguration>) {
-        this.rotorConfigurations = rotorConfigurations;
-    }
+  public readonly rotorConfigurations: Array<RotorConfiguration>;
+  public constructor(rotorConfigurations: Array<RotorConfiguration>) {
+    this.rotorConfigurations = rotorConfigurations;
+  }
 }

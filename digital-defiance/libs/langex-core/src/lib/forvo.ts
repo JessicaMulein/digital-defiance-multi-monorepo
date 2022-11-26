@@ -2,7 +2,10 @@ import * as $ from 'jquery';
 
 const baseUrl = 'https://forvo.com/';
 
-export async function scrapeForvoWordSoundSources(language: string, text: string): Promise<string | null> {
+export async function scrapeForvoWordSoundSources(
+  language: string,
+  text: string
+): Promise<string | null> {
   const url = `${baseUrl}word/${encodeURIComponent(text)}/#${language}`;
   let result: string | null = null;
   await $.ajax(url).done(function (data) {
@@ -13,7 +16,10 @@ export async function scrapeForvoWordSoundSources(language: string, text: string
   return result;
 }
 
-export async function scrapeForvoSearchSoundSources(language: string, text: string): Promise<string | null> {
+export async function scrapeForvoSearchSoundSources(
+  language: string,
+  text: string
+): Promise<string | null> {
   const url = `${baseUrl}search/${encodeURIComponent(text)}/${language}`;
   let result: string | null = null;
   await $.ajax(url).done(function (data) {

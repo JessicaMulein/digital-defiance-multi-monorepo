@@ -128,7 +128,7 @@ export default class BrightChainMember implements IReadOnlyBasicObjectDTO {
     id?: string,
     dateCreated?: Date,
     dateUpdated?: Date,
-    creatorId?: FullHexGuid,
+    creatorId?: FullHexGuid
   ) {
     this.memberType = memberType;
     if (id !== undefined) {
@@ -374,7 +374,7 @@ export default class BrightChainMember implements IReadOnlyBasicObjectDTO {
       dateUpdated: Date;
     };
     console.log('parsedMember', parsedMember);
-    
+
     return new BrightChainMember(
       parsedMember.type,
       parsedMember.name,
@@ -384,7 +384,7 @@ export default class BrightChainMember implements IReadOnlyBasicObjectDTO {
       parsedMember.id,
       parsedMember.dateCreated,
       parsedMember.dateUpdated,
-      parsedMember.createdBy as FullHexGuid,
+      parsedMember.createdBy as FullHexGuid
     );
   }
 }

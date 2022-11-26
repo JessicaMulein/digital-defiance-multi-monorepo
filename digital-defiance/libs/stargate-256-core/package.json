@@ -23,6 +23,8 @@
     "stargate-256"
   ],
   "nx": {
-    "tags": ["scope:stargate-256"]
+    "tags": [
+      "scope:stargate-256"
+    ]
   }
 }

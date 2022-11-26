@@ -15,7 +15,10 @@ describe('chromeStorage', () => {
     value[SettingsManager.settingsKey] = expectedValue;
     chrome.storage.sync.get.yields(value);
     // act
-    const result = storageGetKey(SettingsManager.settingsKey, StorageOption.SyncedStorage);
+    const result = storageGetKey(
+      SettingsManager.settingsKey,
+      StorageOption.SyncedStorage
+    );
     // assert
     expect(result).toBe(expectedValue);
   });
@@ -38,7 +41,10 @@ describe('chromeStorage', () => {
     value[SettingsManager.settingsKey] = expectedValue;
     chrome.storage.local.get.yields(value);
     // act
-    const result = storageGetKey(SettingsManager.settingsKey, StorageOption.LocalStorage);
+    const result = storageGetKey(
+      SettingsManager.settingsKey,
+      StorageOption.LocalStorage
+    );
     // assert
     expect(result).toBe(expectedValue);
   });
@@ -55,4 +61,3 @@ describe('chromeStorage', () => {
     sinon.assert.calledWith(chrome.storage.local.set, expectedValue);
   });
 });
-

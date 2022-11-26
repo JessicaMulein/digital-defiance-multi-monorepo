@@ -1,13 +1,17 @@
-import StorageOption from "./storageOption";
+import StorageOption from './storageOption';
 
-export function storageSetKey(key: string, value: any, storageType: StorageOption): void {
-    if (storageType === StorageOption.LocalStorage) {
-        chrome.storage.local.set({ [key]: value });
-    } else if (storageType === StorageOption.SyncedStorage) {
-        chrome.storage.sync.set({ [key]: value });
-    } else {
-        throw new Error('Invalid storage type');
-    }
+export function storageSetKey(
+  key: string,
+  value: any,
+  storageType: StorageOption
+): void {
+  if (storageType === StorageOption.LocalStorage) {
+    chrome.storage.local.set({ [key]: value });
+  } else if (storageType === StorageOption.SyncedStorage) {
+    chrome.storage.sync.set({ [key]: value });
+  } else {
+    throw new Error('Invalid storage type');
+  }
 }
 
 export function storageGetKey(key: string, storageType: StorageOption): any {
@@ -19,7 +23,7 @@ export function storageGetKey(key: string, storageType: StorageOption): any {
   };
   if (storageType === StorageOption.LocalStorage) {
     chrome.storage.local.get(key, cb);
-  } else if (storageType === StorageOption.SyncedStorage) { 
+  } else if (storageType === StorageOption.SyncedStorage) {
     chrome.storage.sync.get(key, cb);
   } else {
     throw new Error('Invalid storage type');

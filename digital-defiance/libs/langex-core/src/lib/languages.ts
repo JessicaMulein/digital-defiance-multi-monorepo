@@ -68,11 +68,13 @@ export async function detectLanguage_idea(
  * @param inputText The text or texts to detect a language for.
  * @returns
  */
-export function detectLanguage2(inputText: string): chrome.i18n.DetectedLanguage[] {
+export function detectLanguage2(
+  inputText: string
+): chrome.i18n.DetectedLanguage[] {
   const langList: chrome.i18n.DetectedLanguage[] = [];
-  chrome.i18n.detectLanguage(inputText, function(result) {
-    for(let i = 0; i < result.languages.length; i++) {
-      langList.push(result.languages[i])
+  chrome.i18n.detectLanguage(inputText, function (result) {
+    for (let i = 0; i < result.languages.length; i++) {
+      langList.push(result.languages[i]);
     }
   });
   return langList;
@@ -101,7 +103,7 @@ export function bestGuessSourceLanguage(
     }
   ]
   */
-  /* in this case, we are studying ukrainian which is the second choice at 44% and the belarussian detection is wrong. 
+  /* in this case, we are studying ukrainian which is the second choice at 44% and the belarussian detection is wrong.
    * although in this case looking through the studied languages list and seeing ukraine there and using that would help,
    * there may be cases where the selected text is in fact a different language than the one we are studying but
    * included in the detection

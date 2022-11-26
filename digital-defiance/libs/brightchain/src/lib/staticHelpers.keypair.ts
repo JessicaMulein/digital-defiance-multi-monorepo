@@ -523,9 +523,10 @@ export default abstract class StaticHelpersKeyPair {
       const mnemonic = entropyToMnemonic(signingKeyPair.getPrivate('hex'));
       // lets seed the passphrase with the member's id for some more entropy
       return [memberId, '!', mnemonic].join('');
-    }
-    catch (e) {
-      throw new Error('Unable to challenge data key pair with mneomonic from signing key pair');
+    } catch (e) {
+      throw new Error(
+        'Unable to challenge data key pair with mneomonic from signing key pair'
+      );
     }
   }
 
@@ -567,7 +568,7 @@ export default abstract class StaticHelpersKeyPair {
    */
   public static symmetricEncryptBuffer(
     data: Buffer,
-    encryptionKey?: Buffer,
+    encryptionKey?: Buffer
   ): ISymmetricEncryptionResults {
     if (
       encryptionKey &&

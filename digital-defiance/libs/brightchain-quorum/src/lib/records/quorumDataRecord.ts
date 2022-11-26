@@ -63,7 +63,8 @@ export default class QuorumDataRecord {
 
     this.sharesRequired = sharesRequired;
     this.encryptedData = encryptedData;
-    const calculatedChecksum = StaticHelpersChecksum.calculateChecksum(encryptedData);
+    const calculatedChecksum =
+      StaticHelpersChecksum.calculateChecksum(encryptedData);
     if (checksum && checksum !== calculatedChecksum) {
       throw new Error('Invalid checksum');
     }

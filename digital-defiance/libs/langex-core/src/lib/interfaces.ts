@@ -1,9 +1,9 @@
-import StorageOption from "./storageOption";
-import MessageContext from "./messageContext";
+import StorageOption from './storageOption';
+import MessageContext from './messageContext';
 import MessageType from './messageType';
-import PreferredVoiceGender from "./preferredVoiceGender";
-import SpeechSources from "./speechSources";
-import WordMastery from "./wordMastery";
+import PreferredVoiceGender from './preferredVoiceGender';
+import SpeechSources from './speechSources';
+import WordMastery from './wordMastery';
 
 export interface WordMasteryStatus {
   word: string;
@@ -66,7 +66,7 @@ export interface ISettings {
 /**
  * Settings stored in browser local storage only (not global sync)
  */
- export interface ILocalSettings {
+export interface ILocalSettings {
   readonly includedSites: string[];
   readonly excludedSites: string[];
   readonly onByDefault: boolean;

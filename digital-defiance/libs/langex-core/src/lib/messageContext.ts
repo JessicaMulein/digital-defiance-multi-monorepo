@@ -1,6 +1,6 @@
 export enum MessageContext {
-    Background = 'background',
-    Extension = 'extension',
+  Background = 'background',
+  Extension = 'extension',
 }
 
 export default MessageContext;

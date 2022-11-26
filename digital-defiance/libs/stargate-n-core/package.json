@@ -26,6 +26,9 @@
     "stargate-n"
   ],
   "nx": {
-    "tags": ["scope:stargate-n", "type:library"]
+    "tags": [
+      "scope:stargate-n",
+      "type:library"
+    ]
   }
 }

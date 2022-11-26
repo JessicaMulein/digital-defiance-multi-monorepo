@@ -2,8 +2,11 @@
 import { WordMasteryStatus } from 'libs/langex-core/src/lib/interfaces';
 import { bestGuessSourceLanguage } from './languages';
 
-
-export function makeTranslateLink(text: string, source: string, target: string): string {
+export function makeTranslateLink(
+  text: string,
+  source: string,
+  target: string
+): string {
   const encoded = encodeURIComponent(text);
   return `https://translate.google.com/?op=translate&sl=${source}&tl=${target}&text=${encoded}`;
 }
@@ -20,7 +23,11 @@ export function googleTranslateLookup(
   tab: chrome.tabs.Tab | undefined
 ) {
   console.log(info, tab);
-  const source = bestGuessSourceLanguage(currentLanguage, studiedLanguages, info.selectionText || '');
+  const source = bestGuessSourceLanguage(
+    currentLanguage,
+    studiedLanguages,
+    info.selectionText || ''
+  );
   const target = currentLanguage;
   chrome.tabs.create({
     url: makeTranslateLink(info.selectionText || '', source, target),

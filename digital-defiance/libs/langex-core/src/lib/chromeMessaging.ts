@@ -2,7 +2,7 @@ import { IChromeMessage } from './interfaces';
 
 export function sendMessageFromBackground(message: IChromeMessage): void {
   let sent = false;
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     if (tabs && tabs.length > 0) {
       const tab: chrome.tabs.Tab = tabs[0];
       if (tab && tab.id) {

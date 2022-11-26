@@ -12,7 +12,7 @@ export interface IMemberShareCount {
 
 export interface ISortedMemberShareCountArrays {
   memberIds: bigint[];
-  shares: number[],
+  shares: number[];
   memberCount: number;
   totalShares: number;
 }

@@ -5,7 +5,7 @@ import StaticHelpers from './staticHelpers';
 import ShamirShareDetail from './shamir-share-detail';
 
 describe("shamir's mnemonic", () => {
-  it("should test some assumptions", () => {
+  it('should test some assumptions', () => {
     const wordCount = 24;
     const bitsPerWord = 11;
     const seedBits = wordCount * bitsPerWord;
@@ -15,7 +15,7 @@ describe("shamir's mnemonic", () => {
     const shareCount = wordCount / 4;
 
     // determine number of shares required for 11 bits with 4x compression
-    
+
     secrets.init(StaticHelpers.requiredBitsForShareCount(shareCount), rngType);
     const shares = secrets.share(randData, shareCount, shareCount);
     const details = shares.map((share) => ShamirShareDetail.fromShare(share));
@@ -29,9 +29,9 @@ describe("shamir's mnemonic", () => {
         }
         */
 
-        // compress the shares
-        // const compressedShares = ShamirsMnemonic.compressShares(details, bitsPerWord*wordCount);
-        // const decompressedShares = ShamirsMnemonic.decompressShares(compressedShares, shareCount);
+    // compress the shares
+    // const compressedShares = ShamirsMnemonic.compressShares(details, bitsPerWord*wordCount);
+    // const decompressedShares = ShamirsMnemonic.decompressShares(compressedShares, shareCount);
 
     console.log(details);
     // console.log(compressedShares);
@@ -74,7 +74,7 @@ describe("shamir's mnemonic", () => {
       )
     ).toBeFalsy();
   });
-  
+
   it('should generate a mnemonic and a checkword', () => {
     const wordCount = 24;
     const mnemonic = ShamirsMnemonic.GenerateMnemonicString(
@@ -146,7 +146,11 @@ describe("shamir's mnemonic", () => {
     expect(seed2.toString('hex')).toEqual(seed.toString('hex'));
 
     // convert back to mnemonic reliably
-    const mnemonic2 = ShamirsMnemonic.GenerateMnemonicString(wordlists['english'], wordCount, seed2);
+    const mnemonic2 = ShamirsMnemonic.GenerateMnemonicString(
+      wordlists['english'],
+      wordCount,
+      seed2
+    );
     expect(mnemonic2).toBeTruthy();
     expect(mnemonic2.phrase.split(' ').length).toEqual(wordCount);
     expect(mnemonic2).toEqual(mnemonic.phrase);
@@ -170,7 +174,11 @@ describe("shamir's mnemonic", () => {
     expect(seed).toBeTruthy();
 
     // convert back
-    const mnemonic2 = ShamirsMnemonic.GenerateMnemonicString(wordlists['english'], wordCount, seed);
+    const mnemonic2 = ShamirsMnemonic.GenerateMnemonicString(
+      wordlists['english'],
+      wordCount,
+      seed
+    );
     expect(mnemonic2).toBeTruthy();
     expect(mnemonic2.phrase.split(' ').length).toEqual(wordCount);
     expect(mnemonic2).toEqual(mnemonic.phrase);

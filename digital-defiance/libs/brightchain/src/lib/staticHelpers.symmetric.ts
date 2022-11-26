@@ -5,10 +5,7 @@ import {
   publicEncrypt,
   privateDecrypt,
 } from 'crypto';
-import {
-  ISymmetricEncryptionResults,
-  ISealResults,
-} from './interfaces';
+import { ISymmetricEncryptionResults, ISealResults } from './interfaces';
 import StaticHelpersKeyPair from './staticHelpers.keypair';
 import StaticHelpers from './staticHelpers';
 
@@ -38,7 +35,10 @@ export default abstract class StaticHelpersSymmetric {
     const dataBuffer =
       useBuffer === true && Buffer.isBuffer(data)
         ? data
-        : Buffer.from(hasToJSON ? (data as any).toJSON() : JSON.stringify(data), 'utf8');
+        : Buffer.from(
+            hasToJSON ? (data as any).toJSON() : JSON.stringify(data),
+            'utf8'
+          );
     if (
       encryptionKey &&
       encryptionKey.length != StaticHelpersKeyPair.SymmetricKeyBytes
@@ -104,7 +104,10 @@ export default abstract class StaticHelpersSymmetric {
    */
   public static symmetricDecrypt<T>(encryptedData: Buffer, key: Buffer): T {
     return JSON.parse(
-      StaticHelpersSymmetric.symmetricDecryptBuffer(encryptedData, key).toString()
+      StaticHelpersSymmetric.symmetricDecryptBuffer(
+        encryptedData,
+        key
+      ).toString()
     ) as T;
   }
 

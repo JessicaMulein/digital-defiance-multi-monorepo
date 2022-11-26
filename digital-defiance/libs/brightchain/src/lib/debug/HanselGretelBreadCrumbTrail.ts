@@ -44,7 +44,12 @@ export class HanselGretelBreadCrumbTrail implements IBreadCrumbTrace {
     functionName: string,
     ...args: Array<any>
   ): HanselGretelBreadCrumbTrail {
-    return new HanselGretelBreadCrumbTrail(emitConsoleOnAdd, traceLog, functionName, ...args);
+    return new HanselGretelBreadCrumbTrail(
+      emitConsoleOnAdd,
+      traceLog,
+      functionName,
+      ...args
+    );
   }
   public addCrumb(...args: Array<any>): HanselGretelBreadCrumbTrail {
     return new HanselGretelBreadCrumbTrail(

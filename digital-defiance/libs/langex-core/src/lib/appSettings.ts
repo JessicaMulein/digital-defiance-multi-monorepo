@@ -1,7 +1,4 @@
-import {
-  DefaultWordMasteryColors,
-  ISettings,
-} from './interfaces';
+import { DefaultWordMasteryColors, ISettings } from './interfaces';
 import StorageOption from './storageOption';
 import PreferredVoiceGender from './preferredVoiceGender';
 import SpeechSources from './speechSources';

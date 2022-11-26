@@ -1,6 +1,10 @@
-import { bestGuessSourceLanguage, detectLanguage2 } from "./languages";
+import { bestGuessSourceLanguage, detectLanguage2 } from './languages';
 
-export function makeLingvoLink(text: string, source: string, target: string): string {
+export function makeLingvoLink(
+  text: string,
+  source: string,
+  target: string
+): string {
   // take only the first word from text
   const word = encodeURIComponent((text || '').split(' ')[0]);
   return `https://www.lingvolive.com/en-us/translate/${source}-${target}/${word}`;
@@ -19,7 +23,11 @@ export function lingvoLookup(
 ) {
   console.log(info, tab);
   const source = currentLanguage;
-  const target = bestGuessSourceLanguage(currentLanguage, studiedLanguages, info.selectionText || '');
+  const target = bestGuessSourceLanguage(
+    currentLanguage,
+    studiedLanguages,
+    info.selectionText || ''
+  );
   chrome.tabs.create({
     url: makeLingvoLink(info.selectionText || '', source, target),
   });

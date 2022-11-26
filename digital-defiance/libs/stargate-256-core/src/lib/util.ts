@@ -14,7 +14,11 @@ export function buildTable(
     throw new Error("Array must have 256 elements");
   }
   const headers = [
-    "   |" + "0123456789abcdef".split("").map((x) => hexValues ? (" " + x) : (" " + x + " ")).join(" "),
+    "   |" +
+      "0123456789abcdef"
+        .split("")
+        .map((x) => (hexValues ? " " + x : " " + x + " "))
+        .join(" "),
     "---|" + ((hexValues ? "--" : "---") + "|").repeat(16),
   ];
   const makeRow = (row: number) => {
@@ -28,7 +32,7 @@ export function buildTable(
       const valueDec = value.toString(10).padStart(3, "0");
       const valueHex = value.toString(16).padStart(2, "0");
       if (skipZero && row == 0 && i == 0) {
-        rowValues += hexValues ? "--" : "---"
+        rowValues += hexValues ? "--" : "---";
       } else if (i > 0) {
         rowValues += ` ${hexValues ? valueHex : valueDec}`;
       } else {

@@ -50,9 +50,7 @@ export default abstract class StaticHelpersSealing {
       // ensure every entry in shareCountByMemberId has a corresponding member id and that the share count is valid
       for (let i = 0; i < shareCountByMemberId.length; i++) {
         const shares = shareCountByMemberId[i];
-        if (
-          !amongstMemberIds.includes(shares.memberId)
-        ) {
+        if (!amongstMemberIds.includes(shares.memberId)) {
           throw new Error(
             `Member id ${shares.memberId} not found in list of member ids`
           );
@@ -143,8 +141,8 @@ export default abstract class StaticHelpersSealing {
     let totalShares = 0;
     for (let i = 0; i < sortedMemberIds.length; i++) {
       const memberId = sortedMemberIds[i];
-      const shareCount = shareCountByMemberId.find((s) =>
-        s.memberId == memberId
+      const shareCount = shareCountByMemberId.find(
+        (s) => s.memberId == memberId
       )?.shares;
       if (shareCount === undefined) {
         throw new Error('Share count is undefined');

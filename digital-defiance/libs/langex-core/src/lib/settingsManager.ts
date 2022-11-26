@@ -37,12 +37,7 @@ export class SettingsManager {
       defaultStudiedLanguages,
       defaultSpeechSources
     );
-    this._localSettings = new LocalSettings(
-      [],
-      [],
-      true,
-      true,
-    );
+    this._localSettings = new LocalSettings([], [], true, true);
 
     this.loadGlobalSettings();
     this.loadLocalSettings();
@@ -60,16 +55,20 @@ export class SettingsManager {
   }
 
   public verifyColorName(color: string): boolean {
-      const s = new Option().style;
-      s.color = color;
-      return s.color !== '';
+    const s = new Option().style;
+    s.color = color;
+    return s.color !== '';
   }
 
   /**
    * Saves only the settings object to chrome storage
    */
   public saveGlobalSettings(): void {
-    storageSetKey(SettingsManager.settingsKey, JSON.stringify(this._globalSettings), StorageOption.SyncedStorage);
+    storageSetKey(
+      SettingsManager.settingsKey,
+      JSON.stringify(this._globalSettings),
+      StorageOption.SyncedStorage
+    );
     sendMessageFromBackground({
       type: MessageType.GlobalSettingsUpdate,
       context: this.context,
@@ -91,7 +90,10 @@ export class SettingsManager {
    * Loads the settings object from chrome storage
    */
   public loadGlobalSettings(failIfNotFound = false): void {
-    const settings = storageGetKey(SettingsManager.settingsKey, StorageOption.SyncedStorage);
+    const settings = storageGetKey(
+      SettingsManager.settingsKey,
+      StorageOption.SyncedStorage
+    );
     if (failIfNotFound && typeof settings !== 'string') {
       throw new Error('SettingsManager: loadSettings: settings not found');
     }
@@ -104,7 +106,7 @@ export class SettingsManager {
   }
 
   /**
-   * 
+   *
    */
   public loadLocalSettings(): void {
     //throw new Error('Method not implemented.');
@@ -230,7 +232,10 @@ export class SettingsManager {
     return WordMastery.Unrecognized;
   }
 
-  public lookupWordMasteryForWords(language: string, words: string[]): WordMastery[] {
+  public lookupWordMasteryForWords(
+    language: string,
+    words: string[]
+  ): WordMastery[] {
     const masteredWords: WordMastery[] = [];
     words.forEach((word) => {
       masteredWords.push(this.lookupWordMastery(language, word));
@@ -238,7 +243,10 @@ export class SettingsManager {
     return masteredWords;
   }
 
-  public makeWordMasteryStatusMap(language: string, words: string[]): Map<string, WordMasteryStatus> {
+  public makeWordMasteryStatusMap(
+    language: string,
+    words: string[]
+  ): Map<string, WordMasteryStatus> {
     // ensure word list is unique
     const uniqueWords = [...new Set(words)];
     const masteredWordMap = new Map<string, WordMasteryStatus>();

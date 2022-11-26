@@ -21,7 +21,11 @@ export default class ShamirShareDetail implements IShamirShareDetail {
     return Number('0x' + this.data);
   }
 
-  public static generatePublicShareString(bits: number, id: number, data: string) {
+  public static generatePublicShareString(
+    bits: number,
+    id: number,
+    data: string
+  ) {
     const config = getConfig();
     const bitsBase36 = bits.toString(36).toUpperCase();
     const idMax = Math.pow(2, bits) - 1;

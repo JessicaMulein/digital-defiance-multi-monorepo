@@ -74,8 +74,7 @@ export default class Block implements IReadOnlyDataObjectDTO {
         throw new Error('Member mismatch');
       }
       return new Block(member, data, dateCreated, parsed.id);
-    }
-    catch (e) {
+    } catch (e) {
       throw new Error('Member mismatch');
     }
   }

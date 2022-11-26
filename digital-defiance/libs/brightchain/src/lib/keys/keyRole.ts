@@ -1,6 +1,6 @@
 export enum KeyRole {
-    Authentication,
-    Signing,
-    Encryption
+  Authentication,
+  Signing,
+  Encryption,
 }
 export default KeyRole;

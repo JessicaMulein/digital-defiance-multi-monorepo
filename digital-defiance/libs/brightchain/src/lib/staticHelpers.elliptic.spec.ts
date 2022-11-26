@@ -96,7 +96,7 @@ describe('brightchain staticHelpers.elliptic', () => {
     expect(res).toEqual(dataString);
   });
   it('should test rmPadding as string', () => {
-    const data = [0x00, 0x01, 0x81].map(c => String.fromCharCode(c)).join('');
+    const data = [0x00, 0x01, 0x81].map((c) => String.fromCharCode(c)).join('');
     const res = StaticHelpersElliptic.rmPadding(data);
     expect(res).toEqual(data);
   });
@@ -114,8 +114,10 @@ describe('brightchain staticHelpers.elliptic', () => {
     const res = StaticHelpersElliptic.rmPadding(data);
     expect(res).toEqual(data);
   });
-  it("should exercise rmPadding with a string", () => {
-    const data: string = [0x00, 0x81, 0x83].map((x) => String.fromCharCode(x)).join('');
+  it('should exercise rmPadding with a string', () => {
+    const data: string = [0x00, 0x81, 0x83]
+      .map((x) => String.fromCharCode(x))
+      .join('');
     const res = StaticHelpersElliptic.rmPadding(data);
     expect(res).toEqual(data);
   });

@@ -1,5 +1,3 @@
-
-
 # DigitalDefiance
 
 This project was generated using [Nx](https://nx.dev).
@@ -12,47 +10,73 @@ brightchain-quorum stargate-256-core stargate-n-core brightchain
 ```
 
 ## Stargate-256 (App)
+
 Enigma-256 like algorithm
+
 ```
   path: nx-monorepo/digital-defiance/apps/stargate-256
 ```
+
 link: https://github.com/Digital-Defiance/nx-monorepo/tree/main/digital-defiance/apps/stargate-256#readme
+
 ## Stargate-N (app)
+
 Quantum enigma
+
 ```
   path: nx-monorepo/digital-defiance/apps/stargate-n
 ```
+
 link: https://github.com/Digital-Defiance/nx-monorepo/tree/main/digital-defiance/apps/stargate-N#readme
+
 ## Stargate-256
+
 Enigma-256 like algorithm
+
 ```
   path: nx-monorepo/digital-defiance/libs/stargate-256
 ```
+
 link: https://github.com/Digital-Defiance/nx-monorepo/tree/main/digital-defiance/libs/stargate-256#readme
+
 ## Stargate-N
+
 Quantum enigma
+
 ```
   path: nx-monorepo/digital-defiance/libs/stargate-n
 ```
+
 link: https://github.com/Digital-Defiance/nx-monorepo/tree/main/digital-defiance/libs/stargate-N#readme
+
 ## BrightChain
+
 Core of the BrightChain blockchain/network
+
 ```
   path: nx-monorepo/digital-defiance/libs/brightchain
 ```
+
 link: https://github.com/Digital-Defiance/nx-monorepo/tree/main/digital-defiance/libs/brightchain#readme
+
 ## brightchain-quorum library
+
 BrightChain quorum- confidential quorum
+
 ```
   path: nx-monorepo/digital-defiance/libs/brightchain-quorum
-``` 
+```
+
 link: https://github.com/Digital-Defiance/nx-monorepo/tree/main/digital-defiance/libs/brightchain-quorum#readme
 
 ## langex
+
 LangEx- LanguageExtension. Learn new languages in your browser while reading any page.
+
 ```
   path: nx-monorepo/digital-defiance/apps/langex
 ```
+
 link: https://github.com/Digital-Defiance/nx-monorepo/tree/main/digital-defiance/apps/langex#readme
 
 <hr>
@@ -139,11 +163,6 @@ Run `nx graph` to see a diagram of the dependencies of your projects.
 ## Further help
 
 Visit the [Nx Documentation](https://nx.dev/angular) to learn more.
-
-
-
-
-
 
 ## ☁ Nx Cloud
 

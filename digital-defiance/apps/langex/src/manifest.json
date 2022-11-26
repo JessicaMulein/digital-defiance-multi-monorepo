@@ -33,7 +33,5 @@
     "unlimitedStorage",
     "webRequest"
   ],
-  "host_permissions": [
-    "*://*.forvo.com/*"
-  ]
+  "host_permissions": ["*://*.forvo.com/*"]
 }

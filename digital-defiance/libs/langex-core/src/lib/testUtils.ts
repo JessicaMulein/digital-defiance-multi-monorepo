@@ -5,44 +5,46 @@ import PreferredVoiceGender from './preferredVoiceGender';
 import StorageOption from './storageOption';
 import AppSettings from './appSettings';
 
-
 export function makeExpectedISettings(
-    changeKey?: string,
-    changeValue?: any
-  ): ISettings {
-    const settings: ISettings = {
-      lingvoApiKey: '',
-      lingvoApiEnabled: false,
-      forvoApiKey: '',
-      forvoApiEnabled: false,
-      googleApiKey: '',
-      googleApiEnabled: false,
-      preferredVoiceGender: PreferredVoiceGender.Either,
-      primaryLanguage: 'en',
-      primaryLocale: 'en-US',
-      storeAudio: StorageOption.None,
-      studiedLanguages: ['uk', 'ru'],
-      speechSources: [SpeechSources.WebSpeechAPI],
-      wordMasteryColors: DefaultWordMasteryColors,
-    };
-    if (changeKey !== undefined && changeValue !== undefined) {
-      // ensure settings has the changeKey
-      if (!(changeKey in settings)) {
-        throw new Error(`Invalid changeKey: ${changeKey}`);
-      }
-      (settings as any)[changeKey] = changeValue;
+  changeKey?: string,
+  changeValue?: any
+): ISettings {
+  const settings: ISettings = {
+    lingvoApiKey: '',
+    lingvoApiEnabled: false,
+    forvoApiKey: '',
+    forvoApiEnabled: false,
+    googleApiKey: '',
+    googleApiEnabled: false,
+    preferredVoiceGender: PreferredVoiceGender.Either,
+    primaryLanguage: 'en',
+    primaryLocale: 'en-US',
+    storeAudio: StorageOption.None,
+    studiedLanguages: ['uk', 'ru'],
+    speechSources: [SpeechSources.WebSpeechAPI],
+    wordMasteryColors: DefaultWordMasteryColors,
+  };
+  if (changeKey !== undefined && changeValue !== undefined) {
+    // ensure settings has the changeKey
+    if (!(changeKey in settings)) {
+      throw new Error(`Invalid changeKey: ${changeKey}`);
     }
-    return settings;
+    (settings as any)[changeKey] = changeValue;
   }
-  
-  export function makeExpectedAppSettings(
-    changeKey?: string,
-    changeValue?: any
-  ): { [key: string]: any } {
-    const expectedSettings: ISettings = makeExpectedISettings(changeKey, changeValue);
-    const expectedSettingsObject: { [key: string]: any } = {};
-    expectedSettingsObject[SettingsManager.settingsKey] = JSON.stringify(
-      expectedSettings as AppSettings
-    );
-    return expectedSettingsObject;
-  }
+  return settings;
+}
+
+export function makeExpectedAppSettings(
+  changeKey?: string,
+  changeValue?: any
+): { [key: string]: any } {
+  const expectedSettings: ISettings = makeExpectedISettings(
+    changeKey,
+    changeValue
+  );
+  const expectedSettingsObject: { [key: string]: any } = {};
+  expectedSettingsObject[SettingsManager.settingsKey] = JSON.stringify(
+    expectedSettings as AppSettings
+  );
+  return expectedSettingsObject;
+}

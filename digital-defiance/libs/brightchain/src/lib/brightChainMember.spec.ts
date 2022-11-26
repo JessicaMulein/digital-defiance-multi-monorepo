@@ -106,7 +106,7 @@ describe('brightchain', () => {
           'alice@example.com',
           undefined,
           undefined,
-          "x"
+          'x'
         )
     ).toThrowError('Invalid member ID');
   });
@@ -209,6 +209,8 @@ describe('brightchain', () => {
           privateKey: Buffer.from([]),
         }
       );
-    }).toThrowError('Unable to challenge data key pair with mneomonic from signing key pair');
+    }).toThrowError(
+      'Unable to challenge data key pair with mneomonic from signing key pair'
+    );
   });
 });
