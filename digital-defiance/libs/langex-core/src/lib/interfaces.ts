@@ -69,7 +69,6 @@ export interface ISettings {
 export interface ILocalSettings {
   readonly includedSites: string[];
   readonly excludedSites: string[];
-  readonly onByDefault: boolean;
   readonly extensionEnabled: boolean;
 }
 
