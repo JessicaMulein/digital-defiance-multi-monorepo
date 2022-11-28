@@ -9,6 +9,10 @@ import { getKeyIdentifier, storageGetKey } from './chromeStorage';
 describe('AppComponent', () => {
   beforeEach(async () => {
     chrome.reset();
+    chrome.storage.local.set.reset();
+    chrome.storage.local.get.reset();
+    chrome.storage.sync.set.reset();
+    chrome.storage.sync.get.reset();
   });
   it('should create the manager', () => {
     const settingsManager = new SettingsManager(MessageContext.Extension);
@@ -28,8 +32,7 @@ describe('AppComponent', () => {
     expectedSettingValue[
       getKeyIdentifier(SettingsManager.settingsKey, 'forvoApiKey')
     ] = updatedForvoApiKey;
-    const getKeyMock = sinon.spy(storageGetKey);
-    getKeyMock.returnValues = [undefined, expectedSettingValue];
+    chrome.storage.sync.get.yields(expectedSettingValue);
     /// act
     const settingsManager = new SettingsManager(MessageContext.Extension);
     // assert
