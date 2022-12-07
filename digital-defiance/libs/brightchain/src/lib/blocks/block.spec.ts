@@ -1,10 +1,12 @@
 import { randomBytes } from 'crypto';
-import BrightChainMember from '../brightChainMember';
-import BrightChainMemberType from '../memberType';
-import StaticHelpers from '../staticHelpers';
-import StaticHelpersChecksum from '../staticHelpers.checksum';
-import Block from './block';
-import BlockSize, { blockSizeToLength, blockSizes } from './blockSizes';
+import { BrightChainMember } from '../brightChainMember';
+import { ChecksumString } from '../checksumBrand';
+import { EmailString } from '../emailString';
+import { ShortHexGuid } from '../guid';
+import { BrightChainMemberType } from '../memberType';
+import { StaticHelpersChecksum } from '../staticHelpers.checksum';
+import { Block } from './block';
+import { BlockSize, blockSizeToLength } from './blockSizes';
 
 function randomBlockSize(): BlockSize {
   // how about we actually reduce the set to one fow now.
@@ -18,12 +20,12 @@ function randomBlockSize(): BlockSize {
 const alice = BrightChainMember.newMember(
   BrightChainMemberType.User,
   'alice',
-  'alice@example.com'
+  new EmailString('alice@example.com')
 );
 const bob = BrightChainMember.newMember(
   BrightChainMemberType.User,
   'bob',
-  'bob@example.com'
+  new EmailString('bob@example.com')
 );
 
 describe('block', () => {
@@ -54,13 +56,13 @@ describe('block', () => {
       alice,
       data,
       dateCreated,
-      checksum.toString('hex')
+      checksum.toString('hex') as ChecksumString
     );
     const json = block.toJSON();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const rebuiltBlock = Block.fromJSON(
       json,
-      (memberId: string) => alice
+      (memberId: ShortHexGuid) => alice
     );
     expect(rebuiltBlock).toBeTruthy();
     expect(rebuiltBlock.blockSize).toBe(block.blockSize);
@@ -80,12 +82,12 @@ describe('block', () => {
       alice,
       data,
       dateCreated,
-      checksum.toString('hex')
+      checksum.toString('hex') as ChecksumString
     );
     const json = block.toJSON();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     expect(() =>
-      Block.fromJSON(json, (memberId: string) => bob)
+      Block.fromJSON(json, (memberId: ShortHexGuid) => bob)
     ).toThrow('Member mismatch');
   });
   it('should throw when given a bad checksum', () => {
@@ -98,7 +100,7 @@ describe('block', () => {
     );
     expect(
       () =>
-        new Block(alice, data, dateCreated, badChecksum.toString('hex'))
+        new Block(alice, data, dateCreated, badChecksum.toString('hex') as ChecksumString)
     ).toThrow('Checksum mismatch');
   });
   it('should throw when making an empty block', () => {
@@ -127,7 +129,7 @@ describe('block', () => {
       alice,
       data,
       undefined,
-      checksum.toString('hex')
+      checksum.toString('hex') as ChecksumString
     );
     expect(block.dateCreated).toBeTruthy();
     expect(block.dateCreated).toBeInstanceOf(Date);
