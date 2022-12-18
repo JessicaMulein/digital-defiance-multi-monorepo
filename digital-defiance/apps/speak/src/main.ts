@@ -1,10 +1,18 @@
-import * as puppeteer from 'puppeteer';
 import { GoogleSpeech } from './googleSpeech';
-import { testBrowser } from './headlessChrome';
+import { IOpenedPage, testBrowser } from './headlessChrome';
 
 const googleSpeech = new GoogleSpeech();
 
-const browser: puppeteer.Browser | undefined = testBrowser();
+testBrowser().then(async (value: IOpenedPage | undefined) => {
+    if (value === undefined || value.browser === undefined || value.page === undefined) {
+        console.log('browser is undefined');
+    } else {
+        const content = await value.page.content();
+        console.log('content', content);
+        await value.page.close();
+        await value.browser.close();
+    }
+});
 
 googleSpeech.speak("hello there").then((audioBuffer: Buffer|undefined) => {
     console.log("audioBuffer", audioBuffer);

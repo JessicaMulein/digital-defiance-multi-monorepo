@@ -12,17 +12,22 @@ export async function getBrowser(): Promise<puppeteer.Browser> {
     });
 }
 
-export function testBrowser(): puppeteer.Browser | undefined {
-    let result: undefined | puppeteer.Browser = undefined;
-    getBrowser().then(async (browser) => {
-        result = browser;
-        console.log('browser', browser);
-        if (browser === undefined) {
-            console.log('browser is undefined');
-            return;
-        }
-        await browser.close();
-        console.log('browser', browser);
-    });
+export interface IOpenedPage {
+    browser: puppeteer.Browser;
+    page: puppeteer.Page;
+}
+
+export async function testBrowser(): Promise<undefined | IOpenedPage> {
+    const browser = await getBrowser();
+    if (browser === undefined) {
+        console.log('browser is undefined');
+        return;
+    }
+    const page = await  browser.newPage();
+    await page.goto('about:blank'); // TODO: replace with local web server
+    const result: IOpenedPage = {
+        browser,
+        page,
+    };
     return result;
 }
