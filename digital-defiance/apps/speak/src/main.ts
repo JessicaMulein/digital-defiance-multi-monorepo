@@ -41,3 +41,4 @@ getBrowser().then(() => {
 // - when commanded by phone, generate audio, play audio
 // - when audio is done playing, send message to phone to say "done playing"
 // TODO: option to go word by word, sentence by sentence, or paragraph by paragraph, etc.
+// TODO: save generated audio from commonly used words/phrases
