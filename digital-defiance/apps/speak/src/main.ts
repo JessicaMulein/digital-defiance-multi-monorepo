@@ -1,8 +1,8 @@
+import { environment } from './environments/environment';
 import { GoogleSpeech } from './googleSpeech';
 import { IOpenedPage, testBrowser } from './headlessChrome';
 
-const googleSpeech = new GoogleSpeech();
-
+/** https://www.toptal.com/puppeteer/headless-browser-puppeteer-tutorial */
 testBrowser().then(async (value: IOpenedPage | undefined) => {
     if (value === undefined || value.browser === undefined || value.page === undefined) {
         console.log('browser is undefined');
@@ -14,9 +14,14 @@ testBrowser().then(async (value: IOpenedPage | undefined) => {
     }
 });
 
-googleSpeech.speak("hello there").then((audioBuffer: Buffer|undefined) => {
-    console.log("audioBuffer", audioBuffer);
-});
+if (environment.defaultSpeechProvider === 'google') {
+    const googleSpeech = new GoogleSpeech();
+    googleSpeech.speak("hello there").then((audioBuffer: Buffer|undefined) => {
+        console.log("audioBuffer", audioBuffer);
+    });
+} else if (environment.defaultSpeechProvider === 'amazon') {
+    // TODO
+}
 
 // things to do:
 // - configure bluetooth to connect to phone as serial port (https://towardsdatascience.com/sending-data-from-a-raspberry-pi-sensor-unit-over-serial-bluetooth-f9063f3447af)
