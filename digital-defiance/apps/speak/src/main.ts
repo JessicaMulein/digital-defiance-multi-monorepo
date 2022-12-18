@@ -1,20 +1,13 @@
 import * as puppeteer from 'puppeteer';
+import { GoogleSpeech } from './googleSpeech';
+import { testBrowser } from './headlessChrome';
 
-let browser: puppeteer.Browser | null = null;
-const getBrowser = async () => {
-    browser = await puppeteer.launch({
-        headless: true,
-        ignoreDefaultArgs: [
-            "--mute-audio",
-        ],
-        args: [
-            "--autoplay-policy=no-user-gesture-required",
-        ],
-    });
-};
-const log = console.log.bind(console);
-getBrowser().then(() => {
-    log('browser', browser);
+const googleSpeech = new GoogleSpeech();
+
+const browser: puppeteer.Browser | undefined = testBrowser();
+
+googleSpeech.speak("hello there").then((audioBuffer: Buffer|undefined) => {
+    console.log("audioBuffer", audioBuffer);
 });
 
 // things to do:
