@@ -1,0 +1,65 @@
+{
+  "name": "ai-bbs-node",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/ai-bbs-node/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/ai-bbs-node",
+        "main": "apps/ai-bbs-node/src/main.ts",
+        "tsConfig": "apps/ai-bbs-node/tsconfig.app.json",
+        "assets": ["apps/ai-bbs-node/src/assets"],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/ai-bbs-node/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "ai-bbs-node:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "ai-bbs-node:build:development"
+        },
+        "production": {
+          "buildTarget": "ai-bbs-node:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/ai-bbs-node/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/ai-bbs-node/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["ai-bbs","ai-bbs-lib"]
+}

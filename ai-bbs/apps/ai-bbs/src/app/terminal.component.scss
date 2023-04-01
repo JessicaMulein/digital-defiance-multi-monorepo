@@ -1,0 +1,28 @@
+#terminal-container {
+    font-family: "Source Code Pro", monospace;
+}
+#terminal-container .xterm-rows .xterm-row {
+    font-variant-ligatures: initial !important;
+    font-size: 1em !important;
+    font-family: "Source Code Pro", monospace !important;
+}
+#terminal-container .xterm-rows .xterm-row:before {
+    content: unset !important;
+    font-family: unset !important;
+    display: unset !important;
+}
+#terminal-container .xterm-rows {
+    font-family: "Source Code Pro", monospace !important;
+}
+#terminal-container .xterm-viewport {
+    font-family: "Source Code Pro", monospace !important;
+}
+#terminal-container .xterm-screen {
+    font-family: "Source Code Pro", monospace !important;
+}
+#terminal-container .xterm-rows .xterm-selection {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+#terminal-container .xterm {
+    user-css: "https://cdn.jsdelivr.net/gh/wernight/powerline-web-fonts@ba4426cb0c0b05eb6cb342c7719776a41e1f2114/PowerlineFonts.css";
+}

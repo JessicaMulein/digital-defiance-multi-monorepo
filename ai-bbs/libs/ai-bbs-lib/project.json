@@ -1,0 +1,78 @@
+{
+  "name": "ai-bbs-lib",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/ai-bbs-lib/src",
+  "prefix": "digital-defiance-ai-bbs",
+  "targets": {
+    "build-angular": {
+      "executor": "@angular-devkit/build-angular:ng-packagr",
+      "options": {
+        "tsConfig": "libs/ai-bbs-lib/tsconfig.build.json",
+        "project": "libs/ai-bbs-lib/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/ai-bbs-lib/tsconfig.build.json"
+        }
+      }
+    },    
+    "build-node": {
+      "executor": "@nrwl/node:package",
+      "options": {
+        "outputPath": "dist/libs/ai-bbs-lib",
+        "tsConfig": "libs/ai-bbs-lib/tsconfig.lib.json",
+        "packageJson": "libs/ai-bbs-lib/package.json",
+        "main": "libs/ai-bbs-lib/src/index.ts",
+        "assets": [
+          "libs/ai-bbs-lib/*.md"
+        ]
+      }
+    },
+    "build-both": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "nx build ai-bbs-lib:build-angular",
+          "nx build ai-bbs-lib:build-node"
+        ],
+        "parallel": false
+      }
+    },
+    "build": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "nx build ai-bbs-lib:build-angular",
+          "nx build ai-bbs-lib:build-node"
+        ],
+        "parallel": false
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/ai-bbs-lib/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "libs/ai-bbs-lib/**/*.ts",
+          "libs/ai-bbs-lib/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

@@ -1,0 +1,15 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+      "outDir": "../../dist/out-tsc/tools/executors",
+      "rootDir": ".",
+      "module": "commonjs",
+      "target": "ES2022",
+      "esModuleInterop": true,
+      "strict": true,
+      "declaration": true
+    },
+    "files": ["./build-both.ts"],
+    "include": ["./schema.d.ts"]
+  }
+  
