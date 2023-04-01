@@ -1,12 +1,14 @@
 # Digital-Defiance
 
-## Current development home of:
-* BrightChain: https://github.com/BrightChain/BrightChain
+## Current development home of multiple monorepos:
+* AiBBS: ./ai-bbs
+* BrightChain: ./brightchain
 * BrightChain Confidential Quorum
-* qURI Social/Five by Five Social (\*\*\*\*\* by \*\*\*\*\*)
-* Stargate-256
-* Stargate-N
-* langex: LanguageExtension
+* Frozen-Pi (Raspberry Pi no-op boot): ./frozen-pi
+* qURI Social/Five by Five Social (\*\*\*\*\* by \*\*\*\*\*): ./quri
+* Stargate-256: ./digital-defiance
+* Stargate-N: ./digital-defiance
+* langex: LanguageExtension: ./langex
 
 ### Nx Monorepo
 
