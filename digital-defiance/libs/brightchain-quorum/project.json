@@ -1,4 +1,5 @@
 {
+  "name": "brightchain-quorum",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/brightchain-quorum/src/lib",
   "projectType": "library",

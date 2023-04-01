@@ -1,0 +1,32 @@
+{
+    "ai-bbs": {
+        "defaultPackage": "./apps/ai-bbs",
+        "basePath": "./digital-defiance",
+        "dirs": {
+            "libs/ai-bbs-lib": "./libs/ai-bbs-lib",
+            "apps/ai-bbs": "./apps/ai-bbs",
+            "apps/ai-bbs-e2e": "./apps/ai-bbs-e2e",
+            "apps/ai-bbs-node": "./apps/ai-bbs-node",
+            "apps/ai-bbs-node-e2e": "./apps/ai-bbs-node-e2e"
+        },
+        "files": {
+            "builds/ai-bbs/Dockerfile": "./Dockerfile",
+            "tools/executors/build-both.ts": "./tools/executors/build-both.ts",
+            "tools/executors/package.json": "./tools/executors/package.json",
+            "tools/executors/schema.d.ts": "./tools/executors/schema.d.ts",
+            "tools/executors/src/tsconfig.json": "./tools/executors/src/tsconfig.json",
+            "tools/executors/yarn.lock": "./tools/executors/yarn.lock",
+            "tools/generators/.empty": "./tools/generators/.empty"
+        }
+    },
+    "frozen-pi": {
+        "defaultPackage": "./apps/frozen-pi",
+        "basePath": "./frozen-pi",
+        "dirs": {
+            "./custom-image": "./custom-image"
+        },
+        "files": {
+            "builds/frozen-pi/Dockerfile": "./Dockerfile"
+        }
+    }
+}

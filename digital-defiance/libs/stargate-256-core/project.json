@@ -1,4 +1,5 @@
 {
+  "name": "stargate-256-core",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/stargate-256-core/src",
   "projectType": "library",

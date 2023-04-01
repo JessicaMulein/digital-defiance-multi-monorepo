@@ -1,4 +1,5 @@
 {
+  "name": "stargate-n-e2e",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/stargate-n-e2e/src",
   "projectType": "application",

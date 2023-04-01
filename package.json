@@ -1,0 +1,12 @@
+{
+  "name": "digital-defiance-multi-monorepo",
+  "version": "0.0.0",
+  "description": "Multi-repo",
+  "private": true,
+  "scripts": {},
+  "author": "Digital Defiance Contributors",
+  "license": "MIT",
+  "devDependencies": {
+    "node": "^19.8.1"
+  }
+}

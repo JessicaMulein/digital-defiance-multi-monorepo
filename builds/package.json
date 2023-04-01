@@ -1,0 +1,11 @@
+{
+    "name": "digital-defiance-multi-monorepo-builds",
+    "version": "0.0.0",
+    "description": "Multi-repo build system for Digital Defiance",
+    "private": true,
+    "scripts": {
+    },
+    "author": "Digital Defiance Contributors",
+    "license": "MIT"
+  }
+  
