@@ -1,4 +1,5 @@
-import fs, { readdir, readdirSync } from "fs";
+import fs from "fs";
+import { execSync } from "child_process";
 import path from "path";
 import { Build, Builds } from "./builds.d";
 
@@ -90,5 +91,46 @@ export function cleanBuildDir(build: Build) {
         if (fs.existsSync(fullDest) && fs.lstatSync(fullDest).isDirectory()) {
             cleanDir(fullDest);
         }
+    }
+}
+
+export function performBuild(build: Build) {
+    console.log("Starting the build process...");
+    try {
+        const buildCommand = build.buildCommand ?? "npx nx build";
+        const result = execSync(buildCommand, { cwd: build.basePath, stdio: "inherit" });
+        console.log("Build completed successfully.");
+    } catch (error) {
+        console.error("Build failed with the following error:");
+        console.error(error.message);
+        process.exit(1);
+    }
+  }
+
+export function performTest(build: Build) {
+  console.log("Starting the test process...");
+
+  try {
+    const testCommand = build.testCommand ?? "npx nx test";
+    const result = execSync(testCommand, { cwd: build.basePath, stdio: "inherit" });
+    console.log("Tests completed successfully.");
+  } catch (error) {
+    console.error("Tests failed with the following error:");
+    console.error(error.message);
+    process.exit(1);
+  }
+}
+
+export function serve(build: Build) {
+    console.log("Starting the serve process...");
+
+    try {
+      const serveCommand = build.serveCommand ?? "npx nx serve";
+      const result = execSync(serveCommand, { cwd: build.basePath, stdio: "inherit" });
+      console.log("Serve completed successfully.");
+    } catch (error) {
+      console.error("Serve failed with the following error:");
+      console.error(error.message);
+      process.exit(1);
     }
 }

@@ -3,6 +3,9 @@ export interface BuildFile {
 }
 export interface Build {
     defaultPackage: string;
+    buildCommand?: string;
+    testCommand?: string;
+    serveCommand?: string;
     basePath: string;
     dirs: string[];
     files: BuildFile[];
