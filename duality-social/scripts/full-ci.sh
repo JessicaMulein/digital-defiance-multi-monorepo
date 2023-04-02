@@ -79,13 +79,13 @@ for arg in "$@"; do
     elif [[ "$arg" == "--checkout="* ]]; then
         hash=${arg:11}
         echo "Checking out hash $hash"
-        git checkout $hash || exit 2
+        #git checkout $hash || exit 2
         shift
     elif [ "$arg" == "--pull-latest" ]; then
-        echo "Determining current branch"
-        currentBranch=$(git rev-parse --abbrev-ref HEAD)
-        echo "Fetching all and pulling latest from origin on the current branch: $currentBranch"
-        git fetch --all && git pull origin ${currentBranch} || exit 4
+        #echo "Determining current branch"
+        #currentBranch=$(git rev-parse --abbrev-ref HEAD)
+        #echo "Fetching all and pulling latest from origin on the current branch: $currentBranch"
+        #git fetch --all && git pull origin ${currentBranch} || exit 4
         shift
     elif [ "$arg" == "--whitelist="* ]; then
         whitelist=${arg:12}
@@ -127,40 +127,40 @@ else
 fi
 
 # determine if we need to stash untracked files
-echo "Checking for untracked files"
-status=$(git status --porcelain)
-if [[ "$status" == *??* ]]; then
-    echo "Stashing anything changed, including untracked"
-    git stash save -u || exit 1
-    echo "You can restore your changes when the script is completed with 'git stash pop'"
-fi
+#echo "Checking for untracked files"
+#status=$(git status --porcelain)
+#if [[ "$status" == *??* ]]; then
+#    echo "Stashing anything changed, including untracked"
+#    git stash save -u || exit 1
+#    echo "You can restore your changes when the script is completed with 'git stash pop'"
+#fi
 
 # unless --skip=git_reset is passed, reset to HEAD
-if [ -z "$SKIP_GIT_RESET" ]; then
-    echo "Performing git reset --hard"
-    git reset --hard || exit 2
-else
-    echo "Skipping git reset --hard"
-fi
+#if [ -z "$SKIP_GIT_RESET" ]; then
+#    echo "Performing git reset --hard"
+#    git reset --hard || exit 2
+#else
+#    echo "Skipping git reset --hard"
+#fi
 
-echo "Checking whether everything is clean"
+#echo "Checking whether everything is clean"
 # warn if there are any untracked files or changes, should include unpushed commits
-gitStatus=$(git status --porcelain)
-if [ -n "$gitStatus" ]; then
-    echo "WARNING: There are untracked files or changes"
-    echo "$gitStatus"
-    exit 5
-else
-    echo "No untracked files or changes"
-fi
+#gitStatus=$(git status --porcelain)
+#if [ -n "$gitStatus" ]; then
+#    echo "WARNING: There are untracked files or changes"
+#    echo "$gitStatus"
+#    exit 5
+#else
+#    echo "No untracked files or changes"
+#fi
 
-echo "The repository is now at the following commit:"
-GIT_PAGER=cat git log -1 --color=always
-if [ -z "$SKIP_SLEEP" ]; then
-    echo ""
-    echo "Press ctrl+c within 5 seconds to abort"
-    sleep 5
-fi
+#echo "The repository is now at the following commit:"
+#GIT_PAGER=cat git log -1 --color=always
+#if [ -z "$SKIP_SLEEP" ]; then
+#    echo ""
+#    echo "Press ctrl+c within 5 seconds to abort"
+#    sleep 5
+#fi
 
 if [ -z "$DOCKER_BUILD" ]; then
     if [ -z "$SKIP_SETUP_FA_NPM" ]; then
@@ -196,7 +196,7 @@ fi
 if [[ "$status" == *??* ]]; then
     echo "Restoring stashed changes"
     echo "If this fails because you were on a different commit, don't worry, the stash will be kept until a stash pop completes successfully"
-    git stash pop || exit 11
+    #git stash pop || exit 11
 fi
 # restore the directory we were in
 cd "${OPWD}"
