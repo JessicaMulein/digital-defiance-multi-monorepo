@@ -1,0 +1,21 @@
+.single-cards {
+  margin: 20px 0;
+}
+
+.single-card .mat-card-avatar {
+  width: 50px;
+  height: 50px;
+}
+
+.single-card .fa-duotone {
+  font-size: 55px;
+}
+
+.projects-card>mat-card-content {
+  max-height: 400px;
+  overflow: auto;
+}
+
+#_feed .mat-mdc-card-content {
+  padding: 0 5px!important;
+}

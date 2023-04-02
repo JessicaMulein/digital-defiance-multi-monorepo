@@ -1,0 +1,20 @@
+{
+  "name": "duality-social-queue-worker",
+  "version": "0.0.0",
+  "description": "A worker for the duality social network that generates the ai responses",
+  "type": "commonjs",
+  "main": "dist/main.js",
+  "scripts": {
+    "start": "node ./dist/main.js",
+    "build": "tsc",
+    "serve": "npx nx serve duality-social-queue-worker"
+  },
+  "dependencies": {
+    "mongoose": "^7.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.1",
+    "nodemon": "^2.0.21",
+    "ts-node": "^10.9.1"
+  }
+}

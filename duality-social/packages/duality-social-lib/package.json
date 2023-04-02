@@ -1,0 +1,30 @@
+{
+  "name": "@digital-defiance/duality-social-lib",
+  "description": "Shared library for Duality Social front and back ends.",
+  "version": "0.0.1",
+  "license": "MIT",
+  "dependencies": {
+    "@angular-devkit/build-angular": "~15.2.0",
+    "@angular/cli": "~15.2.0",
+    "@fortawesome/fontawesome-pro": "^6.3.0",
+    "@fortawesome/fontawesome-svg-core": "^6.3.0",
+    "@fortawesome/free-brands-svg-icons": "^6.3.0",
+    "@fortawesome/pro-duotone-svg-icons": "^6.3.0",
+    "@fortawesome/pro-light-svg-icons": "^6.3.0",
+    "@fortawesome/pro-regular-svg-icons": "^6.3.0",
+    "@fortawesome/pro-solid-svg-icons": "^6.3.0",
+    "@fortawesome/pro-thin-svg-icons": "^6.3.0",
+    "@fortawesome/sharp-solid-svg-icons": "^6.3.0",
+    "@types/jest": "^29.4.0",
+    "@types/linkify-it": "^3.0.2",
+    "@types/markdown-it": "^12.2.3",
+    "linkify-it": "^4.0.1",
+    "markdown-it": "^13.0.1",
+    "phone": "^3.1.35",
+    "string-strip-html": "8.4.0",
+    "tlds": "^1.236.0"
+  },
+  "devDependencies": {
+    "jest-util": "^29.5.0"
+  }
+}

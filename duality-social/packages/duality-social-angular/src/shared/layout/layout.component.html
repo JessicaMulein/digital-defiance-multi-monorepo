@@ -1,0 +1,120 @@
+<div class="navbar-container" [class.example-is-mobile]="mobileQuery.matches">
+
+  <!-- Top navbar -->
+  <mat-toolbar class="navbar" color="primary">
+
+    <button mat-icon-button (click)="snav.toggle()">
+      <i class="fa-duotone fa-square-list">menu</i>
+    </button>
+
+    <a class="navbar-brand" [routerLink]="['/']" matTooltip="Home" matTooltipPositionAtOrigin="true" style="display: contents;">
+      <div><img src="/assets/favicon-150h.svg" alt="masks" style="height: 50px; position: relative; top: 5px;" /></div>
+      <a class="title" href="/"><img src="/assets/duality-banner-tx.svg" alt="Duality Social" style="height: 50px; width: 231px; position: relative; top: 5px;" /></a>
+    </a>
+
+    <span class="navbar-spacer"></span>
+
+    <!-- do not show the notifications icon if not logged in-->
+    <div id="loggedInNavBarSection" *ngIf="userLoggedInDisplay">
+      <button mat-icon-button [matMenuTriggerFor]="notificationMenu">
+        <mat-icon matBadge="2" matBadgeColor="accent">notifications</mat-icon>
+      </button>
+      <mat-menu #notificationMenu="matMenu" xPosition="before" yPosition="above" [overlapTrigger]="false">
+
+        <a mat-menu-item>
+          <span>You have new tasks</span>
+        </a>
+        <a mat-menu-item>
+          <span>You have a new message</span>
+        </a>
+
+      </mat-menu>
+      <button id="userNameButton" mat-button [matMenuTriggerFor]="userMenu">
+        <i class="fa-solid fa-person"></i>
+        <span fxShow fxHide.xs>
+          {{userName}}
+        </span>
+      </button>
+      <mat-menu #userMenu="matMenu" xPosition="before" yPosition="above" [overlapTrigger]="false">
+
+        <a mat-menu-item [routerLink]="['/profile']">
+          <i class="fa-solid fa-person"></i>
+          <span>Account</span>
+        </a>
+
+        <a mat-menu-item (click)="logout()">
+          <i class="fa-duotone fa-person-to-door"></i>
+          <span>Log out</span>
+        </a>
+
+      </mat-menu>
+    </div>
+    <div *ngIf="!userLoggedInDisplay">
+      <button mat-button [matMenuTriggerFor]="loginMenu">
+        <i class="fa-solid fa-person"></i>person
+      </button>
+      <mat-menu #loginMenu="matMenu" xPosition="before" yPosition="above" [overlapTrigger]="false">
+        <a mat-menu-item (click)="loginRedirect()">
+          <i class="fa-solid fa-person-sign"></i>
+          <span>Log in</span>
+        </a>
+      </mat-menu>
+    </div>
+  </mat-toolbar>
+  <mat-sidenav-container class="navbar-sidenav-container">
+    <!-- Side nav -->
+    <mat-sidenav #snav [opened]="!mobileQuery.matches" [mode]="mobileQuery.matches ? 'over' : 'side'"
+      [fixedInViewport]="mobileQuery.matches" fixedTopGap="56" class="sidenav">
+
+      <mat-nav-list>
+        <h3 mat-subheader>Home</h3>
+
+        <a mat-list-item [routerLink]="['/feed']" routerLinkActive="active">
+          <i class="fa-duotone fa-rss"></i>
+          <p mat-line> Feed </p>
+        </a>
+
+        <a mat-list-item [routerLink]="['/account/profile']">
+          <i class="fa-duotone fa-person-sign"></i>
+          <p mat-line> Account </p>
+        </a>
+
+        <a mat-list-item (click)="logout()">
+          <i class="fa-duotone fa-person-to-door"></i>
+          <p mat-line> Log out </p>
+        </a>
+
+        <mat-divider></mat-divider>
+
+        <h3 mat-subheader>Resources</h3>
+
+        <a mat-list-item [routerLink]="['/playground']" routerLinkActive="active">
+          <i class="fa-duotone fa-font-case"></i>
+          <p mat-line> Post Playground </p>
+        </a>
+
+        <a id="push-bottom" mat-list-item [routerLink]="['/about']" routerLinkActive="active">
+          <i class="fa-duotone fa-info"></i>
+          <p mat-line> About </p>
+        </a>
+      </mat-nav-list>
+
+    </mat-sidenav>
+
+    <!-- Main content -->
+    <mat-sidenav-content class="sidenav-content">
+
+      <div class="progress-bar-container">
+        <mat-progress-bar color="accent" mode="indeterminate" *ngIf="spinnerService.visibility | async">
+        </mat-progress-bar>
+        <!-- <mat-spinner class="spinner" [diameter]="50" *ngIf="showSpinner"></mat-spinner> -->
+      </div>
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+  <div class="floating-button-container md-fab-bottom-right" slot="fixed" vertical="bottom" horizontal="end" *ngIf="userLoggedInDisplay">
+    <div class="button iconbutton" mat-fab color="accent" (click)="showNewPost()">
+      <i class="fa-duotone fa-pen-field"></i>
+    </div>
+  </div>
+</div>
