@@ -19,6 +19,7 @@ WORKDIR /usr/src/app
 COPY packages/duality-social-lib packages/duality-social-lib
 COPY packages/duality-social-node packages/duality-social-angular
 COPY packages/duality-social-node packages/duality-social-node
+COPY scripts scripts
 
 # Install the dependencies
 RUN SKIP_DUALITY_SOCIAL_DOCS=true ./scripts/full-ci.sh --skip=sleep --skip=docusaurus_clear

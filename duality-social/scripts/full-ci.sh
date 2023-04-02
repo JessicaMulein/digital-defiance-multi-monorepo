@@ -120,6 +120,7 @@ if [ -z "$SKIP_NODE_MODULES_CLEAN" ]; then
         echo "Press ctrl+c within 5 seconds to abort"
         sleep 5
     fi
+    cd "${SCRIPT_DIR}"
     ./node_modules-ci.sh || exit 3
 else
     echo "Skipping cleaning out node_modules for each package"
